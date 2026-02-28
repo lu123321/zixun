@@ -1,0 +1,75 @@
+/* pages/login/login.wxss */
+@import "../../styles/variable.wxss";
+@import "../../styles/common.wxss";
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f0f7ff, #e6f7ff);
+  padding: 40rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.login-header {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 80rpx;
+}
+
+.app-icon {
+  font-size: 120rpx;
+  margin-bottom: 32rpx;
+}
+
+.app-title {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16rpx;
+}
+
+.app-subtitle {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.login-content {
+  padding: 0 40rpx;
+  margin-bottom: 120rpx;
+}
+
+.btn-login {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 80rpx;
+  padding: 24rpx 0;
+  font-size: 32rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.btn-login::after {
+  border: none;
+}
+
+.login-icon {
+  margin-right: 16rpx;
+  font-size: 36rpx;
+}
+
+.login-footer {
+  text-align: center;
+}
+
+.protocol-text {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.6;
+}

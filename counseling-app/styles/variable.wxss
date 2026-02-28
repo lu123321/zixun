@@ -1,0 +1,33 @@
+  /* styles/variable.wxss */
+
+  /* 主题色定义 */
+  :root {
+    --color-primary: #1890ff;
+    --color-primary-light: #e6f7ff;
+    --color-primary-dark: #096dd9;
+    
+    --color-success: #52c41a;
+    --color-warning: #faad14;
+    --color-error: #ff4d4f;
+    --color-info: #1890ff;
+    
+    --color-text: #333333;
+    --color-text-secondary: #666666;
+    --color-text-light: #999999;
+    
+    --color-border: #e0e0e0;
+    --color-background: #f8f9fa;
+    --color-card: #ffffff;
+    
+    --shadow-card: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+    --shadow-card-hover: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+    
+    --border-radius: 12rpx;
+    --border-radius-sm: 8rpx;
+    
+    --spacing-xs: 8rpx;
+    --spacing-sm: 16rpx;
+    --spacing-md: 24rpx;
+    --spacing-lg: 32rpx;
+    --spacing-xl: 40rpx;
+  }

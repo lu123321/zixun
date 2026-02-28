@@ -1,0 +1,3 @@
+/* pages/test/test.wxss *//* pages/test/test.wxss */
+.mt-5 { margin-top: 5px; }
+.mt-10 { margin-top: 10px; }

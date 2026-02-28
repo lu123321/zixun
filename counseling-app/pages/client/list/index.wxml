@@ -1,0 +1,174 @@
+<!-- pages/client/list/index.wxml -->
+<view class="client-list-page">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-container">
+      <image src="../../../static/icons/search.png" class="search-icon" />
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="搜索来访者姓名或标签" 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <view wx:if="{{searchKeyword}}" class="clear-btn" bindtap="clearSearch">✕</view>
+    </view>
+    <view class="filter-btn" bindtap="onFilterClick">
+      <image src="../../../static/icons/filter.png" class="filter-icon" />
+      <text wx:if="{{activeFilter !== 'all'}}" class="filter-badge"></text>
+    </view>
+  </view>
+
+  <!-- 状态筛选 -->
+  <scroll-view scroll-x class="status-filter">
+    <view class="filter-list">
+      <view 
+        wx:for="{{statusFilters}}" 
+        wx:key="value"
+        class="status-item {{activeFilter === item.value ? 'active' : ''}}"
+        data-value="{{item.value}}"
+        bindtap="onStatusFilter"
+      >
+        <view class="status-text">{{item.label}}</view>
+        <view wx:if="{{item.count > 0}}" class="status-count">{{item.count}}</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 来访者列表 -->
+  <scroll-view 
+    scroll-y 
+    class="client-scroll" 
+    bindscrolltolower="onScrollToLower"
+    refresher-enabled="{{true}}"
+    bindrefresherrefresh="onRefresh"
+    refresher-triggered="{{refreshing}}"
+  >
+    <!-- 列表头部信息 -->
+    <view class="list-header">
+      <view class="total-count">
+        共{{totalCount}}位来访者
+      </view>
+      <view class="sort-options">
+        <view 
+          class="sort-option {{sortField === 'create_time' ? 'active' : ''}}" 
+          data-field="create_time"
+          bindtap="onSortChange"
+        >
+          最近添加
+        </view>
+        <view 
+          class="sort-option {{sortField === 'last_session' ? 'active' : ''}}" 
+          data-field="last_session"
+          bindtap="onSortChange"
+        >
+          最近咨询
+        </view>
+      </view>
+    </view>
+
+    <!-- 来访者列表 -->
+    <view wx:if="{{clients.length > 0}}">
+      <view class="client-list">
+        <view 
+          wx:for="{{clients}}" 
+          wx:key="id" 
+          class="client-item"
+          data-id="{{item.id}}"
+          bindtap="onClientItemClick"
+        >
+          <view class="client-avatar">
+            <text class="avatar-text">{{item.name.charAt(0)}}</text>
+            <view wx:if="{{item.gender === 1}}" class="gender-badge male">♂</view>
+            <view wx:if="{{item.gender === 2}}" class="gender-badge female">♀</view>
+          </view>
+          <view class="client-info">
+            <view class="client-name-row">
+              <view class="client-name">{{item.name}}</view>
+              <view class="client-status status-{{item.status}}">
+                {{getStatusText(item.status)}}
+              </view>
+            </view>
+            <view class="client-meta">
+              <text wx:if="{{item.age}}" class="meta-item">👤 {{item.age}}岁</text>
+              <text class="meta-item">📞 {{item.contactPhone || '未设置'}}</text>
+            </view>
+            <view class="client-tags">
+              <text 
+                wx:for="{{item.tags || []}}" 
+                wx:key="index" 
+                class="tag"
+              >
+                #{{item}}
+              </text>
+            </view>
+            <view class="client-session-info">
+              <text class="session-count">🎯 {{item.sessionCount || 0}}次咨询</text>
+              <text class="last-session">🕐 {{formatLastSession(item.lastSessionTime)}}</text>
+            </view>
+          </view>
+          <view class="client-actions">
+            <view class="action-btn more" catchtap="onMoreAction" data-id="{{item.id}}">
+              ⋮
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 加载更多 -->
+      <view wx:if="{{loadingMore}}" class="load-more">
+        <text>加载中...</text>
+      </view>
+      <view wx:if="{{!hasMore && clients.length > 0}}" class="load-more">
+        <text>没有更多了</text>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <image src="../../../static/images/empty/empty.png" class="empty-icon" />
+      <view class="empty-text">
+        {{searchKeyword ? '未找到相关来访者' : '暂无来访者'}}
+      </view>
+      <view class="empty-subtext">
+        {{searchKeyword ? '换个关键词试试' : '添加您的第一位来访者开始记录'}}
+      </view>
+      <view wx:if="{{!searchKeyword}}" class="empty-action" bindtap="onAddClient">
+        添加来访者
+      </view>
+      <view wx:else class="empty-action" bindtap="clearSearch">
+        清空搜索
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 添加按钮 -->
+  <view class="fab-container">
+    <view class="fab-button" bindtap="onAddClient">
+      <text class="fab-icon">+</text>
+    </view>
+  </view>
+
+  <!-- 操作菜单 -->
+  <view wx:if="{{showActionMenu}}" class="action-menu-mask" bindtap="closeActionMenu">
+    <view class="action-menu">
+      <view class="menu-item" bindtap="onEditClient" data-id="{{selectedClientId}}">
+        <image src="/images/icons/edit.png" class="menu-icon" />
+        <text>编辑信息</text>
+      </view>
+      <view class="menu-item" bindtap="onAddSession" data-id="{{selectedClientId}}">
+        <image src="/images/icons/add.png" class="menu-icon" />
+        <text>记录咨询</text>
+      </view>
+      <view class="menu-item" bindtap="onViewSessions" data-id="{{selectedClientId}}">
+        <image src="/images/icons/history.png" class="menu-icon" />
+        <text>查看咨询历史</text>
+      </view>
+      <view class="menu-item danger" bindtap="onDeleteClient" data-id="{{selectedClientId}}">
+        <image src="/images/icons/delete.png" class="menu-icon" />
+        <text>删除来访者</text>
+      </view>
+    </view>
+  </view>
+</view>

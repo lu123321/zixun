@@ -1,0 +1,9 @@
+<!-- pages/test/test.wxml -->
+<view class="container">
+  <view class="card">
+    <text class="text-lg">✅ 基础环境正常</text>
+    <text class="text-gray mt-5">全局配置加载成功，无require报错</text>
+  </view>
+  
+  <button class="btn btn-primary mt-10" bindtap="gotoIndex">跳转到首页</button>
+</view>

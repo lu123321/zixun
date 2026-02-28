@@ -1,0 +1,151 @@
+<!-- pages/client/select/index.wxml -->
+<view class="client-select-page">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-container">
+      <view class="search-icon">🔍</view>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="搜索来访者姓名或标签" 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <view wx:if="{{searchKeyword}}" class="clear-btn" catchtap="clearSearch">×</view>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="quick-actions">
+    <scroll-view scroll-x class="quick-scroll">
+      <view class="quick-list">
+        <view class="quick-item" bindtap="onAddClient">
+          <view class="quick-icon">+</view>
+          <view class="quick-text">新建来访者</view>
+        </view>
+        <view 
+          wx:for="{{quickFilters}}" 
+          wx:key="value"
+          class="quick-item {{activeFilter === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onQuickFilter"
+        >
+          <view class="quick-icon">{{item.icon}}</view>
+          <view class="quick-text">{{item.text}}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 来访者列表 -->
+  <scroll-view 
+    scroll-y 
+    class="client-scroll" 
+    bindscrolltolower="onScrollToLower"
+    refresher-enabled="{{true}}"
+    bindrefresherrefresh="onRefresh"
+    refresher-triggered="{{refreshing}}"
+  >
+    <!-- 列表头部 -->
+    <view class="list-header">
+      <view class="total-count">
+        共{{totalCount}}位来访者
+        <text wx:if="{{selectedCount > 0}}" class="selected-count">（已选{{selectedCount}}位）</text>
+      </view>
+    </view>
+
+    <!-- 来访者列表 -->
+    <view wx:if="{{clients.length > 0}}">
+      <view class="client-list">
+        <view 
+          wx:for="{{clients}}" 
+          wx:key="id" 
+          class="client-item"
+          data-id="{{item.id}}"
+          catchtap="onClientSelect"
+        >
+          <!-- 选择框 -->
+          <view class="select-checkbox">
+            <view class="checkbox {{selectedClients[item.id] ? 'checked' : ''}}">
+              <view wx:if="{{selectedClients[item.id]}}" class="checkbox-inner"></view>
+            </view>
+          </view>
+          
+          <!-- 来访者信息 -->
+          <view class="client-info">
+            <view class="client-header">
+              <view class="client-avatar">
+                <text class="avatar-text">{{item.name.charAt(0)}}</text>
+              </view>
+              <view class="client-main">
+                <view class="client-name">{{item.name}}</view>
+                <view class="client-status status-{{item.status}}">
+                  {{getStatusText(item.status)}}
+                </view>
+              </view>
+            </view>
+            
+            <view class="client-details">
+              <view class="client-meta">
+                <text wx:if="{{item.age}}" class="meta-item">👤 {{item.age}}岁</text>
+                <text class="meta-item">📞 {{item.contactPhone || '未设置'}}</text>
+              </view>
+              
+              <view class="client-tags">
+                <text 
+                  wx:for="{{item.tags || []}}" 
+                  wx:key="index" 
+                  class="tag"
+                >
+                  #{{item}}
+                </text>
+              </view>
+              
+              <view class="client-session-info">
+                <text class="session-count">🎯 {{item.sessionCount || 0}}次咨询</text>
+                <text class="last-session">🕐 {{formatLastSession(item.lastSessionTime)}}</text>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 详情箭头 -->
+          <view class="detail-arrow">›</view>
+        </view>
+      </view>
+      
+      <!-- 加载更多 -->
+      <view wx:if="{{loadingMore}}" class="load-more">
+        <text>加载中...</text>
+      </view>
+      <view wx:if="{{!hasMore && clients.length > 0}}" class="load-more">
+        <text>没有更多了</text>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <view class="empty-icon">👥</view>
+      <view class="empty-text">
+        {{searchKeyword ? '未找到相关来访者' : '暂无来访者'}}
+      </view>
+      <view class="empty-subtext">
+        {{searchKeyword ? '换个关键词试试' : '添加您的第一位来访者开始记录'}}
+      </view>
+      <view class="empty-action" bindtap="onAddClient">
+        添加来访者
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view wx:if="{{selectedCount > 0}}" class="action-bar">
+    <view class="selected-info">
+      <text class="selected-text">已选 {{selectedCount}} 位来访者</text>
+    </view>
+    <view class="action-buttons">
+      <view class="cancel-btn" catchtap="onClearSelection">清空</view>
+      <view class="confirm-btn" catchtap="onConfirmSelection">确定选择</view>
+    </view>
+  </view>
+</view>

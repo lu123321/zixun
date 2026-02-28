@@ -1,0 +1,239 @@
+<!-- pages/client/detail/index.wxml -->
+<view class="client-detail-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="back-btn" bindtap="onBack">‹</view>
+    <view class="header-title">来访者详情</view>
+    <view class="header-actions">
+      <view class="action-btn" bindtap="onEditClient">编辑</view>
+    </view>
+  </view>
+
+  <!-- 来访者基本信息卡片 -->
+  <view class="client-info-card">
+    <view class="info-header">
+      <view class="client-avatar">
+        <text class="avatar-text">{{clientInfo.name ? clientInfo.name.charAt(0) : '?'}}</text>
+        <view class="avatar-status status-{{clientInfo.status}}"></view>
+      </view>
+      <view class="client-basic">
+        <view class="client-name-row">
+          <view class="client-name">{{clientInfo.name || '未命名'}}</view>
+          <view class="client-status status-{{clientInfo.status}}">
+            {{getStatusText(clientInfo.status)}}
+          </view>
+        </view>
+        <view class="client-meta">
+          <text wx:if="{{clientInfo.gender}}" class="meta-item">
+            {{clientInfo.gender === 1 ? '男' : clientInfo.gender === 2 ? '女' : '未知'}}
+          </text>
+          <text wx:if="{{clientInfo.age}}" class="meta-item">{{clientInfo.age}}岁</text>
+          <text class="meta-item">编号: {{clientInfo.clientNo || '暂无'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系信息 -->
+    <view class="contact-info">
+      <view wx:if="{{clientInfo.contactPhone}}" class="contact-item">
+        <view class="contact-icon">📱</view>
+        <view class="contact-detail">
+          <view class="contact-label">联系电话</view>
+          <view class="contact-value">{{clientInfo.contactPhone}}</view>
+        </view>
+      </view>
+      
+      <view wx:if="{{clientInfo.emergencyContact}}" class="contact-item">
+        <view class="contact-icon">🚨</view>
+        <view class="contact-detail">
+          <view class="contact-label">紧急联系人</view>
+          <view class="contact-value">{{clientInfo.emergencyContact}} {{clientInfo.emergencyPhone}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 标签 -->
+    <view wx:if="{{clientInfo.tags && clientInfo.tags.length > 0}}" class="tags-section">
+      <view class="section-label">标签</view>
+      <view class="tags-list">
+        <text wx:for="{{clientInfo.tags}}" wx:key="index" class="tag">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 咨询统计卡片 -->
+  <view class="stats-card">
+    <view class="stats-header">
+      <view class="stats-title">咨询统计</view>
+      <view class="stats-period">总计</view>
+    </view>
+    
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-value">{{clientInfo.sessionCount || 0}}</view>
+        <view class="stat-label">咨询次数</view>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <view class="stat-value">¥{{formatMoney(clientInfo.totalFee || 0)}}</view>
+        <view class="stat-label">累计费用</view>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <view class="stat-value">{{clientInfo.firstSession ? formatDate(clientInfo.firstSession, 'MM-dd') : '无'}}</view>
+        <view class="stat-label">首次咨询</view>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <view class="stat-value">{{clientInfo.lastSession ? formatDate(clientInfo.lastSession, 'MM-dd') : '无'}}</view>
+        <view class="stat-label">最近咨询</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 咨询记录 -->
+  <view class="section-container">
+    <view class="section-header">
+      <view class="section-title">咨询记录</view>
+      <view class="section-action" bindtap="onAddSession">+ 记录咨询</view>
+    </view>
+    
+    <view wx:if="{{sessions.length > 0}}">
+      <view class="session-list">
+        <view 
+          wx:for="{{sessions}}" 
+          wx:key="id" 
+          class="session-item"
+          data-id="{{item.id}}"
+          bindtap="onViewSession"
+        >
+          <view class="session-date">
+            <view class="date-day">{{formatDay(item.sessionTime)}}</view>
+            <view class="date-month">{{formatMonth(item.sessionTime)}}</view>
+          </view>
+          
+          <view class="session-info">
+            <view class="session-main">
+              <view class="session-time">{{formatTime(item.sessionTime)}} {{item.duration || 50}}分钟</view>
+              <view class="session-type {{item.sessionType === 4 ? 'supervision' : ''}}">
+                {{getSessionTypeText(item.sessionType)}}
+                <text wx:if="{{item.sessionType === 4}}" class="supervision-tag">督导</text>
+              </view>
+            </view>
+            
+            <view class="session-meta">
+              <text class="meta-item">¥{{formatMoney(item.fee)}}</text>
+              <text class="meta-item">{{item.sessionMode === 1 ? '面对面' : item.sessionMode === 2 ? '视频' : '电话'}}</text>
+              <text wx:if="{{item.location}}" class="meta-item">📍 {{item.location}}</text>
+            </view>
+            
+            <view wx:if="{{item.contentSummary}}" class="session-summary">
+              {{item.contentSummary}}
+            </view>
+            
+            <view wx:if="{{item.tags && item.tags.length > 0}}" class="session-tags">
+              <text wx:for="{{item.tags}}" wx:key="index" class="tag mini">{{item}}</text>
+            </view>
+          </view>
+          
+          <view class="session-status status-{{item.status}}">
+            {{getSessionStatusText(item.status)}}
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <view wx:else class="empty-sessions">
+      <view class="empty-icon">📝</view>
+      <view class="empty-text">暂无咨询记录</view>
+      <view class="empty-subtext">记录第一次咨询，开始跟踪进展</view>
+      <view class="empty-action" bindtap="onAddSession">记录咨询</view>
+    </view>
+  </view>
+
+  <!-- 备注信息 -->
+  <view wx:if="{{clientInfo.remark}}" class="section-container">
+    <view class="section-header">
+      <view class="section-title">备注信息</view>
+    </view>
+    
+    <view class="remark-card">
+      <view class="remark-content">
+        {{clientInfo.remark}}
+      </view>
+      <view class="remark-footer">
+        <text class="remark-time">创建时间: {{formatDate(clientInfo.createTime)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 诊断与方案 -->
+  <view wx:if="{{clientInfo.diagnosis || clientInfo.treatmentPlan}}" class="section-container">
+    <view class="section-header">
+      <view class="section-title">诊断与方案</view>
+    </view>
+    
+    <view wx:if="{{clientInfo.diagnosis}}" class="clinical-section">
+      <view class="clinical-label">初步诊断</view>
+      <view class="clinical-content">{{clientInfo.diagnosis}}</view>
+    </view>
+    
+    <view wx:if="{{clientInfo.treatmentPlan}}" class="clinical-section">
+      <view class="clinical-label">治疗方案</view>
+      <view class="clinical-content">{{clientInfo.treatmentPlan}}</view>
+    </view>
+  </view>
+
+  <!-- 操作按钮栏 -->
+  <view class="action-bar">
+    <view class="action-grid">
+      <view class="action-item" bindtap="onAddSession">
+        <view class="action-icon">📝</view>
+        <view class="action-text">记录咨询</view>
+      </view>
+      
+      <view class="action-item" bindtap="onViewAllSessions">
+        <view class="action-icon">📊</view>
+        <view class="action-text">咨询历史</view>
+      </view>
+      
+      <view class="action-item" bindtap="onClientEdit">
+        <view class="action-icon">✏️</view>
+        <view class="action-text">编辑信息</view>
+      </view>
+      
+      <view class="action-item" bindtap="onMoreActions">
+        <view class="action-icon">⋯</view>
+        <view class="action-text">更多</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部安全区域 -->
+  <view class="safe-area"></view>
+
+  <!-- 操作菜单 -->
+  <view wx:if="{{showActionMenu}}" class="action-menu-mask" catchtap="closeActionMenu">
+    <view class="action-menu">
+      <view class="menu-item" bindtap="onExportData">
+        <view class="menu-icon">📤</view>
+        <view class="menu-text">导出数据</view>
+      </view>
+      
+      <view class="menu-item" bindtap="onChangeStatus">
+        <view class="menu-icon">🔄</view>
+        <view class="menu-text">{{clientInfo.status === 1 ? '结束咨询' : '重新开始'}}</view>
+      </view>
+      
+      <view class="menu-item" bindtap="onTransferClient">
+        <view class="menu-icon">🔄</view>
+        <view class="menu-text">转介</view>
+      </view>
+      
+      <view class="menu-item danger" bindtap="onDeleteClient">
+        <view class="menu-icon">🗑️</view>
+        <view class="menu-text">删除来访者</view>
+      </view>
+    </view>
+  </view>
+</view>

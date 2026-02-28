@@ -1,0 +1,134 @@
+<view class="container">
+  <!-- 日程类型标识 -->
+  <view class="schedule-type-banner" style="background-color: {{scheduleData.color || '#1890ff'}};">
+    <image class="type-icon" src="{{scheduleData.typeIcon}}"></image>
+    <text class="type-text">{{scheduleData.scheduleTypeText}}</text>
+  </view>
+
+  <!-- 日程基本信息 -->
+  <view class="basic-info">
+    <view class="info-header">
+      <text class="schedule-title">{{scheduleData.title}}</text>
+      <text class="schedule-status status-{{scheduleData.status}}">{{scheduleData.statusText}}</text>
+    </view>
+    
+    <view class="time-info">
+      <view class="time-item">
+        <image class="time-icon" src="/images/icons/calendar.png"></image>
+        <view class="time-details">
+          <text class="time-label">开始时间</text>
+          <text class="time-value">{{scheduleData.startTime}}</text>
+        </view>
+      </view>
+      
+      <view class="time-item">
+        <image class="time-icon" src="/images/icons/clock.png"></image>
+        <view class="time-details">
+          <text class="time-label">结束时间</text>
+          <text class="time-value">{{scheduleData.endTime}}</text>
+        </view>
+      </view>
+      
+      <view class="duration-item">
+        <text class="duration-label">持续时间: </text>
+        <text class="duration-value">{{scheduleData.duration}}</text>
+      </view>
+    </view>
+    
+    <!-- 地点信息 -->
+    <view class="location-info" wx:if="{{scheduleData.location}}">
+      <image class="location-icon" src="/images/icons/location.png"></image>
+      <text class="location-text">{{scheduleData.location}}</text>
+    </view>
+    
+    <!-- 关联来访者 -->
+    <view class="client-info" wx:if="{{scheduleData.clientInfo}}">
+      <view class="client-header">
+        <image class="client-icon" src="/images/icons/client.png"></image>
+        <text class="client-label">关联来访者</text>
+      </view>
+      <view class="client-card" bindtap="goToClientDetail">
+        <image class="client-avatar" src="{{scheduleData.clientInfo.avatar || '/images/default-avatar.png'}}"></image>
+        <view class="client-details">
+          <text class="client-name">{{scheduleData.clientInfo.name}}</text>
+          <text class="client-no">{{scheduleData.clientInfo.clientNo}}</text>
+        </view>
+        <image class="arrow-icon" src="/images/icons/arrow-right.png"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日程详情 -->
+  <view class="detail-section">
+    <view class="section-title">日程详情</view>
+    <view class="detail-content" wx:if="{{scheduleData.description}}">
+      <text class="detail-text">{{scheduleData.description}}</text>
+    </view>
+    <view class="empty-detail" wx:else>
+      <text class="empty-text">暂无描述</text>
+    </view>
+  </view>
+
+  <!-- 提醒设置 -->
+  <view class="remind-section">
+    <view class="section-title">提醒设置</view>
+    <view class="remind-content">
+      <image class="remind-icon" src="/images/icons/bell.png"></image>
+      <text class="remind-text">{{scheduleData.remindTypeText}}</text>
+      <text class="remind-status {{scheduleData.remindSent ? 'sent' : 'unsent'}}">
+        {{scheduleData.remindSent ? '已提醒' : '待提醒'}}
+      </text>
+    </view>
+  </view>
+
+  <!-- 重复设置 -->
+  <view class="recurring-section" wx:if="{{scheduleData.isRecurring}}">
+    <view class="section-title">重复设置</view>
+    <view class="recurring-content">
+      <image class="recurring-icon" src="/images/icons/repeat.png"></image>
+      <view class="recurring-details">
+        <text class="recurring-type">{{scheduleData.recurringTypeText}}</text>
+        <text class="recurring-rule" wx:if="{{scheduleData.recurringRuleText}}">
+          {{scheduleData.recurringRuleText}}
+        </text>
+        <text class="recurring-end" wx:if="{{scheduleData.recurringEndDate}}">
+          结束日期: {{scheduleData.recurringEndDate}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关联咨询记录 -->
+  <view class="session-section" wx:if="{{scheduleData.sessionId}}">
+    <view class="section-title">关联咨询记录</view>
+    <view class="session-card" bindtap="goToSessionDetail">
+      <view class="session-time">
+        <text class="session-date">{{scheduleData.sessionTime}}</text>
+        <text class="session-duration">{{scheduleData.sessionDuration}}</text>
+      </view>
+      <view class="session-info">
+        <text class="session-client">{{scheduleData.clientInfo.name}}</text>
+        <text class="session-summary">{{scheduleData.sessionSummary || '查看咨询记录'}}</text>
+      </view>
+      <image class="arrow-icon" src="/images/icons/arrow-right.png"></image>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="btn status-btn" bindtap="toggleStatus">
+      <image class="btn-icon" src="{{scheduleData.status === 2 ? '/images/icons/undo.png' : '/images/icons/check.png'}}"></image>
+      <text class="btn-text">{{scheduleData.status === 2 ? '标记为待办' : '标记为完成'}}</text>
+    </button>
+    
+    <button class="btn edit-btn" bindtap="goToEdit">
+      <image class="btn-icon" src="/images/icons/edit.png"></image>
+      <text class="btn-text">编辑日程</text>
+    </button>
+    
+    <button class="btn delete-btn" bindtap="deleteSchedule">
+      <image class="btn-icon" src="/images/icons/delete.png"></image>
+      <text class="btn-text">删除日程</text>
+    </button>
+  </view>
+</view>

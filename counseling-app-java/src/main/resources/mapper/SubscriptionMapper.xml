@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 命名空间必须与 SubscriptionMapper 接口全类名一致 -->
+<mapper namespace="com.example.counselingappjava.mapper.SubscriptionMapper">
+
+    <!-- 基础结果映射：对应 Subscription 实体，不含关联 User 和 Order 信息 -->
+    <resultMap id="BaseResultMap" type="com.example.counselingappjava.entity.Subscription">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="plan_code" property="planCode" jdbcType="VARCHAR"/>
+        <result column="plan_name" property="planName" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="auto_renew" property="autoRenew" jdbcType="INTEGER"/>
+        <result column="features" property="features" jdbcType="VARCHAR"/>
+        <result column="order_id" property="orderId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段列表，用于复用，减少冗余 -->
+    <sql id="Base_Column_List">
+        id, user_id, plan_code, plan_name, price, start_time, end_time,
+        status, auto_renew, features, order_id, create_time, update_time
+    </sql>
+
+    <!-- ===================================== 基本 CRUD 操作 ===================================== -->
+    <!-- 新增订阅 -->
+    <insert id="insert" parameterType="com.example.counselingappjava.entity.Subscription" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_subscription (
+            user_id, plan_code, plan_name, price, start_time, end_time,
+            status, auto_renew, features, order_id, create_time, update_time
+        ) VALUES (
+                     #{userId, jdbcType=BIGINT},
+                     #{planCode, jdbcType=VARCHAR},
+                     #{planName, jdbcType=VARCHAR},
+                     #{price, jdbcType=DECIMAL},
+                     #{startTime, jdbcType=TIMESTAMP},
+                     #{endTime, jdbcType=TIMESTAMP},
+                     #{status, jdbcType=INTEGER},
+                     #{autoRenew, jdbcType=INTEGER},
+                     #{features, jdbcType=VARCHAR},
+                     #{orderId, jdbcType=BIGINT},
+                     #{createTime, jdbcType=TIMESTAMP},
+                     #{updateTime, jdbcType=TIMESTAMP}
+                 )
+    </insert>
+
+    <!-- 更新订阅（根据 id 更新，仅更新非 null 字段） -->
+    <update id="update" parameterType="com.example.counselingappjava.entity.Subscription">
+        UPDATE t_subscription
+        <set>
+            <if test="userId != null">user_id = #{userId, jdbcType=BIGINT},</if>
+            <if test="planCode != null and planCode != ''">plan_code = #{planCode, jdbcType=VARCHAR},</if>
+            <if test="planName != null and planName != ''">plan_name = #{planName, jdbcType=VARCHAR},</if>
+            <if test="price != null">price = #{price, jdbcType=DECIMAL},</if>
+            <if test="startTime != null">start_time = #{startTime, jdbcType=TIMESTAMP},</if>
+            <if test="endTime != null">end_time = #{endTime, jdbcType=TIMESTAMP},</if>
+            <if test="status != null">status = #{status, jdbcType=INTEGER},</if>
+            <if test="autoRenew != null">auto_renew = #{autoRenew, jdbcType=INTEGER},</if>
+            <if test="features != null and features != ''">features = #{features, jdbcType=VARCHAR},</if>
+            <if test="orderId != null">order_id = #{orderId, jdbcType=BIGINT},</if>
+            <if test="updateTime != null">update_time = #{updateTime, jdbcType=TIMESTAMP},</if>
+        </set>
+        WHERE id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据 id 删除订阅 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM t_subscription WHERE id = #{id, jdbcType=BIGINT}
+    </delete>
+
+    <!-- 根据 id 查询订阅 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_subscription
+        WHERE id = #{id, jdbcType=BIGINT}
+    </select>
+
+    <!-- 查询所有订阅 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_subscription
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- ===================================== 条件查询 ===================================== -->
+    <!-- 根据 userId 查询订阅 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_subscription
+        WHERE user_id = #{userId, jdbcType=BIGINT}
+        ORDER BY end_time DESC
+    </select>
+
+    <!-- 根据 userId 和 status 查询单个订阅 -->
+    <select id="selectByUserIdAndStatus" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_subscription
+        WHERE user_id = #{userId, jdbcType=BIGINT}
+        AND status = #{status, jdbcType=INTEGER}
+        ORDER BY end_time DESC
+        LIMIT 1
+    </select>
+
+    <!-- 根据 userId 和 多个 status 列表查询订阅 -->
+    <select id="selectByUserIdAndStatuses" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_subscription
+        WHERE user_id = #{userId, jdbcType=BIGINT}
+        AND status IN
+        <foreach collection="statuses" item="status" open="(" separator="," close=")">
+            #{status, jdbcType=INTEGER}
+        </foreach>
+        ORDER BY end_time DESC
+    </select>
+
+    <!-- ===================================== 即将过期订阅查询 ===================================== -->
+    <!-- 查询指定日期附近即将过期的订阅（逻辑：end_time 在 [date, date+7天] 且 status 匹配，可按需调整天数） -->
+    <select id="selectExpiringSubscriptions" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_subscription
+        WHERE status = #{status, jdbcType=INTEGER}
+        AND end_time BETWEEN #{date, jdbcType=TIMESTAMP} AND DATE_ADD(#{date, jdbcType=TIMESTAMP}, INTERVAL 7 DAY)
+        ORDER BY end_time ASC
+    </select>
+
+    <!-- ===================================== 关联查询（包含用户和订单信息） ===================================== -->
+    <!-- 根据 id 查询订阅详细信息（包含关联用户和订单） -->
+    <select id="selectDetailById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        s.<include refid="Base_Column_List"/>,
+        FROM t_subscription s
+        WHERE s.id = #{id, jdbcType=BIGINT}
+    </select>
+
+    <!-- 根据 userId 查询订阅详细信息（包含关联用户和订单） -->
+    <select id="selectDetailByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        s.<include refid="Base_Column_List"/>,
+        FROM t_subscription s
+        WHERE s.user_id = #{userId, jdbcType=BIGINT}
+        ORDER BY s.end_time DESC
+    </select>
+
+    <!-- ===================================== 单独更新操作（状态/自动续费） ===================================== -->
+    <!-- 更新订阅状态 -->
+    <update id="updateStatus">
+        UPDATE t_subscription
+        SET status = #{status, jdbcType=INTEGER},
+            update_time = NOW() -- 自动填充更新时间，也可改为传入 #{updateTime}
+        WHERE id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 更新自动续费状态 -->
+    <update id="updateAutoRenew">
+        UPDATE t_subscription
+        SET auto_renew = #{autoRenew, jdbcType=INTEGER},
+            update_time = NOW() -- 自动填充更新时间，也可改为传入 #{updateTime}
+        WHERE id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- ===================================== 批量操作 ===================================== -->
+    <!-- 批量新增订阅 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO t_subscription (
+        user_id, plan_code, plan_name, price, start_time, end_time,
+        status, auto_renew, features, order_id, create_time, update_time
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.userId, jdbcType=BIGINT},
+            #{item.planCode, jdbcType=VARCHAR},
+            #{item.planName, jdbcType=VARCHAR},
+            #{item.price, jdbcType=DECIMAL},
+            #{item.startTime, jdbcType=TIMESTAMP},
+            #{item.endTime, jdbcType=TIMESTAMP},
+            #{item.status, jdbcType=INTEGER},
+            #{item.autoRenew, jdbcType=INTEGER},
+            #{item.features, jdbcType=VARCHAR},
+            #{item.orderId, jdbcType=BIGINT},
+            #{item.createTime, jdbcType=TIMESTAMP},
+            #{item.updateTime, jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 批量更新订阅（注意：MySQL 需开启 allowMultiQueries=true 配置） -->
+    <update id="batchUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE t_subscription
+            <set>
+                <if test="item.planCode != null and item.planCode != ''">plan_code = #{item.planCode, jdbcType=VARCHAR},</if>
+                <if test="item.status != null">status = #{item.status, jdbcType=INTEGER},</if>
+                <if test="item.autoRenew != null">auto_renew = #{item.autoRenew, jdbcType=INTEGER},</if>
+                <if test="item.updateTime != null">update_time = #{item.updateTime, jdbcType=TIMESTAMP},</if>
+            </set>
+            WHERE id = #{item.id, jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <!-- 批量删除订阅 -->
+    <delete id="batchDelete" parameterType="java.util.List">
+        DELETE FROM t_subscription WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id, jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
+</mapper>

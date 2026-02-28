@@ -1,0 +1,462 @@
+<!-- pages/session/edit/index.wxml -->
+<view class="session-edit-page">
+  <!-- 表单容器 -->
+  <scroll-view scroll-y class="form-scroll" bindscrolltolower="onScroll">
+    <view class="form-container">
+      <!-- 来访者选择 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">来访者信息</view>
+          <view class="section-required">必填</view>
+        </view>
+        
+        <view class="form-group" bindtap="onSelectClient">
+          <view class="form-label">选择来访者</view>
+          <view class="picker-field {{selectedClient ? '' : 'placeholder'}}">
+            {{selectedClient ? selectedClient.name : '请选择来访者'}}
+          </view>
+          <view class="arrow-icon">›</view>
+        </view>
+        
+        <!-- 显示选中的来访者信息 -->
+        <view wx:if="{{selectedClient}}" class="selected-client-info">
+          <view class="client-card">
+            <view class="client-avatar">
+              <text class="avatar-text">{{selectedClient.name.charAt(0)}}</text>
+            </view>
+            <view class="client-details">
+              <view class="client-name">{{selectedClient.name}}</view>
+              <view class="client-meta">
+                <text>{{selectedClient.gender === 1 ? '男' : selectedClient.gender === 2 ? '女' : '未知'}}</text>
+                <text wx:if="{{selectedClient.age}}"> {{selectedClient.age}}岁</text>
+              </view>
+              <view class="client-tags">
+                <text wx:for="{{selectedClient.tags || []}}" wx:key="index" class="tag">{{item}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 咨询时间 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">咨询时间</view>
+          <view class="section-required">必填</view>
+        </view>
+        
+        <view class="form-group" bindtap="onSelectDate">
+          <view class="form-label">日期</view>
+          <view class="picker-field {{formData.sessionTime ? '' : 'placeholder'}}">
+            {{formData.sessionTime ? formatDate(formData.sessionTime) : '请选择日期'}}
+          </view>
+          <view class="arrow-icon">›</view>
+        </view>
+        
+        <view class="form-group" bindtap="onSelectTime">
+          <view class="form-label">开始时间</view>
+          <view class="picker-field {{formData.startTime ? '' : 'placeholder'}}">
+            {{formData.startTime ? formatTime(formData.startTime) : '请选择时间'}}
+          </view>
+          <view class="arrow-icon">›</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">持续时间</view>
+          <view class="duration-picker">
+            <view class="duration-btn {{formData.duration === 50 ? 'active' : ''}}" 
+                  data-duration="50" bindtap="onSelectDuration">
+              50分钟
+            </view>
+            <view class="duration-btn {{formData.duration === 60 ? 'active' : ''}}" 
+                  data-duration="60" bindtap="onSelectDuration">
+              60分钟
+            </view>
+            <view class="duration-btn custom-duration" bindtap="onCustomDuration">
+              <input 
+                type="number" 
+                placeholder="自定义" 
+                value="{{formData.duration !== 50 && formData.duration !== 60 ? formData.duration : ''}}"
+                bindinput="onCustomDurationInput"
+                bindblur="onDurationBlur"
+              />
+              <text class="unit">分钟</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 咨询设置 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">咨询设置</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">咨询类型</view>
+          <view class="radio-group">
+            <view 
+              wx:for="{{sessionTypes}}" 
+              wx:key="id"
+              class="radio-item {{formData.sessionType === item.id ? 'active' : ''}}"
+              data-type="{{item.id}}"
+              bindtap="onSelectSessionType"
+            >
+              <view class="radio-dot"></view>
+              <text class="radio-text">{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">咨询方式</view>
+          <view class="radio-group">
+            <view 
+              wx:for="{{sessionModes}}" 
+              wx:key="id"
+              class="radio-item {{formData.sessionMode === item.id ? 'active' : ''}}"
+              data-mode="{{item.id}}"
+              bindtap="onSelectSessionMode"
+            >
+              <view class="radio-dot"></view>
+              <text class="radio-text">{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">咨询地点</view>
+          <input 
+            type="text" 
+            class="form-input" 
+            placeholder="请输入咨询地点" 
+            value="{{formData.location}}"
+            bindinput="onLocationInput"
+          />
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">咨询费用</view>
+          <view class="money-input">
+            <text class="currency">¥</text>
+            <input 
+              type="digit" 
+              class="money-input-field" 
+              placeholder="0.00" 
+              value="{{formData.fee}}"
+              bindinput="onFeeInput"
+            />
+          </view>
+        </view>
+      </view>
+
+      <!-- 督导信息 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">
+            督导信息
+            <switch class="supervision-switch" checked="{{formData.hasSupervision}}" 
+                    bindchange="onSupervisionToggle" />
+          </view>
+        </view>
+        
+        <view wx:if="{{formData.hasSupervision}}">
+          <view class="form-group">
+            <view class="form-label">督导类型</view>
+            <view class="radio-group">
+              <view 
+                wx:for="{{supervisionTypes}}" 
+                wx:key="id"
+                class="radio-item {{formData.supervisionType === item.id ? 'active' : ''}}"
+                data-type="{{item.id}}"
+                bindtap="onSelectSupervisionType"
+              >
+                <view class="radio-dot"></view>
+                <text class="radio-text">{{item.name}}</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="form-group">
+            <view class="form-label">督导费用</view>
+            <view class="money-input">
+              <text class="currency">¥</text>
+              <input 
+                type="digit" 
+                class="money-input-field" 
+                placeholder="0.00" 
+                value="{{formData.supervisionFee}}"
+                bindinput="onSupervisionFeeInput"
+              />
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 咨询记录 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">咨询记录</view>
+          <view class="section-optional">选填</view>
+        </view>
+        
+        <!-- SOAP记录法 -->
+        <view class="soap-form">
+          <view class="soap-section">
+            <view class="soap-label">
+              <text class="label-text">主观 (S)</text>
+              <text class="label-desc">来访者主诉、感受</text>
+            </view>
+            <textarea 
+              class="soap-textarea" 
+              placeholder="请输入来访者的主观描述..." 
+              value="{{formData.subjective}}"
+              bindinput="onSubjectiveInput"
+              maxlength="1000"
+            />
+            <view class="textarea-counter">{{formData.subjective ? formData.subjective.length : 0}}/1000</view>
+          </view>
+          
+          <view class="soap-section">
+            <view class="soap-label">
+              <text class="label-text">客观 (O)</text>
+              <text class="label-desc">观察到的客观事实</text>
+            </view>
+            <textarea 
+              class="soap-textarea" 
+              placeholder="请输入客观观察到的信息..." 
+              value="{{formData.objective}}"
+              bindinput="onObjectiveInput"
+              maxlength="1000"
+            />
+            <view class="textarea-counter">{{formData.objective ? formData.objective.length : 0}}/1000</view>
+          </view>
+          
+          <view class="soap-section">
+            <view class="soap-label">
+              <text class="label-text">评估 (A)</text>
+              <text class="label-desc">专业评估与分析</text>
+            </view>
+            <textarea 
+              class="soap-textarea" 
+              placeholder="请输入您的专业评估..." 
+              value="{{formData.assessment}}"
+              bindinput="onAssessmentInput"
+              maxlength="1000"
+            />
+            <view class="textarea-counter">{{formData.assessment ? formData.assessment.length : 0}}/1000</view>
+          </view>
+          
+          <view class="soap-section">
+            <view class="soap-label">
+              <text class="label-text">计划 (P)</text>
+              <text class="label-desc">下一步计划与建议</text>
+            </view>
+            <textarea 
+              class="soap-textarea" 
+              placeholder="请输入下一步计划..." 
+              value="{{formData.plan}}"
+              bindinput="onPlanInput"
+              maxlength="1000"
+            />
+            <view class="textarea-counter">{{formData.plan ? formData.plan.length : 0}}/1000</view>
+          </view>
+        </view>
+        
+        <!-- 内容摘要 -->
+        <view class="form-group">
+          <view class="form-label">内容摘要</view>
+          <textarea 
+            class="form-textarea" 
+            placeholder="简要描述本次咨询的主要内容..." 
+            value="{{formData.contentSummary}}"
+            bindinput="onContentSummaryInput"
+            maxlength="500"
+          />
+          <view class="textarea-counter">{{formData.contentSummary ? formData.contentSummary.length : 0}}/500</view>
+        </view>
+        
+        <!-- 作业与计划 -->
+        <view class="form-group">
+          <view class="form-label">家庭作业</view>
+          <textarea 
+            class="form-textarea" 
+            placeholder="本次布置的家庭作业..." 
+            value="{{formData.homework}}"
+            bindinput="onHomeworkInput"
+            maxlength="500"
+          />
+          <view class="textarea-counter">{{formData.homework ? formData.homework.length : 0}}/500</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">下次咨询计划</view>
+          <textarea 
+            class="form-textarea" 
+            placeholder="计划下次咨询的内容..." 
+            value="{{formData.nextPlan}}"
+            bindinput="onNextPlanInput"
+            maxlength="500"
+          />
+          <view class="textarea-counter">{{formData.nextPlan ? formData.nextPlan.length : 0}}/500</view>
+        </view>
+      </view>
+
+      <!-- 附件上传 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">附件上传</view>
+          <view class="section-optional">选填</view>
+        </view>
+        
+        <view class="attachments">
+          <!-- 图片附件 -->
+          <view class="attachment-section">
+            <view class="attachment-label">
+              <text class="label-text">图片</text>
+              <text class="label-tip">最多9张</text>
+            </view>
+            <view class="image-list">
+              <view 
+                wx:for="{{imageAttachments}}" 
+                wx:key="id" 
+                class="image-item"
+                data-index="{{index}}"
+                bindtap="onPreviewImage"
+              >
+                <image class="image-preview" src="{{item.path}}" mode="aspectFill" />
+                <view class="image-remove" catchtap="onRemoveImage" data-index="{{index}}">×</view>
+              </view>
+              
+              <view 
+                wx:if="{{imageAttachments.length < 9}}" 
+                class="upload-btn image-upload"
+                bindtap="onAddImage"
+              >
+                <view class="upload-icon">+</view>
+                <view class="upload-text">添加图片</view>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 文件附件 -->
+          <view class="attachment-section">
+            <view class="attachment-label">
+              <text class="label-text">文档</text>
+              <text class="label-tip">支持pdf,doc,xls等</text>
+            </view>
+            <view class="file-list">
+              <view 
+                wx:for="{{fileAttachments}}" 
+                wx:key="id" 
+                class="file-item"
+                data-index="{{index}}"
+                bindtap="onPreviewFile"
+              >
+                <view class="file-icon">📄</view>
+                <view class="file-info">
+                  <view class="file-name">{{item.name}}</view>
+                  <view class="file-size">{{formatFileSize(item.size)}}</view>
+                </view>
+                <view class="file-remove" catchtap="onRemoveFile" data-index="{{index}}">×</view>
+              </view>
+              
+              <view 
+                class="upload-btn file-upload"
+                bindtap="onAddFile"
+              >
+                <view class="upload-icon">+</view>
+                <view class="upload-text">添加文档</view>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 音频附件 -->
+          <view class="attachment-section">
+            <view class="attachment-label">
+              <text class="label-text">音频</text>
+              <text class="label-tip">咨询录音（需来访者同意）</text>
+            </view>
+            <view class="audio-list">
+              <view 
+                wx:for="{{audioAttachments}}" 
+                wx:key="id" 
+                class="audio-item"
+                data-index="{{index}}"
+                bindtap="onPlayAudio"
+              >
+                <view class="audio-icon">🎵</view>
+                <view class="audio-info">
+                  <view class="audio-name">{{item.name}}</view>
+                  <view class="audio-duration">{{formatDuration(item.duration)}}</view>
+                </view>
+                <view class="audio-controls">
+                  <view class="audio-remove" catchtap="onRemoveAudio" data-index="{{index}}">×</view>
+                </view>
+              </view>
+              
+              <view 
+                class="upload-btn audio-upload"
+                bindtap="onAddAudio"
+              >
+                <view class="upload-icon">+</view>
+                <view class="upload-text">添加音频</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 同步到日程 -->
+      <view class="form-section sync-section">
+        <view class="sync-toggle">
+          <view class="sync-label">
+            <view class="sync-icon">📅</view>
+            <view class="sync-text">同步到日程</view>
+          </view>
+          <switch checked="{{formData.syncToSchedule}}" bindchange="onSyncToggle" />
+        </view>
+        <view wx:if="{{formData.syncToSchedule}}" class="sync-options">
+          <view class="form-group">
+            <view class="form-label">提醒时间</view>
+            <view class="remind-options">
+              <view 
+                wx:for="{{remindOptions}}" 
+                wx:key="value"
+                class="remind-option {{formData.remindTime === item.value ? 'active' : ''}}"
+                data-value="{{item.value}}"
+                bindtap="onSelectRemindTime"
+              >
+                {{item.label}}
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-spacer"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="action-left">
+      <view class="draft-btn" bindtap="onSaveDraft">保存草稿</view>
+    </view>
+    <view class="action-right">
+      <view class="cancel-btn" bindtap="onCancel">取消</view>
+      <view class="submit-btn {{isFormValid ? '' : 'disabled'}}" bindtap="onSubmit">
+        {{isEditMode ? '更新记录' : '保存记录'}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载遮罩 -->
+  <view wx:if="{{loading}}" class="loading-mask">
+    <view class="loading-content">
+      <view class="loading-icon"></view>
+      <view class="loading-text">保存中...</view>
+    </view>
+  </view>
+</view>

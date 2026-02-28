@@ -1,0 +1,367 @@
+/* pages/schedule/calendar/index.wxss */
+@import "../../../styles/variable.wxss";
+
+.calendar-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  padding-bottom: 120rpx;
+}
+
+/* 月份导航栏 */
+.month-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40rpx 32rpx 20rpx;
+  background: white;
+  border-bottom: 1rpx solid var(--color-border);
+}
+
+.current-month {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.nav-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  color: var(--color-primary);
+  background: rgba(24, 144, 255, 0.1);
+  border-radius: 50%;
+}
+
+.nav-btn:active {
+  background: rgba(24, 144, 255, 0.2);
+}
+
+/* 星期标题 */
+.week-header {
+  display: flex;
+  background: white;
+  padding: 20rpx 0;
+}
+
+.week-day {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.week-day:nth-child(6),
+.week-day:nth-child(7) {
+  color: var(--color-error);
+}
+
+/* 日历网格 */
+.calendar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  background: white;
+  padding: 0 4rpx;
+}
+
+.day-cell {
+  width: calc(100% / 7);
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 12rpx;
+  margin: 4rpx;
+  transition: all 0.2s ease;
+}
+
+.day-cell:active {
+  background: var(--color-primary-light);
+}
+
+.day-cell.today .day-number {
+  background: var(--color-primary);
+  color: white;
+}
+
+.day-cell.other-month .day-number {
+  color: var(--color-text-light);
+  opacity: 0.5;
+}
+
+.day-cell.has-schedule {
+  background: rgba(24, 144, 255, 0.05);
+}
+
+.day-number {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--color-text);
+  border-radius: 50%;
+  margin-bottom: 8rpx;
+}
+
+.schedule-dots {
+  display: flex;
+  gap: 4rpx;
+  justify-content: center;
+}
+
+.dot {
+  width: 8rpx;
+  height: 8rpx;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.more-count {
+  font-size: 20rpx;
+  color: var(--color-text-light);
+  margin-left: 4rpx;
+}
+
+/* 类型筛选 */
+.type-filter {
+  white-space: nowrap;
+  padding: 32rpx 24rpx;
+  background: white;
+  margin-top: 8rpx;
+}
+
+.filter-list {
+  display: inline-flex;
+  gap: 24rpx;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 32rpx;
+  background: var(--color-background);
+  border-radius: 20rpx;
+  min-width: 120rpx;
+  transition: all 0.3s ease;
+}
+
+.filter-item.active {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.filter-icon {
+  font-size: 40rpx;
+  margin-bottom: 12rpx;
+}
+
+.filter-text {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+/* 选中日期区域 */
+.selected-date-section {
+  padding: 32rpx;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.section-title text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 26rpx;
+  color: var(--color-primary);
+  background: rgba(24, 144, 255, 0.1);
+  padding: 12rpx 24rpx;
+  border-radius: 40rpx;
+}
+
+.add-icon {
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+/* 日程列表 */
+.schedule-list {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.schedule-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-border);
+  transition: background-color 0.2s ease;
+}
+
+.schedule-item:active {
+  background-color: var(--color-primary-light);
+}
+
+.schedule-item:last-child {
+  border-bottom: none;
+}
+
+.schedule-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 140rpx;
+  padding-right: 32rpx;
+}
+
+.time-range {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 4rpx;
+}
+
+.duration {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  background: rgba(24, 144, 255, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.schedule-detail {
+  flex: 1;
+}
+
+.schedule-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 12rpx;
+  line-height: 1.4;
+}
+
+.schedule-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 12rpx;
+}
+
+.schedule-type {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  background: rgba(24, 144, 255, 0.1);
+  border-radius: 12rpx;
+}
+
+.location {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+}
+
+.schedule-participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.client-tag {
+  font-size: 22rpx;
+  color: var(--color-primary);
+  background: rgba(24, 144, 255, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.schedule-status {
+  align-self: center;
+  font-size: 22rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-weight: 500;
+  margin-left: 16rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0;
+  background: white;
+  border-radius: 20rpx;
+  box-shadow: var(--shadow-card);
+}
+
+.empty-icon {
+  width: 160rpx;
+  height: 160rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: var(--color-text);
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.empty-subtext {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  text-align: center;
+}
+
+/* 浮动操作按钮 */
+.fab-container {
+  position: fixed;
+  right: 40rpx;
+  bottom: 120rpx;
+  z-index: 100;
+}
+
+.fab-button {
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #1890ff 0%, #36cff9 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 32rpx rgba(24, 144, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.fab-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 20rpx rgba(24, 144, 255, 0.2);
+}
+
+.fab-icon {
+  font-size: 60rpx;
+  color: white;
+  font-weight: 300;
+}

@@ -1,0 +1,263 @@
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.form-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  border-radius: 12rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 20rpx;
+}
+
+.form-label.required::before {
+  content: "*";
+  color: #ff4d4f;
+  margin-right: 4rpx;
+}
+
+.form-input {
+  font-size: 28rpx;
+  color: #333;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.form-picker {
+  margin-top: -8rpx;
+  width: 100%;
+}
+
+picker {
+  position: relative;
+  width: 100%;
+  z-index: 10;
+}
+
+.picker-content:active {
+  background-color: #f5f5f5;
+}
+
+.picker-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  min-height: 88rpx; 
+}
+
+
+.time-picker-container {
+  width: 100%;
+  position: relative;
+  z-index: 999;
+}
+
+/* 显示区域 */
+.picker-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  height: 100%;
+}
+
+.time-picker-container:active .picker-display {
+  background-color: #f5f5f5;
+}
+
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.picker-placeholder {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.arrow-icon {
+  width: 24rpx;
+  height: 24rpx;
+  opacity: 0.5;
+}
+
+.form-textarea {
+  font-size: 28rpx;
+  color: #333;
+  min-height: 120rpx;
+  padding: 20rpx 0;
+  line-height: 1.4;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.textarea-counter {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+.color-picker {
+  display: flex;
+  gap: 20rpx;
+  flex-wrap: wrap;
+  padding: 10rpx 0;
+}
+
+.color-option {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.color-option.active {
+  border-color: #333;
+  transform: scale(1.1);
+}
+
+.color-check {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.switch-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.switch-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.recurring-options {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.recurring-option {
+  padding: 12rpx 24rpx;
+  border: 1rpx solid #e8e8e8;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #fafafa;
+}
+
+.recurring-option.active {
+  background: #1890ff;
+  color: white;
+  border-color: #1890ff;
+}
+
+.week-days {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.week-day {
+  width: 70rpx;
+  height: 70rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #666;
+  background: #f5f5f5;
+  border: 2rpx solid transparent;
+}
+
+.week-day.active {
+  background: #1890ff;
+  color: white;
+  border-color: #1890ff;
+}
+
+.month-day-picker {
+  margin-bottom: 30rpx;
+}
+
+.month-day-content {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.highlight {
+  color: #1890ff;
+  margin: 0 8rpx;
+}
+
+.recurring-end {
+  margin-top: 30rpx;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.action-bar {
+  display: flex;
+  gap: 20rpx;
+  padding: 30rpx 20rpx;
+  background: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.cancel-btn {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.submit-btn {
+  background: #1890ff;
+  color: white;
+}

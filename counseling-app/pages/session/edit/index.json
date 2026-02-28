@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "咨询记录",
+  "enablePullDownRefresh": false,
+  "backgroundColor": "#f8f9fa",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {}
+}

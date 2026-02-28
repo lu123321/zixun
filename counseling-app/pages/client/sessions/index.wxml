@@ -1,0 +1,153 @@
+<view class="container">
+  <!-- 来访者信息卡片 -->
+  <view class="client-info-card" wx:if="{{clientInfo}}">
+    <view class="client-header">
+      <image class="client-avatar" src="{{clientInfo.avatar || '/images/default-avatar.png'}}"></image>
+      <view class="client-details">
+        <text class="client-name">{{clientInfo.name}}</text>
+        <view class="client-meta">
+          <text class="client-meta-item">{{clientInfo.genderText}}</text>
+          <text class="client-meta-item">{{clientInfo.age}}岁</text>
+          <text class="client-meta-item">{{clientInfo.clientNo}}</text>
+        </view>
+        <view class="client-status">
+          <text class="status-badge status-{{clientInfo.status}}">{{clientInfo.statusText}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="client-stats">
+      <view class="stat-item">
+        <text class="stat-value">{{clientInfo.totalSessions}}</text>
+        <text class="stat-label">总咨询次数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{clientInfo.completedSessions}}</text>
+        <text class="stat-label">已完成</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{clientInfo.firstSession}}</text>
+        <text class="stat-label">首次咨询</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选和排序 -->
+  <view class="filter-bar">
+    <view class="filter-item" bindtap="showFilter">
+      <text>{{filterText}}</text>
+      <image class="filter-icon" src="/images/icons/filter.png"></image>
+    </view>
+    <view class="sort-item" bindtap="toggleSort">
+      <text>{{sortText}}</text>
+      <image class="sort-icon" src="/images/icons/sort.png"></image>
+    </view>
+    <view class="search-item" bindtap="onSearch">
+      <image class="search-icon" src="/images/icons/search.png"></image>
+      <text>搜索</text>
+    </view>
+  </view>
+
+  <!-- 筛选面板（下拉） -->
+  <view class="filter-panel" wx:if="{{showFilterPanel}}">
+    <view class="filter-options">
+      <view 
+        class="filter-option {{filterStatus === 0 ? 'active' : ''}}" 
+        bindtap="setFilter" 
+        data-status="0"
+      >
+        全部
+      </view>
+      <view 
+        class="filter-option {{filterStatus === 2 ? 'active' : ''}}" 
+        bindtap="setFilter" 
+        data-status="2"
+      >
+        已完成
+      </view>
+      <view 
+        class="filter-option {{filterStatus === 1 ? 'active' : ''}}" 
+        bindtap="setFilter" 
+        data-status="1"
+      >
+        已预约
+      </view>
+      <view 
+        class="filter-option {{filterStatus === 3 ? 'active' : ''}}" 
+        bindtap="setFilter" 
+        data-status="3"
+      >
+        已取消
+      </view>
+    </view>
+  </view>
+
+  <!-- 咨询列表 -->
+  <view class="session-list">
+    <view 
+      class="session-item" 
+      wx:for="{{sessionList}}" 
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="session-time">
+        <text class="session-date">{{item.sessionDate}}</text>
+        <text class="session-week">{{item.sessionWeek}}</text>
+        <text class="session-hour">{{item.sessionTime}}</text>
+      </view>
+      
+      <view class="session-content">
+        <view class="session-header">
+          <text class="session-title">{{item.sessionTypeText}}</text>
+          <text class="session-status status-{{item.status}}">{{item.statusText}}</text>
+        </view>
+        
+        <view class="session-details">
+          <view class="detail-item">
+            <image class="detail-icon" src="/images/icons/clock.png"></image>
+            <text class="detail-text">{{item.duration}}分钟</text>
+          </view>
+          <view class="detail-item">
+            <image class="detail-icon" src="/images/icons/mode.png"></image>
+            <text class="detail-text">{{item.sessionModeText}}</text>
+          </view>
+          <view class="detail-item">
+            <image class="detail-icon" src="/images/icons/fee.png"></image>
+            <text class="detail-text">¥{{item.fee}}</text>
+          </view>
+        </view>
+        
+        <view class="session-summary" wx:if="{{item.contentSummary}}">
+          <text class="summary-text">{{item.contentSummary}}</text>
+        </view>
+        
+        <view class="session-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+          <text class="session-tag" wx:for="{{item.tags}}" wx:key="index">{{item}}</text>
+        </view>
+      </view>
+      
+      <image class="arrow-icon" src="/images/icons/arrow-right.png"></image>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{sessionList.length === 0 && !loading}}">
+    <image class="empty-icon" src="/images/empty-sessions.png"></image>
+    <text class="empty-text">暂无咨询记录</text>
+    <text class="empty-subtext">点击下方按钮添加新的咨询记录</text>
+    <button class="empty-btn" bindtap="onAddSession">添加咨询记录</button>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore && sessionList.length > 0}}">
+    <text class="load-text" wx:if="{{!loadingMore}}">上拉加载更多</text>
+    <view class="loading" wx:else>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="fab" bindtap="onAddSession">
+    <image class="fab-icon" src="/images/icons/add.png"></image>
+  </view>
+</view>

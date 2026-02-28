@@ -1,0 +1,24 @@
+<!-- pages/login/login.wxml -->
+<view class="login-page">
+  <!-- 顶部logo/标题 -->
+  <view class="login-header">
+    <view class="app-icon">👨‍⚕️</view>
+    <view class="app-title">心理咨询师助手</view>
+    <view class="app-subtitle">专业的心理咨询工作管理工具</view>
+  </view>
+
+  <!-- 登录按钮 -->
+  <view class="login-content">
+    <button class="btn-login" bindtap="onWechatLogin">
+      <view class="login-icon">📱</view>
+      <view class="login-text">微信快捷登录</view>
+    </button>
+  </view>
+
+  <!-- 底部协议 -->
+  <view class="login-footer">
+    <view class="protocol-text">
+      登录即表示同意《用户服务协议》和《隐私政策》
+    </view>
+  </view>
+</view>

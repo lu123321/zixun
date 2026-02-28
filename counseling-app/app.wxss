@@ -1,0 +1,120 @@
+/* 导入主题变量 */
+@import "./styles/variable.wxss";
+@import "./styles/common.wxss";
+
+/* 基础样式重置 */
+page {
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 容器样式 */
+.container {
+  padding: 16rpx 24rpx;
+}
+
+
+/* 卡片样式 */
+.card {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin: 16rpx 0;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 标题样式 */
+.title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 16rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  padding: 20rpx 40rpx;
+  text-align: center;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1rpx solid var(--color-primary);
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  padding: 20rpx 40rpx;
+  text-align: center;
+}
+
+/* 表单样式 */
+.form-group {
+  margin-bottom: 32rpx;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 28rpx;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* 状态颜色 */
+.status-active {
+  color: #52c41a;
+  background: #f6ffed;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.status-pending {
+  color: #faad14;
+  background: #fffbe6;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.status-inactive {
+  color: #ff4d4f;
+  background: #fff2f0;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}

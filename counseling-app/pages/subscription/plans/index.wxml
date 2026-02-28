@@ -1,0 +1,292 @@
+<view class="container">
+  <!-- 当前订阅状态 -->
+  <view class="subscription-status" wx:if="{{currentSubscription}}">
+    <view class="status-header">
+      <image class="status-icon" src="/images/icons/subscription.png"></image>
+      <text class="status-title">当前订阅</text>
+    </view>
+    <view class="status-card">
+      <view class="plan-badge {{currentSubscription.planCode}}">
+        <text class="badge-text">{{currentSubscription.planName}}</text>
+      </view>
+      <view class="status-details">
+        <text class="status-text">
+          {{currentSubscription.status === 1 ? '有效中' : 
+            currentSubscription.status === 2 ? '即将过期' :
+            currentSubscription.status === 3 ? '已过期' : '已取消'}}
+        </text>
+        <text class="expire-date">到期时间: {{currentSubscription.endTime}}</text>
+      </view>
+      <view class="status-actions">
+        <button class="btn manage-btn" bindtap="onManageSubscription">管理</button>
+        <button class="btn renew-btn" bindtap="onRenew" wx:if="{{currentSubscription.status === 3}}">续费</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 套餐选择 -->
+  <view class="plans-section">
+    <view class="section-header">
+      <text class="section-title">选择套餐</text>
+      <text class="section-subtitle">选择最适合您的套餐</text>
+    </view>
+
+    <!-- 套餐对比 -->
+    <view class="plans-comparison">
+      <view class="comparison-header">
+        <view class="feature-col">
+          <text class="feature-title">功能特性</text>
+        </view>
+        <view 
+          class="plan-col" 
+          wx:for="{{plans}}" 
+          wx:key="code"
+          bindtap="selectPlan"
+          data-index="{{index}}"
+        >
+          <view class="plan-header {{plan.isPopular ? 'popular' : ''}}">
+            <text class="plan-name">{{plan.name}}</text>
+            <view class="plan-price">
+              <text class="price-symbol">¥</text>
+              <text class="price">{{plan.price}}</text>
+              <text class="price-period">/{{plan.period}}</text>
+            </view>
+            <text class="plan-original-price" wx:if="{{plan.originalPrice}}">
+              原价: ¥{{plan.originalPrice}}
+            </text>
+            <text class="plan-save" wx:if="{{plan.savePercent}}">
+              节省 {{plan.savePercent}}%
+            </text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 功能对比列表 -->
+      <view class="comparison-body">
+        <view class="feature-group" wx:for="{{featureGroups}}" wx:key="title">
+          <view class="group-title">{{item.title}}</view>
+          <view 
+            class="feature-row" 
+            wx:for="{{item.features}}" 
+            wx:key="name"
+          >
+            <view class="feature-col">
+              <text class="feature-name">{{item.name}}</text>
+              <text class="feature-desc" wx:if="{{item.desc}}">{{item.desc}}</text>
+            </view>
+            <view 
+              class="plan-col" 
+              wx:for="{{plans}}" 
+              wx:key="code"
+            >
+              <view class="feature-value">
+                <image 
+                  class="check-icon" 
+                  src="/images/icons/check.png" 
+                  wx:if="{{plans[index].features && plans[index].features[item.key]}}"
+                ></image>
+                <text class="value-text" wx:else>
+                  {{plans[index].features && plans[index].features[item.key] ? 
+                   plans[index].features[item.key] : '-'}}
+                </text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部价格和购买按钮 -->
+      <view class="comparison-footer">
+        <view class="feature-col">
+          <text class="total-label">总计</text>
+        </view>
+        <view 
+          class="plan-col" 
+          wx:for="{{plans}}" 
+          wx:key="code"
+        >
+          <view class="plan-footer {{plan.isPopular ? 'popular' : ''}}">
+            <view class="plan-total">
+              <text class="total-symbol">¥</text>
+              <text class="total-price">{{plan.price}}</text>
+              <text class="total-period">/{{plan.period}}</text>
+            </view>
+            <view class="plan-actions">
+              <button 
+                class="buy-btn {{selectedPlanIndex === index ? 'selected' : ''}}" 
+                bindtap="onSelectPlan"
+                data-index="{{index}}"
+              >
+                {{selectedPlanIndex === index ? '已选择' : '选择套餐'}}
+              </button>
+              <button 
+                class="btn-try" 
+                bindtap="onTryFree"
+                wx:if="{{plan.freeTrialDays}}"
+                data-index="{{index}}"
+              >
+                免费试用 {{plan.freeTrialDays}}天
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常见问题 -->
+  <view class="faq-section">
+    <view class="section-header">
+      <text class="section-title">常见问题</text>
+    </view>
+    
+    <view class="faq-list">
+      <view 
+        class="faq-item" 
+        wx:for="{{faqs}}" 
+        wx:key="question"
+        bindtap="toggleFaq"
+        data-index="{{index}}"
+      >
+        <view class="faq-question">
+          <text class="question-text">{{item.question}}</text>
+          <image 
+            class="arrow-icon {{item.expanded ? 'expanded' : ''}}" 
+            src="/images/icons/arrow-down.png"
+          ></image>
+        </view>
+        <view 
+          class="faq-answer" 
+          wx:if="{{item.expanded}}"
+        >
+          <text class="answer-text">{{item.answer}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 支付弹窗 -->
+  <view class="payment-modal" wx:if="{{showPaymentModal}}">
+    <view class="modal-mask" bindtap="closePaymentModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">确认支付</text>
+        <image class="close-icon" src="/images/icons/close.png" bindtap="closePaymentModal"></image>
+      </view>
+      
+      <view class="modal-body">
+        <!-- 选择的套餐 -->
+        <view class="selected-plan">
+          <text class="selected-name">{{selectedPlan.name}}</text>
+          <text class="selected-price">¥{{selectedPlan.price}}/{{selectedPlan.period}}</text>
+        </view>
+        
+        <!-- 支付方式 -->
+        <view class="payment-methods">
+          <view class="payment-title">选择支付方式</view>
+          <view 
+            class="payment-method" 
+            wx:for="{{paymentMethods}}" 
+            wx:key="type"
+            bindtap="selectPaymentMethod"
+            data-index="{{index}}"
+          >
+            <view class="method-left">
+              <image class="method-icon" src="{{item.icon}}"></image>
+              <text class="method-name">{{item.name}}</text>
+            </view>
+            <view class="method-right">
+              <image 
+                class="check-icon" 
+                src="/images/icons/check-circle.png" 
+                wx:if="{{selectedPaymentMethod === index}}"
+              ></image>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 优惠码 -->
+        <view class="coupon-section">
+          <view class="coupon-header">
+            <text class="coupon-title">优惠码</text>
+            <text class="coupon-hint" bindtap="showCouponHelp">如何使用？</text>
+          </view>
+          <view class="coupon-input">
+            <input 
+              class="coupon-code" 
+              placeholder="输入优惠码"
+              value="{{couponCode}}"
+              bindinput="onCouponInput"
+            />
+            <button class="btn-apply" bindtap="applyCoupon">使用</button>
+          </view>
+          <text class="coupon-tip" wx:if="{{couponApplied}}">
+            已应用优惠码：{{couponDiscount}}
+          </text>
+        </view>
+        
+        <!-- 支付金额 -->
+        <view class="payment-summary">
+          <view class="summary-item">
+            <text class="summary-label">套餐价格</text>
+            <text class="summary-value">¥{{selectedPlan.price}}</text>
+          </view>
+          <view class="summary-item" wx:if="{{couponApplied}}">
+            <text class="summary-label">优惠减免</text>
+            <text class="summary-value discount">-¥{{couponDiscountAmount}}</text>
+          </view>
+          <view class="summary-item total">
+            <text class="summary-label">应付金额</text>
+            <text class="summary-value">¥{{finalAmount}}</text>
+          </view>
+        </view>
+        
+        <!-- 协议 -->
+        <view class="agreement">
+          <checkbox 
+            class="agree-checkbox" 
+            checked="{{agreedToTerms}}"
+            bindchange="onAgreeChange"
+          ></checkbox>
+          <text class="agree-text">
+            我已阅读并同意<text class="link" bindtap="viewTerms">《服务协议》</text>和<text class="link" bindtap="viewPrivacy">《隐私政策》</text>
+          </text>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button 
+          class="btn-pay" 
+          bindtap="onConfirmPayment"
+          disabled="{{!agreedToTerms || paying}}"
+        >
+          {paying ? '支付中...' : `确认支付 ¥${finalAmount}`}
+        </button>
+        <text class="payment-tip">支付完成后将自动开通服务</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部购买按钮 -->
+  <view class="bottom-bar" wx:if="{{selectedPlan && !showPaymentModal}}">
+    <view class="total-price">
+      <text class="total-label">总计: </text>
+      <text class="price">¥{{finalAmount}}</text>
+      <text class="period">/{{selectedPlan.period}}</text>
+    </view>
+    <button 
+      class="btn-buy" 
+      bindtap="showPaymentModal"
+      disabled="{{!selectedPlan}}"
+    >
+      {{selectedPlan ? '立即购买' : '请选择套餐'}}
+    </button>
+  </view>
+
+  <!-- 空状态（无当前订阅） -->
+  <view class="empty-state" wx:if="{{!currentSubscription && !plans.length && !loading}}">
+    <image class="empty-icon" src="/images/empty-subscription.png"></image>
+    <text class="empty-text">暂无订阅信息</text>
+    <text class="empty-subtext">请选择下方的套餐开始使用</text>
+  </view>
+</view>

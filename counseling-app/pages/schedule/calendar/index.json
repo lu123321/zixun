@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "日程日历",
+  "enablePullDownRefresh": false,
+  "backgroundColor": "#f8f9fa",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black"
+}

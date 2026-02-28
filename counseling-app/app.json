@@ -1,0 +1,67 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/schedule/calendar/index",
+    "pages/client/list/index",
+    "pages/my/index",
+    "pages/session/edit/index",
+    "pages/client/select/index",
+    "pages/client/detail/index",
+    "pages/client/edit/index",
+    "pages/session/detail/index",
+    "pages/client/sessions/index",
+    "pages/schedule/edit/index",
+    "pages/finance/overview/index",
+    "pages/subscription/plans/index",
+    "pages/schedule/detail/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "心理咨询师助手",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f8f9fa",
+    "enablePullDownRefresh": true
+  },
+  "tabBar": {
+    "color": "#8a8a8a",
+    "selectedColor": "#1890ff",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "工作台",
+        "iconPath": "static/images/tab/home.png",
+        "selectedIconPath": "static/images/tab/home-active.png"
+      },
+      {
+        "pagePath": "pages/schedule/calendar/index",
+        "text": "日程",
+        "iconPath": "static/images/tab/schedule.png",
+        "selectedIconPath": "static/images/tab/schedule-active.png"
+      },
+      {
+        "pagePath": "pages/client/list/index",
+        "text": "来访者",
+        "iconPath": "static/images/tab/client.png",
+        "selectedIconPath": "static/images/tab/client-active.png"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的",
+        "iconPath": "static/images/tab/mine.png",
+        "selectedIconPath": "static/images/tab/mine-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于日程地点选择"
+    }
+  }
+}

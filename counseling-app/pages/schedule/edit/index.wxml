@@ -1,0 +1,271 @@
+<view class="container">
+  <!-- 表单区域 -->
+  <form bindsubmit="onFormSubmit">
+    <!-- 日程标题 -->
+    <view class="form-section">
+      <view class="form-label required">日程标题</view>
+      <input 
+        class="form-input" 
+        name="title" 
+        value="{{formData.title}}" 
+        placeholder="请输入日程标题"
+        maxlength="50"
+      />
+    </view>
+
+    <!-- 日程类型 -->
+    <view class="form-section">
+      <view class="form-label required">日程类型</view>
+      <picker 
+        class="form-picker" 
+        range="{{scheduleTypes}}" 
+        range-key="label"
+        value="{{formData.scheduleTypeIndex}}"
+        bindchange="onTypeChange"
+      >
+        <view class="picker-content">
+          <text class="picker-text">{{formData.scheduleTypeText}}</text>
+          <text class="picker-placeholder" wx:if="{{!formData.scheduleTypeText}}">请选择日程类型</text>
+          <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 关联来访者（仅当类型为咨询时显示） -->
+    <view class="form-section" wx:if="{{showClientField}}">
+      <view class="form-label">关联来访者</view>
+      <picker 
+        class="form-picker" 
+        range="{{clients}}" 
+        range-key="name"
+        value="{{formData.clientIndex}}"
+        bindchange="onClientChange"
+      >
+        <view class="picker-content">
+          <text class="picker-text">{{formData.clientName}}</text>
+          <text class="picker-placeholder" wx:if="{{!formData.clientName}}">选择来访者（可选）</text>
+          <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section">
+      <view class="form-label required">开始时间</view>
+      <!-- 日期选择器 -->
+      <picker 
+        mode="date" 
+        value="{{formData.startDate}}" 
+        start="{{minDate}}"
+        bindchange="onStartDateChange"
+        class="time-picker-container"
+      >
+        <view class="picker-display">
+          <text class="picker-text">{{formData.startDateText || '请选择日期'}}</text>
+          <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+        </view>
+      </picker>
+      <!-- 时间选择器 -->
+      <picker 
+        mode="time" 
+        value="{{formData.startTime}}" 
+        bindchange="onStartTimeChangeSingle"
+        class="time-picker-container"
+        style="margin-top: 10rpx;"
+      >
+        <view class="picker-display">
+          <text class="picker-text">{{formData.startTimeText || '请选择时间'}}</text>
+          <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 结束时间：拆分为日期+时间两个picker -->
+    <view class="form-section">
+      <view class="form-label required">结束时间</view>
+      <!-- 日期选择器 -->
+      <picker 
+        mode="date" 
+        value="{{formData.endDate}}" 
+        start="{{formData.startDate || minDate}}"
+        bindchange="onEndDateChange"
+        class="time-picker-container"
+      >
+        <view class="picker-display">
+          <text class="picker-text">{{formData.endDateText || '请选择日期'}}</text>
+          <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+        </view>
+      </picker>
+      <!-- 时间选择器 -->
+      <picker 
+        mode="time" 
+        value="{{formData.endTime}}" 
+        bindchange="onEndTimeChangeSingle"
+        class="time-picker-container"
+        style="margin-top: 10rpx;"
+      >
+        <view class="picker-display">
+          <text class="picker-text">{{formData.endTimeText || '请选择时间'}}</text>
+          <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 地点 -->
+    <view class="form-section">
+      <view class="form-label">地点</view>
+      <input 
+        class="form-input" 
+        name="location" 
+        value="{{formData.location}}" 
+        placeholder="请输入地点（可选）"
+      />
+    </view>
+
+    <!-- 描述 -->
+    <view class="form-section">
+      <view class="form-label">描述</view>
+      <textarea 
+        class="form-textarea" 
+        name="description" 
+        value="{{formData.description}}" 
+        placeholder="请输入详细描述（可选）"
+        maxlength="500"
+        auto-height
+      />
+      <view class="textarea-counter">{{formData.description ? formData.description.length : 0}}/500</view>
+    </view>
+
+    <!-- 颜色选择 -->
+    <view class="form-section">
+      <view class="form-label">日程颜色</view>
+      <view class="color-picker">
+        <view 
+          class="color-option {{formData.color === item ? 'active' : ''}}" 
+          wx:for="{{colorOptions}}" 
+          wx:key="index"
+          style="background-color: {{item}};"
+          bindtap="onColorSelect"
+          data-color="{{item}}"
+        >
+          <image 
+            class="color-check" 
+            src="../../../static/icons/search.png" 
+            wx:if="{{formData.color === item}}"
+          ></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提醒设置 -->
+    <view class="form-section">
+      <view class="form-label">提醒方式</view>
+      <picker 
+        class="form-picker" 
+        range="{{remindTypes}}" 
+        range-key="label"
+        value="{{formData.remindTypeIndex}}"
+        bindchange="onRemindTypeChange"
+      >
+        <view class="picker-content">
+          <text class="picker-text">{{formData.remindTypeText}}</text>
+          <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 重复日程开关 -->
+    <view class="form-section">
+      <view class="form-label">重复日程</view>
+      <view class="switch-container">
+        <text class="switch-label">{{formData.isRecurring ? '是' : '否'}}</text>
+        <switch 
+          checked="{{formData.isRecurring}}" 
+          color="#1890ff" 
+          bindchange="onRecurringChange"
+        />
+      </view>
+    </view>
+
+    <!-- 重复规则（当重复日程开启时显示） -->
+    <view class="form-section" wx:if="{{formData.isRecurring}}">
+      <view class="form-label">重复规则</view>
+      <view class="recurring-options">
+        <view 
+          class="recurring-option {{formData.recurringType === 'daily' ? 'active' : ''}}"
+          bindtap="setRecurringType"
+          data-type="daily"
+        >
+          每天
+        </view>
+        <view 
+          class="recurring-option {{formData.recurringType === 'weekly' ? 'active' : ''}}"
+          bindtap="setRecurringType"
+          data-type="weekly"
+        >
+          每周
+        </view>
+        <view 
+          class="recurring-option {{formData.recurringType === 'monthly' ? 'active' : ''}}"
+          bindtap="setRecurringType"
+          data-type="monthly"
+        >
+          每月
+        </view>
+      </view>
+      
+      <view class="recurring-details" wx:if="{{formData.recurringType === 'weekly'}}">
+        <view class="week-days">
+          <view 
+            class="week-day {{formData.recurringDays && formData.recurringDays.includes(index) ? 'active' : ''}}"
+            wx:for="{{weekDays}}"
+            wx:key="index"
+            bindtap="toggleWeekDay"
+            data-index="{{index}}"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
+      
+      <view class="recurring-details" wx:if="{{formData.recurringType === 'monthly'}}">
+        <view class="month-options">
+          <picker 
+            mode="selector" 
+            range="{{monthDayOptions}}"
+            value="{{formData.recurringDayOfMonth - 1}}"
+            bindchange="onMonthDayChange"
+            class="month-day-picker"
+          >
+            <view class="month-day-content">
+              每月 <text class="highlight">{{formData.recurringDayOfMonth || 1}}</text> 日
+              <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+            </view>
+          </picker>
+        </view>
+      </view>
+      
+      <view class="recurring-end">
+        <view class="form-label">结束日期</view>
+        <picker 
+          mode="date" 
+          value="{{formData.recurringEndDate}}" 
+          start="{{minDate}}"
+          bindchange="onRecurringEndChange"
+          class="form-picker"
+        >
+          <view class="picker-content">
+            <text class="picker-text">{{formData.recurringEndDateText}}</text>
+            <text class="picker-placeholder" wx:if="{{!formData.recurringEndDateText}}">选择结束日期（可选）</text>
+            <image class="arrow-icon" src="../../../static/icons/search.png"></image>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="action-bar">
+      <button class="btn cancel-btn" bindtap="onCancel">取消</button>
+      <button class="btn submit-btn" form-type="submit">保存</button>
+    </view>
+  </form>
+</view>

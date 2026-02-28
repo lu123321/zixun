@@ -1,0 +1,203 @@
+<!-- pages/my/index.wxml -->
+<view class="my-page">
+  <!-- 顶部用户信息卡片 -->
+  <view class="user-card">
+    <!-- 背景装饰 -->
+    <view class="bg-decoration"></view>
+    
+    <view class="user-header">
+      <!-- 头像 -->
+      <view class="avatar-section">
+        <view class="avatar-container">
+          <view wx:if="{{!userInfo.avatar}}" class="avatar-emoji">👨‍⚕️</view>
+          <image wx:else class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
+          <view class="avatar-status"></view>
+        </view>
+        <view class="edit-avatar" bindtap="onEditAvatar">📷</view>
+      </view>
+      
+      <!-- 基本信息 -->
+      <view class="user-info">
+        <view class="user-name">{{userInfo.realName || userInfo.nickname || '心理咨询师'}}</view>
+        <view class="user-qualification">{{userInfo.qualification || '国家认证心理咨询师'}}</view>
+        <view class="user-stats">
+          <view class="stat-item">
+            <text class="stat-value">{{statistics.activeClientCount || 0}}</text>
+            <text class="stat-label">在案来访者</text>
+          </view>
+          <view class="divider"></view>
+          <view class="stat-item">
+            <text class="stat-value">{{statistics.monthSessionCount || 0}}</text>
+            <text class="stat-label">本月咨询</text>
+          </view>
+          <view class="divider"></view>
+          <view class="stat-item">
+            <text class="stat-value">{{statistics.totalSessionCount || 0}}</text>
+            <text class="stat-label">总咨询数</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 设置按钮 -->
+      <view class="setting-btn" bindtap="onSettingsClick">
+        <view class="setting-icon">⚙️</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订阅状态 -->
+  <view class="subscription-card" bindtap="onSubscriptionClick">
+    <view class="subscription-header">
+      <view class="subscription-icon">👑</view>
+      <view class="subscription-info">
+        <view class="subscription-title">{{subscription.planName || '免费版'}}</view>
+        <view class="subscription-desc">
+          {{subscription.endTime ? '到期时间: ' + formatDate(subscription.endTime) : '点击了解专业版权益'}}
+        </view>
+      </view>
+    </view>
+    <view class="subscription-action">
+      <text class="action-text">{{subscription.status === 1 ? '管理订阅' : '升级专业版'}}</text>
+      <view class="action-arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="function-list">
+    <!-- 数据管理 -->
+    <view class="function-section">
+      <view class="section-title">数据管理</view>
+      <view class="function-grid">
+        <view class="function-item" bindtap="onDataBackup">
+          <view class="function-icon">💾</view>
+          <view class="function-text">数据备份</view>
+        </view>
+        <view class="function-item" bindtap="onDataExport">
+          <view class="function-icon">📤</view>
+          <view class="function-text">数据导出</view>
+        </view>
+        <view class="function-item" bindtap="onDataAnalysis">
+          <view class="function-icon">📊</view>
+          <view class="function-text">数据分析</view>
+        </view>
+        <view class="function-item" bindtap="onDataSync">
+          <view class="function-icon">🔄</view>
+          <view class="function-text">数据同步</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 个人设置 -->
+    <view class="function-section">
+      <view class="section-title">个人设置</view>
+      <view class="menu-list">
+        <view class="menu-item" bindtap="onProfileClick">
+          <view class="menu-left">
+            <view class="menu-icon">👤</view>
+            <view class="menu-text">个人资料</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+        
+        <view class="menu-item" bindtap="onReminderSetting">
+          <view class="menu-left">
+            <view class="menu-icon">⏰</view>
+            <view class="menu-text">提醒设置</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+        
+        <view class="menu-item" bindtap="onPrivacySetting">
+          <view class="menu-left">
+            <view class="menu-icon">🔒</view>
+            <view class="menu-text">隐私设置</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+        
+        <view class="menu-item" bindtap="onThemeSetting">
+          <view class="menu-left">
+            <view class="menu-icon">🎨</view>
+            <view class="menu-text">主题设置</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 工具与服务 -->
+    <view class="function-section">
+      <view class="section-title">工具与服务</view>
+      <view class="menu-list">
+        <view class="menu-item" bindtap="onFeedback">
+          <view class="menu-left">
+            <view class="menu-icon">💬</view>
+            <view class="menu-text">意见反馈</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+        
+        <view class="menu-item" bindtap="onHelpCenter">
+          <view class="menu-left">
+            <view class="menu-icon">❓</view>
+            <view class="menu-text">帮助中心</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+        
+        <view class="menu-item" bindtap="onAboutApp">
+          <view class="menu-left">
+            <view class="menu-icon">ℹ️</view>
+            <view class="menu-text">关于我们</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 专业工具 -->
+    <view class="function-section">
+      <view class="section-title">专业工具</view>
+      <view class="menu-list">
+        <view class="menu-item" bindtap="onAssessmentTools">
+          <view class="menu-left">
+            <view class="menu-icon">📋</view>
+            <view class="menu-text">评估量表</view>
+            <view class="menu-tag">专业</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+        
+        <view class="menu-item" bindtap="onTemplateLibrary">
+          <view class="menu-left">
+            <view class="menu-icon">📄</view>
+            <view class="menu-text">报告模板</view>
+            <view class="menu-tag">专业</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+        
+        <view class="menu-item" bindtap="onSupervisorNetwork">
+          <view class="menu-left">
+            <view class="menu-icon">👨‍🏫</view>
+            <view class="menu-text">督导网络</view>
+            <view class="menu-tag">专业</view>
+          </view>
+          <view class="menu-arrow">›</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <view class="action-btn logout" bindtap="onLogout">
+      <text class="logout-text">退出登录</text>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text>心理咨询师助手 v{{version}}</text>
+  </view>
+</view>

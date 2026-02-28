@@ -1,0 +1,105 @@
+<!-- pages/schedule/calendar/index.wxml -->
+<view class="calendar-page">
+  <!-- 月份导航栏 -->
+  <view class="month-nav">
+    <view class="nav-btn prev" bindtap="prevMonth">‹</view>
+    <view class="current-month">{{currentYear}}年{{currentMonth + 1}}月</view>
+    <view class="nav-btn next" bindtap="nextMonth">›</view>
+  </view>
+
+  <!-- 星期标题 -->
+  <view class="week-header">
+    <view wx:for="{{weekDays}}" wx:key="index" class="week-day">{{item}}</view>
+  </view>
+
+  <!-- 日历网格 -->
+  <view class="calendar-grid">
+    <view 
+      wx:for="{{calendarDays}}" 
+      wx:key="index"
+      class="day-cell {{item.isToday ? 'today' : ''}} {{item.isCurrentMonth ? '' : 'other-month'}} {{item.hasSchedule ? 'has-schedule' : ''}}"
+      data-date="{{item.date}}"
+      bindtap="onDayClick"
+    >
+      <view class="day-number">{{item.day}}</view>
+      <view wx:if="{{item.hasSchedule}}" class="schedule-dots">
+        <view wx:for="{{item.scheduleCount > 3 ? 3 : item.scheduleCount}}" wx:key="index" class="dot"></view>
+        <view wx:if="{{item.scheduleCount > 3}}" class="more-count">+{{item.scheduleCount - 3}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日程类型筛选 -->
+  <scroll-view scroll-x class="type-filter">
+    <view class="filter-list">
+      <view 
+        wx:for="{{scheduleTypes}}" 
+        wx:key="id"
+        class="filter-item {{activeType === item.id ? 'active' : ''}}"
+        data-type="{{item.id}}"
+        bindtap="onTypeFilter"
+      >
+        <view class="filter-icon">{{item.icon}}</view>
+        <view class="filter-text">{{item.name}}</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 选中的日期和日程 -->
+  <view class="selected-date-section">
+    <view class="section-title">
+      <text>{{selectedDateStr}}</text>
+      <view class="add-btn" bindtap="onAddSchedule">
+        <text class="add-icon">+</text>
+        <text>添加日程</text>
+      </view>
+    </view>
+    
+    <!-- 日程列表 -->
+    <view wx:if="{{selectedDaySchedules.length > 0}}">
+      <view class="schedule-list">
+        <view 
+          wx:for="{{selectedDaySchedules}}" 
+          wx:key="id" 
+          class="schedule-item"
+          data-id="{{item.id}}"
+          bindtap="onScheduleItemClick"
+        >
+          <view class="schedule-time">
+            <view class="time-range">{{formatTimeRange(item.startTime, item.endTime)}}</view>
+            <view class="duration">{{getDuration(item.startTime, item.endTime)}}分钟</view>
+          </view>
+          <view class="schedule-detail">
+            <view class="schedule-title">{{item.title}}</view>
+            <view class="schedule-meta">
+              <view class="schedule-type" style="color: {{item.color || '#1890ff'}};">
+                {{getScheduleTypeText(item.scheduleType)}}
+              </view>
+              <view class="location">📍 {{item.location || '未设置地点'}}</view>
+            </view>
+            <view class="schedule-participants">
+              <text wx:if="{{item.clientName}}" class="client-tag">{{item.clientName}}</text>
+            </view>
+          </view>
+          <view class="schedule-status {{getStatusClass(item.status)}}">
+            {{getStatusText(item.status)}}
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <image src="../../../static/images/empty/calendar.png" class="empty-icon" />
+      <view class="empty-text">这一天没有安排</view>
+      <view class="empty-subtext">点击上方按钮添加日程</view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="fab-container">
+    <view class="fab-button" bindtap="onAddSchedule">
+      <text class="fab-icon">+</text>
+    </view>
+  </view>
+</view>

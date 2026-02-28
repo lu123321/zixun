@@ -1,0 +1,180 @@
+<!-- pages/index/index.wxml -->
+<view class="index-page">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <view class="date">{{currentDate}}</view>
+    <view class="weather">☀️ 晴</view>
+  </view>
+
+  <!-- 用户欢迎区 -->
+  <view class="welcome-section">
+    <view class="user-info">
+      <view class="avatar-emoji" wx:if="{{!userInfo.avatar}}">👨‍⚕️</view>
+      <image class="avatar" wx:else src="{{userInfo.avatar}}" mode="aspectFill" />
+      <view class="user-detail">
+        <view class="greeting">{{greeting}}，{{userInfo.realName || userInfo.nickname || '咨询师'}}</view>
+        <view class="qualification">{{userInfo.qualification || '心理咨询师'}}</view>
+      </view>
+    </view>
+    <view class="notification" bindtap="onNotificationClick">
+      <view class="notification-icon">🔔</view>
+      <view wx:if="{{unreadCount > 0}}" class="badge">{{unreadCount}}</view>
+    </view>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-section">
+    <view class="stats-card">
+      <view class="stat-item" bindtap="onTodayScheduleClick">
+        <view class="stat-value">{{statistics.todayScheduleCount || 0}}</view>
+        <view class="stat-label">今日日程</view>
+      </view>
+      <view class="divider"></view>
+      <view class="stat-item" bindtap="onMonthSessionClick">
+        <view class="stat-value">{{statistics.monthSessionCount || 0}}</view>
+        <view class="stat-label">本月咨询</view>
+      </view>
+      <view class="divider"></view>
+      <view class="stat-item" bindtap="onFinanceClick">
+        <view class="stat-value">¥{{statistics.monthIncome || 0}}</view>
+        <view class="stat-label">本月收入</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="quick-actions">
+    <view class="section-title">
+      <text>快捷操作</text>
+      <view class="more" bindtap="onMoreActions">更多</view>
+    </view>
+    <view class="action-grid">
+      <view class="action-item" bindtap="onQuickRecord">
+        <view class="action-icon record">📝</view>
+        <view class="action-text">记录咨询</view>
+      </view>
+      <view class="action-item" bindtap="onAddClient">
+        <view class="action-icon client">👥</view>
+        <view class="action-text">添加来访者</view>
+      </view>
+      <view class="action-item" bindtap="onAddSchedule">
+        <view class="action-icon schedule">📅</view>
+        <view class="action-text">添加日程</view>
+      </view>
+      <view class="action-item" bindtap="onQuickAccounting">
+        <view class="action-icon finance">💰</view>
+        <view class="action-text">快速记账</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日日程 -->
+  <view class="today-schedule">
+    <view class="section-title">
+      <text>今日日程</text>
+      <view class="more" bindtap="onViewAllSchedule">查看全部</view>
+    </view>
+    
+    <view wx:if="{{todaySchedules.length > 0}}">
+      <view class="schedule-list">
+        <view 
+          wx:for="{{todaySchedules}}" 
+          wx:key="id" 
+          class="schedule-item"
+          data-id="{{item.id}}"
+          bindtap="onScheduleItemClick"
+        >
+          <view class="schedule-time">
+            <view class="time">{{formatTime(item.startTime)}}</view>
+            <view class="duration">{{getDuration(item.startTime, item.endTime)}}分钟</view>
+          </view>
+          <view class="schedule-detail">
+            <view class="schedule-title">{{item.title}}</view>
+            <view class="schedule-meta">
+              <view class="location">📍 {{item.location || '未设置地点'}}</view>
+              <view class="status {{getStatusClass(item.status)}}">{{getStatusText(item.status)}}</view>
+            </view>
+          </view>
+          <view class="schedule-arrow">›</view>
+        </view>
+      </view>
+    </view>
+    
+    <view wx:else class="empty-state">
+      <view class="empty-icon">📅</view>
+      <view class="empty-text">今天没有日程安排</view>
+      <view class="empty-subtext">好好休息，或者添加一些日程吧</view>
+      <view class="empty-action" bindtap="onAddSchedule">添加日程</view>
+    </view>
+  </view>
+
+  <!-- 最近来访者 -->
+  <view class="recent-clients">
+    <view class="section-title">
+      <text>最近来访者</text>
+      <view class="more" bindtap="onViewAllClients">查看全部</view>
+    </view>
+    
+    <view wx:if="{{recentClients.length > 0}}">
+      <scroll-view scroll-x class="client-scroll">
+        <view class="client-list">
+          <view 
+            wx:for="{{recentClients}}" 
+            wx:key="id" 
+            class="client-card"
+            data-id="{{item.id}}"
+            bindtap="onClientCardClick"
+          >
+            <view class="client-avatar">
+              <text class="avatar-text">{{item.name.charAt(0)}}</text>
+            </view>
+            <view class="client-info">
+              <view class="client-name">{{item.name}}</view>
+              <view class="client-meta">
+                <text>{{item.gender === 1 ? '男' : item.gender === 2 ? '女' : '未知'}}</text>
+                <text> {{item.age}}岁</text>
+              </view>
+              <view class="client-tags">
+                <text 
+                  wx:for="{{item.tags || []}}" 
+                  wx:key="index" 
+                  class="tag"
+                >
+                  {{item}}
+                </text>
+              </view>
+            </view>
+            <view class="client-sessions">
+              <text class="session-count">{{item.sessionCount || 0}}次咨询</text>
+              <text class="session-time">{{formatRelativeTime(item.lastSessionTime)}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    
+    <view wx:else class="empty-state">
+      <view class="empty-icon">👥</view>
+      <view class="empty-text">暂无来访者</view>
+      <view class="empty-subtext">添加您的第一位来访者开始记录</view>
+      <view class="empty-action" bindtap="onAddClient">添加来访者</view>
+    </view>
+  </view>
+
+  <!-- 订阅提醒 -->
+  <view wx:if="{{!subscriptionStatus}}" class="subscription-reminder">
+    <view class="reminder-content">
+      <view class="reminder-icon">👑</view>
+      <view class="reminder-text">
+        <view class="reminder-title">解锁完整功能</view>
+        <view class="reminder-desc">升级专业版，享受无限制功能</view>
+      </view>
+      <view class="reminder-action" bindtap="onUpgradeClick">立即升级</view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

@@ -1,0 +1,317 @@
+<!-- pages/client/edit/index.wxml -->
+<view class="client-edit-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="back-btn" bindtap="onBack">‹</view>
+    <view class="header-title">{{isEditMode ? '编辑来访者' : '新建来访者'}}</view>
+    <view class="header-actions"></view>
+  </view>
+
+  <!-- 表单容器 -->
+  <scroll-view scroll-y class="form-scroll" bindscrolltolower="onScroll">
+    <view class="form-container">
+      <!-- 基本信息 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">基本信息</view>
+          <view class="section-required">必填</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">
+            姓名
+            <text class="required-star">*</text>
+          </view>
+          <input 
+            type="text" 
+            class="form-input {{formErrors.name ? 'error' : ''}}" 
+            placeholder="请输入来访者姓名" 
+            value="{{formData.name}}"
+            bindinput="onNameInput"
+            bindblur="validateField"
+            data-field="name"
+            maxlength="20"
+          />
+          <view wx:if="{{formErrors.name}}" class="error-message">{{formErrors.name}}</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">性别</view>
+          <view class="radio-group">
+            <view 
+              wx:for="{{genderOptions}}" 
+              wx:key="value"
+              class="radio-item {{formData.gender == item.value ? 'active' : ''}}"
+              data-value="{{item.value}}"
+              catchtap="onGenderSelect" 
+            >
+              <view class="radio-dot"></view>
+              <text class="radio-text">{{item.label}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">年龄</view>
+          <input 
+            type="number" 
+            class="form-input" 
+            placeholder="请输入年龄" 
+            value="{{formData.age}}"
+            bindinput="onAgeInput"
+            maxlength="3"
+          />
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">出生日期</view>
+          <picker 
+            mode="date" 
+            value="{{formData.birthDate}}" 
+            start="1900-01-01" 
+            end="{{currentDate}}"
+            bindchange="onBirthDateChange"
+            class="picker-field {{formData.birthDate ? '' : 'placeholder'}}"
+          >
+            <view>{{formData.birthDate ? formData.birthDate : '请选择出生日期'}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <!-- 联系信息 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">联系信息</view>
+          <view class="section-optional">选填</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">联系电话</view>
+          <input 
+            type="number" 
+            class="form-input {{formErrors.contactPhone ? 'error' : ''}}" 
+            placeholder="请输入联系电话" 
+            value="{{formData.contactPhone}}"
+            bindinput="onContactPhoneInput"
+            bindblur="validateField"
+            data-field="contactPhone"
+            maxlength="11"
+          />
+          <view wx:if="{{formErrors.contactPhone}}" class="error-message">{{formErrors.contactPhone}}</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">邮箱</view>
+          <input 
+            type="text" 
+            class="form-input" 
+            placeholder="请输入邮箱地址" 
+            value="{{formData.email}}"
+            bindinput="onEmailInput"
+          />
+        </view>
+        
+        <view class="emergency-contact">
+          <view class="sub-title">紧急联系人</view>
+          <view class="sub-form-group">
+            <input 
+              type="text" 
+              class="form-input" 
+              placeholder="联系人姓名" 
+              value="{{formData.emergencyContact}}"
+              bindinput="onEmergencyContactInput"
+            />
+          </view>
+          <view class="sub-form-group">
+            <input 
+              type="number" 
+              class="form-input" 
+              placeholder="联系电话" 
+              value="{{formData.emergencyPhone}}"
+              bindinput="onEmergencyPhoneInput"
+            />
+          </view>
+        </view>
+      </view>
+
+      <!-- 咨询信息 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">咨询信息</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">首次咨询日期</view>
+          <picker 
+            mode="date" 
+            value="{{formData.startDate}}" 
+            start="2020-01-01" 
+            end="2030-12-31"
+            bindchange="onStartDateChange"
+            class="picker-field {{formData.startDate ? '' : 'placeholder'}}"
+          >
+            <view>{{formData.startDate ? formData.startDate : '请选择首次咨询日期'}}</view>
+          </picker>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">状态</view>
+          <view class="status-selector">
+            <view 
+              wx:for="{{statusOptions}}" 
+              wx:key="value"
+              class="status-item {{formData.status == item.value ? 'active' : ''}}"
+              data-value="{{item.value}}"
+              bindtap="onStatusSelect"
+            >
+              <view class="status-dot" style="background: {{item.color}}"></view>
+              <text class="status-text">{{item.label}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view wx:if="{{formData.status == 2}}" class="form-group">
+          <view class="form-label">结束咨询日期</view>
+          <picker 
+            mode="date" 
+            value="{{formData.endDate}}" 
+            start="{{formData.startDate || '2020-01-01'}}" 
+            end="2030-12-31"
+            bindchange="onEndDateChange"
+            class="picker-field {{formData.endDate ? '' : 'placeholder'}}"
+            wx:if="{{formData.status == 2}}"
+          >
+            <view>{{formData.endDate ? formData.endDate : '请选择结束日期'}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <!-- 标签管理 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">标签管理</view>
+          <view class="section-optional">选填</view>
+        </view>
+        
+        <!-- 常用标签 -->
+        <view class="common-tags">
+          <view class="tags-title">常用标签</view>
+          <view class="tags-grid">
+            <view 
+              wx:for="{{commonTags}}" 
+              wx:key="index"
+              class="tag-item {{selectedTags[item] ? 'selected' : ''}}"
+              data-tag="{{item}}"
+              bindtap="onTagToggle"
+            >
+              <text class="tag-text">#{{item}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 自定义标签 -->
+        <view class="custom-tags">
+          <view class="tags-title">自定义标签</view>
+          <view class="tags-input-row">
+            <input 
+              type="text" 
+              class="tag-input" 
+              placeholder="输入标签，按回车添加" 
+              value="{{newTagInput}}"
+              bindinput="onNewTagInput"
+              bindconfirm="onAddCustomTag"
+            />
+            <view class="add-tag-btn" bindtap="onAddCustomTag">添加</view>
+          </view>
+          
+          <!-- 已选标签 -->
+          <view wx:if="{{customTags.length > 0}}" class="selected-tags">
+            <view class="selected-title">已选标签</view>
+            <view class="selected-list">
+              <view 
+                wx:for="{{customTags}}" 
+                wx:key="index"
+                class="selected-tag"
+              >
+                <text class="tag-text">#{{item}}</text>
+                <view class="remove-tag" bindtap="onRemoveCustomTag" data-index="{{index}}">×</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 备注信息 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">备注信息</view>
+          <view class="section-optional">选填</view>
+        </view>
+        
+        <view class="form-group">
+          <textarea 
+            class="form-textarea" 
+            placeholder="请输入来访者的背景、重点、备注等信息..." 
+            value="{{formData.remark}}"
+            bindinput="onRemarkInput"
+            maxlength="1000"
+          />
+          <view class="textarea-counter">{{formData.remark ? formData.remark.length : 0}}/1000</view>
+        </view>
+      </view>
+
+      <!-- 诊断与方案 -->
+      <view class="form-section">
+        <view class="section-header">
+          <view class="section-title">诊断与方案</view>
+          <view class="section-optional">选填</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">初步诊断</view>
+          <textarea 
+            class="form-textarea" 
+            placeholder="请输入初步诊断..." 
+            value="{{formData.diagnosis}}"
+            bindinput="onDiagnosisInput"
+            maxlength="500"
+          />
+          <view class="textarea-counter">{{formData.diagnosis ? formData.diagnosis.length : 0}}/500</view>
+        </view>
+        
+        <view class="form-group">
+          <view class="form-label">治疗方案</view>
+          <textarea 
+            class="form-textarea" 
+            placeholder="请输入治疗方案..." 
+            value="{{formData.treatmentPlan}}"
+            bindinput="onTreatmentPlanInput"
+            maxlength="500"
+          />
+          <view class="textarea-counter">{{formData.treatmentPlan ? formData.treatmentPlan.length : 0}}/500</view>
+        </view>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-spacer"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="action-buttons">
+      <view class="cancel-btn" bindtap="onCancel">取消</view>
+      <view class="save-btn {{isFormValid ? '' : 'disabled'}}" bindtap="onSave">
+        {{isEditMode ? '保存修改' : '创建来访者'}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载遮罩 -->
+  <view wx:if="{{loading}}" class="loading-mask">
+    <view class="loading-content">
+      <view class="loading-icon"></view>
+      <view class="loading-text">{{isEditMode ? '保存中...' : '创建中...'}}</view>
+    </view>
+  </view>
+</view>

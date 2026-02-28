@@ -1,0 +1,26 @@
+{
+  "name": "counselor-assistant",
+  "version": "1.0.0",
+  "description": "心理咨询师助手小程序",
+  "main": "app.js",
+  "scripts": {
+    "dev": "npm run build:css -- --watch",
+    "build": "npm run build:css",
+    "build:css": "postcss styles/**/*.wxss -d dist/styles/"
+  },
+  "keywords": [
+    "心理咨询",
+    "咨询师",
+    "小程序",
+    "日程管理",
+    "财务管理"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "postcss-cli": "^9.0.0",
+    "postcss-preset-env": "^7.0.0"
+  }
+}

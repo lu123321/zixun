@@ -1,0 +1,450 @@
+.container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding-bottom: 180rpx;
+}
+
+/* 日程类型横幅 */
+.schedule-type-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 30rpx;
+  border-radius: 0 0 20rpx 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.type-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-right: 16rpx;
+}
+
+.type-text {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: white;
+}
+
+/* 基本信息 */
+.basic-info {
+  background: white;
+  border-radius: 20rpx;
+  margin: 30rpx 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.schedule-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333;
+  flex: 1;
+  margin-right: 20rpx;
+  line-height: 1.4;
+}
+
+.schedule-status {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  white-space: nowrap;
+}
+
+.status-1 { background: #fff7e6; color: #fa8c16; } /* 待办 */
+.status-2 { background: #f6ffed; color: #52c41a; } /* 完成 */
+.status-3 { background: #f5f5f5; color: #999; }    /* 取消 */
+.status-4 { background: #e6f7ff; color: #1890ff; } /* 进行中 */
+
+.time-info {
+  margin-bottom: 30rpx;
+}
+
+.time-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.time-item:last-child {
+  margin-bottom: 0;
+}
+
+.time-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 20rpx;
+  opacity: 0.8;
+}
+
+.time-details {
+  flex: 1;
+}
+
+.time-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 4rpx;
+}
+
+.time-value {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.duration-item {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx dashed #e8e8e8;
+}
+
+.duration-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.duration-value {
+  font-size: 28rpx;
+  color: #1890ff;
+  font-weight: 600;
+  margin-left: 8rpx;
+}
+
+/* 地点信息 */
+.location-info {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+  margin-top: 20rpx;
+}
+
+.location-icon {
+  width: 28rpx;
+  height: 28rpx;
+  margin-right: 16rpx;
+  opacity: 0.7;
+}
+
+.location-text {
+  font-size: 26rpx;
+  color: #666;
+  flex: 1;
+}
+
+/* 来访者信息 */
+.client-info {
+  margin-top: 30rpx;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.client-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.client-icon {
+  width: 28rpx;
+  height: 28rpx;
+  margin-right: 12rpx;
+}
+
+.client-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.client-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background: #fafafa;
+  border-radius: 12rpx;
+  border: 1rpx solid #e8e8e8;
+  transition: all 0.2s;
+}
+
+.client-card:active {
+  background: #f0f0f0;
+}
+
+.client-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  border: 2rpx solid #f0f0f0;
+}
+
+.client-details {
+  flex: 1;
+}
+
+.client-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.client-no {
+  font-size: 24rpx;
+  color: #666;
+  background: #f0f0f0;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.arrow-icon {
+  width: 24rpx;
+  height: 24rpx;
+  opacity: 0.5;
+}
+
+/* 详情区域 */
+.detail-section,
+.remind-section,
+.recurring-section,
+.session-section {
+  background: white;
+  border-radius: 20rpx;
+  margin: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  padding-left: 10rpx;
+  border-left: 6rpx solid #1890ff;
+}
+
+.detail-content {
+  background: #fafafa;
+  border-radius: 12rpx;
+  padding: 24rpx;
+}
+
+.detail-text {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+.empty-detail {
+  text-align: center;
+  padding: 40rpx 0;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #ccc;
+}
+
+/* 提醒设置 */
+.remind-content {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #fafafa;
+  border-radius: 12rpx;
+}
+
+.remind-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 20rpx;
+}
+
+.remind-text {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+}
+
+.remind-status {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 12rpx;
+}
+
+.remind-status.sent {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.remind-status.unsent {
+  background: #fff7e6;
+  color: #fa8c16;
+}
+
+/* 重复设置 */
+.recurring-content {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx;
+  background: #fafafa;
+  border-radius: 12rpx;
+}
+
+.recurring-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 20rpx;
+  margin-top: 4rpx;
+}
+
+.recurring-details {
+  flex: 1;
+}
+
+.recurring-type {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.recurring-rule,
+.recurring-end {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+/* 咨询记录 */
+.session-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background: #fafafa;
+  border-radius: 12rpx;
+  border: 1rpx solid #e8e8e8;
+  transition: all 0.2s;
+}
+
+.session-card:active {
+  background: #f0f0f0;
+}
+
+.session-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 24rpx;
+  min-width: 120rpx;
+}
+
+.session-date {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.session-duration {
+  font-size: 22rpx;
+  color: #666;
+  background: #e6f7ff;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.session-info {
+  flex: 1;
+}
+
+.session-client {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.session-summary {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 30rpx 20rpx;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 20rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.btn-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 12rpx;
+}
+
+.btn-text {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.status-btn {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.edit-btn {
+  background: #1890ff;
+  color: white;
+}
+
+.delete-btn {
+  background: #ff4d4f;
+  color: white;
+}

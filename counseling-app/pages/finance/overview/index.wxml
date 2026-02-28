@@ -1,0 +1,230 @@
+<view class="container">
+  <!-- 时间筛选 -->
+  <view class="time-filter">
+    <view class="filter-left" bindtap="onPrevMonth">
+      <image class="filter-icon" src="/images/icons/arrow-left.png"></image>
+    </view>
+    
+    <view class="filter-center" bindtap="showMonthPicker">
+      <text class="current-month">{{currentMonthText}}</text>
+      <image class="filter-icon" src="/images/icons/calendar.png"></image>
+    </view>
+    
+    <view class="filter-right" bindtap="onNextMonth">
+      <image class="filter-icon" src="/images/icons/arrow-right.png"></image>
+    </view>
+  </view>
+
+  <!-- 财务概览卡片 -->
+  <view class="overview-cards">
+    <view class="card income-card">
+      <view class="card-header">
+        <image class="card-icon" src="/images/icons/income.png"></image>
+        <text class="card-title">总收入</text>
+      </view>
+      <text class="card-amount">¥{{overviewData.totalIncome.toFixed(2)}}</text>
+      <text class="card-change {{overviewData.incomeChange >= 0 ? 'positive' : 'negative'}}">
+        {{overviewData.incomeChange >= 0 ? '↑' : '↓'}}
+        {{Math.abs(overviewData.incomeChange)}}%
+      </text>
+    </view>
+    
+    <view class="card expense-card">
+      <view class="card-header">
+        <image class="card-icon" src="/images/icons/expense.png"></image>
+        <text class="card-title">总支出</text>
+      </view>
+      <text class="card-amount">¥{{overviewData.totalExpense.toFixed(2)}}</text>
+      <text class="card-change {{overviewData.expenseChange >= 0 ? 'positive' : 'negative'}}">
+        {{overviewData.expenseChange >= 0 ? '↑' : '↓'}}
+        {{Math.abs(overviewData.expenseChange)}}%
+      </text>
+    </view>
+    
+    <view class="card balance-card">
+      <view class="card-header">
+        <image class="card-icon" src="/images/icons/balance.png"></image>
+        <text class="card-title">结余</text>
+      </view>
+      <text class="card-amount">¥{{overviewData.balance.toFixed(2)}}</text>
+      <text class="card-tip">本月已结余</text>
+    </view>
+  </view>
+
+  <!-- 收支对比图表 -->
+  <view class="chart-section">
+    <view class="section-header">
+      <text class="section-title">收支对比</text>
+      <view class="chart-legend">
+        <view class="legend-item">
+          <view class="legend-color income-color"></view>
+          <text class="legend-text">收入</text>
+        </view>
+        <view class="legend-item">
+          <view class="legend-color expense-color"></view>
+          <text class="legend-text">支出</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="chart-container">
+      <!-- 简单的柱状图（使用view模拟） -->
+      <view class="bar-chart">
+        <view class="chart-grid">
+          <view class="grid-line" wx:for="{{5}}" wx:key="index"></view>
+        </view>
+        
+        <view class="chart-bars">
+          <view 
+            class="chart-bar-container" 
+            wx:for="{{monthlyData}}" 
+            wx:key="index"
+            bindtap="onBarTap"
+            data-index="{{index}}"
+          >
+            <view class="month-label">{{item.month}}</view>
+            <view class="bars-wrapper">
+              <view 
+                class="income-bar" 
+                style="height: {{item.incomePercentage}}%;"
+              ></view>
+              <view 
+                class="expense-bar" 
+                style="height: {{item.expensePercentage}}%;"
+              ></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 收入分类 -->
+  <view class="category-section">
+    <view class="section-header">
+      <text class="section-title">收入分类</text>
+      <text class="section-more" bindtap="goToIncomeCategories">管理</text>
+    </view>
+    
+    <view class="category-list">
+      <view 
+        class="category-item" 
+        wx:for="{{incomeCategories}}" 
+        wx:key="id"
+        bindtap="goToCategoryRecords"
+        data-id="{{item.id}}"
+        data-type="1"
+      >
+        <view class="category-info">
+          <view class="category-icon" style="background-color: {{item.color}};">
+            <image class="icon-img" src="{{item.icon}}"></image>
+          </view>
+          <view class="category-details">
+            <text class="category-name">{{item.name}}</text>
+            <text class="category-count">{{item.count}}笔记录</text>
+          </view>
+        </view>
+        <view class="category-amount">
+          <text class="amount">¥{{item.amount.toFixed(2)}}</text>
+          <text class="percentage">{{item.percentage}}%</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 支出分类 -->
+  <view class="category-section">
+    <view class="section-header">
+      <text class="section-title">支出分类</text>
+      <text class="section-more" bindtap="goToExpenseCategories">管理</text>
+    </view>
+    
+    <view class="category-list">
+      <view 
+        class="category-item" 
+        wx:for="{{expenseCategories}}" 
+        wx:key="id"
+        bindtap="goToCategoryRecords"
+        data-id="{{item.id}}"
+        data-type="2"
+      >
+        <view class="category-info">
+          <view class="category-icon" style="background-color: {{item.color}};">
+            <image class="icon-img" src="{{item.icon}}"></image>
+          </view>
+          <view class="category-details">
+            <text class="category-name">{{item.name}}</text>
+            <text class="category-count">{{item.count}}笔记录</text>
+          </view>
+        </view>
+        <view class="category-amount">
+          <text class="amount">¥{{item.amount.toFixed(2)}}</text>
+          <text class="percentage">{{item.percentage}}%</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近交易记录 -->
+  <view class="recent-section">
+    <view class="section-header">
+      <text class="section-title">最近交易</text>
+      <text class="section-more" bindtap="goToFinanceList">查看全部</text>
+    </view>
+    
+    <view class="record-list">
+      <view 
+        class="record-item" 
+        wx:for="{{recentRecords}}" 
+        wx:key="id"
+        bindtap="goToRecordDetail"
+        data-id="{{item.id}}"
+      >
+        <view class="record-type">
+          <view 
+            class="type-icon" 
+            style="background-color: {{item.type === 1 ? '#e6f7ff' : '#fff1f0'}};"
+          >
+            <image 
+              class="type-icon-img" 
+              src="{{item.type === 1 ? '/images/icons/income.png' : '/images/icons/expense.png'}}"
+            ></image>
+          </view>
+        </view>
+        
+        <view class="record-info">
+          <text class="record-category">{{item.categoryName}}</text>
+          <text class="record-desc">{{item.remark || '无备注'}}</text>
+          <text class="record-time">{{item.recordDate}}</text>
+        </view>
+        
+        <view class="record-amount">
+          <text class="amount {{item.type === 1 ? 'income' : 'expense'}}">
+            {{item.type === 1 ? '+' : '-'}}¥{{item.amount.toFixed(2)}}
+          </text>
+          <text class="payment-method">{{item.paymentMethodText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!hasData && !loading}}">
+    <image class="empty-icon" src="/images/empty-finance.png"></image>
+    <text class="empty-text">暂无财务数据</text>
+    <text class="empty-subtext">开始记录你的财务收支吧</text>
+    <button class="empty-btn" bindtap="goToAddRecord">添加记录</button>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <view class="loading">
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 悬浮按钮 -->
+  <view class="fab" bindtap="goToAddRecord">
+    <image class="fab-icon" src="/images/icons/add.png"></image>
+  </view>
+</view>
