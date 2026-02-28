@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 命名空间必须与 FinanceCategoryMapper 接口全类名一致 -->
+<mapper namespace="com.example.counselingappjava.mapper.FinanceCategoryMapper">
+
+    <!-- 基础结果映射：对应 FinanceCategory 实体，不含关联 User 信息 -->
+    <resultMap id="BaseResultMap" type="com.example.counselingappjava.entity.FinanceCategory">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="sort_order" property="sortOrder" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <!-- 基础字段列表，用于复用，减少冗余 -->
+    <sql id="Base_Column_List">
+        id, user_id, name, type, icon, sort_order, status, create_time
+    </sql>
+
+    <!-- ===================================== 基本 CRUD 操作 ===================================== -->
+    <!-- 新增财务分类 -->
+    <insert id="insert" parameterType="com.example.counselingappjava.entity.FinanceCategory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_finance_category (
+            user_id, name, type, icon, sort_order, status, create_time
+        ) VALUES (
+                     #{userId, jdbcType=BIGINT},
+                     #{name, jdbcType=VARCHAR},
+                     #{type, jdbcType=INTEGER},
+                     #{icon, jdbcType=VARCHAR},
+                     #{sortOrder, jdbcType=INTEGER},
+                     #{status, jdbcType=INTEGER},
+                     #{createTime, jdbcType=TIMESTAMP}
+                 )
+    </insert>
+
+    <!-- 更新财务分类（根据 id 更新，仅更新非 null 字段） -->
+    <update id="update" parameterType="com.example.counselingappjava.entity.FinanceCategory">
+        UPDATE t_finance_category
+        <set>
+            <if test="userId != null">user_id = #{userId, jdbcType=BIGINT},</if>
+            <if test="name != null and name != ''">name = #{name, jdbcType=VARCHAR},</if>
+            <if test="type != null">type = #{type, jdbcType=INTEGER},</if>
+            <if test="icon != null and icon != ''">icon = #{icon, jdbcType=VARCHAR},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder, jdbcType=INTEGER},</if>
+            <if test="status != null">status = #{status, jdbcType=INTEGER},</if>
+            <!-- 注意：createTime 一般不更新，此处省略 -->
+        </set>
+        WHERE id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据 id 删除财务分类 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM t_finance_category WHERE id = #{id, jdbcType=BIGINT}
+    </delete>
+
+    <!-- 根据 id 查询财务分类 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_finance_category
+        WHERE id = #{id, jdbcType=BIGINT}
+    </select>
+
+    <!-- 查询所有财务分类（按排序号升序、创建时间降序） -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_finance_category
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+
+    <!-- ===================================== 条件查询 ===================================== -->
+    <!-- 根据 userId 查询财务分类 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_finance_category
+        WHERE user_id = #{userId, jdbcType=BIGINT}
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+
+    <!-- 根据 userId 和 type 查询财务分类 -->
+    <select id="selectByUserIdAndType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_finance_category
+        WHERE user_id = #{userId, jdbcType=BIGINT}
+        AND type = #{type, jdbcType=INTEGER}
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+
+    <!-- ===================================== 检查存在性 ===================================== -->
+    <!-- 检查同一用户、同一类型下是否存在同名分类（返回 1=存在，0=不存在） -->
+    <select id="existsByUserIdAndTypeAndName" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM t_finance_category
+        WHERE user_id = #{userId, jdbcType=BIGINT}
+          AND type = #{type, jdbcType=INTEGER}
+          AND name = #{name, jdbcType=VARCHAR}
+    </select>
+
+    <!-- ===================================== 关联查询（包含用户信息） ===================================== -->
+    <!-- 根据 userId 查询财务分类详细信息（包含关联用户） -->
+    <select id="selectDetailByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        c.<include refid="Base_Column_List"/>,
+        FROM t_finance_category c
+        WHERE c.user_id = #{userId, jdbcType=BIGINT}
+        ORDER BY c.sort_order ASC, c.create_time DESC
+    </select>
+
+    <!-- ===================================== 排序相关 ===================================== -->
+    <!-- 更新财务分类排序号 -->
+    <update id="updateSortOrder">
+        UPDATE t_finance_category
+        SET sort_order = #{sortOrder, jdbcType=INTEGER}
+        WHERE id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- ===================================== 批量操作 ===================================== -->
+    <!-- 批量新增财务分类 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO t_finance_category (
+        user_id, name, type, icon, sort_order, status, create_time
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.userId, jdbcType=BIGINT},
+            #{item.name, jdbcType=VARCHAR},
+            #{item.type, jdbcType=INTEGER},
+            #{item.icon, jdbcType=VARCHAR},
+            #{item.sortOrder, jdbcType=INTEGER},
+            #{item.status, jdbcType=INTEGER},
+            #{item.createTime, jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 批量更新财务分类（注意：MySQL 需开启 allowMultiQueries=true 配置） -->
+    <update id="batchUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE t_finance_category
+            <set>
+                <if test="item.name != null and item.name != ''">name = #{item.name, jdbcType=VARCHAR},</if>
+                <if test="item.type != null">type = #{item.type, jdbcType=INTEGER},</if>
+                <if test="item.sortOrder != null">sort_order = #{item.sortOrder, jdbcType=INTEGER},</if>
+                <if test="item.status != null">status = #{item.status, jdbcType=INTEGER},</if>
+            </set>
+            WHERE id = #{item.id, jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <!-- 批量删除财务分类 -->
+    <delete id="batchDelete" parameterType="java.util.List">
+        DELETE FROM t_finance_category WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id, jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
+</mapper>

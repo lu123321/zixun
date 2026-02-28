@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 @MapperScan(basePackages = "com.example.counselingappjava.mapper")
 public class CounselingApplication {
-    public static void main(String[] args) {
+            public static void main(String[] args) {
         SpringApplication.run(CounselingApplication.class, args);
     }
 }

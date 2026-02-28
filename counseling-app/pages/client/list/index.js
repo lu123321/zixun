@@ -84,9 +84,15 @@ Page({
       
       if (result.code === 200 && result.data) {
         const { list: clients, totalCount } = result.data; // 后端返回list+totalCount
-        
+
+        // 补充展示字段，避免模板内复杂表达式/函数调用不稳定
+        const normalizedClients = (clients || []).map(client => ({
+          ...client,
+          statusText: this.getClientStatusText(client.status)
+        }));
+
         // 原有排序逻辑可保留（也可删除，后端已排序）
-        const sortedClients = this.sortClients(clients);
+        const sortedClients = this.sortClients(normalizedClients);
         
         // 统计各状态数量（原有逻辑不变）
         this.updateStatusCounts(clients);
@@ -139,6 +145,18 @@ Page({
         return valueA - valueB;
       }
     });
+  },
+
+
+  // 获取来访者状态文本
+  getClientStatusText(status) {
+    const map = {
+      1: '进行中',
+      2: '已结案',
+      3: '中断',
+      4: '转介'
+    };
+    return map[Number(status)] || '未知状态';
   },
 
   // 更新状态统计

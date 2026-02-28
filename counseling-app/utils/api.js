@@ -1,57 +1,28 @@
-
 const app = getApp();
 
 // 后端基础地址（你的电脑局域网IP + 后端端口）
 const baseUrl = app.globalData.baseUrl || 'http://192.168.71.3:8080';
 
-export function get(url, data = {}) {
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: baseUrl + url,
-      method: 'GET',
-      data: data,
-      header: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) // 自动携带 token
-      },
-      success: (res) => {
-        if (res.statusCode === 200) {
-          resolve(res.data);
-        } else {
-          reject(new Error('接口请求失败：' + res.errMsg));
-        }
-      },
-      fail: (err) => {
-        reject(new Error('网络请求失败：' + err.errMsg));
-      }
-    });
+export function get(url, data = {}, options = {}) {
+  return request({
+    url,
+    method: 'GET',
+    data,
+    showLoading: false,
+    ...options
   });
 }
 
 /**
  * 封装 POST 请求
  */
-export function post(url, data = {}) {
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: baseUrl + url,
-      method: 'POST',
-      data: data,
-      header: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) // 自动携带 token
-      },
-      success: (res) => {
-        if (res.statusCode === 200) {
-          resolve(res.data);
-        } else {
-          reject(new Error('接口请求失败：' + res.errMsg));
-        }
-      },
-      fail: (err) => {
-        reject(new Error('网络请求失败：' + err.errMsg));
-      }
-    });
+export function post(url, data = {}, options = {}) {
+  return request({
+    url,
+    method: 'POST',
+    data,
+    showLoading: false,
+    ...options
   });
 }
 
@@ -93,7 +64,7 @@ function request(options) {
   // 返回Promise
   return new Promise((resolve, reject) => {
     wx.request({
-      url: `${app.globalData.baseUrl}${url}`,
+      url: `${baseUrl}${url}`,
       method,
       data,
       header: headers,
@@ -103,6 +74,13 @@ function request(options) {
         }
         
         const { statusCode, data: responseData } = res;
+
+        // 兼容后端返回 HTTP 200 + 业务 code=401 的情况
+        if (statusCode >= 200 && statusCode < 300 && responseData && Number(responseData.code) === 401) {
+          handleUnauthorized();
+          reject(new Error(responseData.msg || '未授权，请重新登录'));
+          return;
+        }
         
         // 状态码处理
         if (statusCode >= 200 && statusCode < 300) {
@@ -153,17 +131,24 @@ function request(options) {
  */
 function handleUnauthorized() {
   // 清除登录状态
-  app.logout();
-  
+  if (typeof app.logout === 'function') {
+    app.logout();
+  } else {
+    app.globalData.token = '';
+    app.globalData.userInfo = null;
+    wx.removeStorageSync('token');
+    wx.removeStorageSync('userInfo');
+  }
+
   // 提示用户
   wx.showModal({
     title: '登录已过期',
     content: '您的登录状态已过期，请重新登录',
     showCancel: false,
     success: () => {
-      // 跳转到登录页面
-      wx.navigateTo({
-        url: '/pages/login/index'
+      // 登录页是 tab 外页面，使用 reLaunch 避免返回到鉴权页面
+      wx.reLaunch({
+        url: '/pages/login/login'
       });
     }
   });
@@ -220,7 +205,7 @@ function uploadFile(url, filePath, formData = {}, name = 'file', options = {}) {
   
   return new Promise((resolve, reject) => {
     wx.uploadFile({
-      url: `${app.globalData.baseUrl}${url}`,
+      url: `${baseUrl}${url}`,
       filePath,
       name,
       formData,
@@ -285,7 +270,7 @@ function downloadFile(url, options = {}) {
    return new Promise((resolve, reject) => {
     wx.request({
       // 优化：如果url已包含http，直接使用（用于文件下载等），否则拼接baseUrl
-      url: url.startsWith('http') ? url : `${app.globalData.baseUrl}${url}`,
+      url: url.startsWith('http') ? url : `${baseUrl}${url}`,
       method,
       data,
       header: headers,

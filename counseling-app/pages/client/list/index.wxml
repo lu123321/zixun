@@ -87,7 +87,7 @@
             <view class="client-name-row">
               <view class="client-name">{{item.name}}</view>
               <view class="client-status status-{{item.status}}">
-                {{getStatusText(item.status)}}
+                {{item.statusText}}
               </view>
             </view>
             <view class="client-meta">
@@ -95,13 +95,13 @@
               <text class="meta-item">📞 {{item.contactPhone || '未设置'}}</text>
             </view>
             <view class="client-tags">
-              <text 
+              <view 
                 wx:for="{{item.tags || []}}" 
                 wx:key="index" 
                 class="tag"
               >
-                #{{item}}
-              </text>
+                <text class="tag-text">#{{item}}</text>
+              </view>
             </view>
             <view class="client-session-info">
               <text class="session-count">🎯 {{item.sessionCount || 0}}次咨询</text>
@@ -142,8 +142,8 @@
       </view>
     </view>
   </scroll-view>
-
-  <!-- 添加按钮 -->
+␊
+  <!-- 添加按钮 -->␊
   <view class="fab-container">
     <view class="fab-button" bindtap="onAddClient">
       <text class="fab-icon">+</text>

@@ -1,0 +1,150 @@
+# ????
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 200
+    min-spare-threads: 10
+
+
+# Spring??
+spring:
+  application:
+    name: counseling-app
+  wx:
+    mini:
+      appid: wxc810747eac138b7d
+      secret: f9a1ad9652b8cb9b610b5b1cd59b1533
+
+  # ?????
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://122.51.173.134:3306/counseling_app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+    username: remote_user
+    password: Lyz993803@!
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,slf4j
+      use-global-data-source-stat: true
+  mybatis-plus:
+    mapper-locations: classpath:mapper/*.xml
+    type-aliases-package: com.example.counseling.entity.User # ??????User??????
+    configuration:
+      map-underscore-to-camel-case: true
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  # Redis??
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+    timeout: 3000ms
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+
+  # Jackson??
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+  # ??????
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+# MyBatis??
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.counselingappjava.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: true
+
+# JWT??
+jwt:
+  secret: defaultSecretKey1234567890abcdefghijklmnopqrstuvwxyz
+  expire: 604800
+
+# ????
+counseling:
+  # ??????
+  file:
+    upload-path: /data/upload/counseling/
+    max-size: 10MB
+    allowed-extensions: jpg,jpeg,png,pdf,doc,docx,xls,xlsx
+
+  # ????
+  session:
+    default-duration: 50  # ??????????
+    remind-ahead: 15      # ??????????
+
+  # ????
+  subscription:
+    trial-days: 7         # ????
+    plans:
+      monthly:
+        price: 99.00
+        name: ????
+      yearly:
+        price: 899.00
+        name: ????
+      professional:
+        price: 1999.00
+        name: ????
+
+# ????
+logging:
+  level:
+    com:
+      example:
+        counselingappjava: debug
+    org.springframework.web: DEBUG
+    org.springframework.cors: DEBUG
+    org.mybatis: debug
+  file:
+    name: logs/counseling-app.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+
+# Knife4j??
+knife4j:
+  enable: true
+  documents:
+    - group: ????
+      name: ??????API
+      locations: classpath:doc/*
+  setting:
+    language: zh-CN
+    enable-swagger-models: true
+    enable-document-manage: true
+    swagger-model-name: ?????

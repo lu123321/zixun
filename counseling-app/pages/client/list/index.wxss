@@ -89,25 +89,48 @@
 .status-item {
   display: inline-flex;
   align-items: center;
+  gap: 8rpx;
   padding: 12rpx 24rpx;
-  background: var(--color-background);
-  border-radius: 40rpx;
-  font-size: 26rpx;
-  color: var(--color-text-secondary);
-  transition: all 0.3s ease;
+  background: #f6f8fb;
+  border: 1rpx solid #e6ecf5;
+  border-radius: 999rpx;
+  color: #5d6778;
+  transition: all 0.25s ease;
 }
 
 .status-item.active {
-  background: var(--color-primary);
-  color: white;
+  background: linear-gradient(135deg, #3c9cff 0%, #1677ff 100%);
+  border-color: #1677ff;
+  box-shadow: 0 6rpx 16rpx rgba(22, 119, 255, 0.28);
+}
+
+.status-text {
+  font-size: 26rpx;
+  line-height: 1;
+  color: inherit;
+  font-weight: 500;
+}
+
+.status-item.active .status-text {
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .status-count {
-  margin-left: 8rpx;
-  font-size: 22rpx;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 2rpx 8rpx;
-  border-radius: 12rpx;
+  min-width: 30rpx;
+  height: 30rpx;
+  padding: 0 8rpx;
+  border-radius: 15rpx;
+  font-size: 20rpx;
+  line-height: 30rpx;
+  text-align: center;
+  color: #5d6778;
+  background: #e9eff9;
+}
+
+.status-item.active .status-count {
+  color: #1677ff;
+  background: #ffffff;
 }
 
 /* 滚动区域 */
@@ -234,9 +257,14 @@
 
 .client-status {
   font-size: 22rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-  font-weight: 500;
+  line-height: 1;
+  padding: 6rpx 14rpx;
+  border-radius: 14rpx;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .client-status.status-1 {
@@ -274,16 +302,27 @@
 .client-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8rpx;
+  align-items: center;
+  gap: 10rpx;
   margin-bottom: 12rpx;
 }
 
 .tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 18rpx;
+  background: #f0f7ff;
+  border: 1rpx solid #d4e8ff;
+}
+
+.tag-text {
   font-size: 22rpx;
-  color: var(--color-primary);
-  background: rgba(24, 144, 255, 0.1);
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
+  line-height: 1;
+  color: #1677ff;
+  font-weight: 500;
 }
 
 .client-session-info {
