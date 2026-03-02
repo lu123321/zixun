@@ -1,6 +1,8 @@
 package com.example.counselingappjava.dto;
 
+import com.example.counselingappjava.config.jackson.BooleanToIntegerDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
 import javax.validation.constraints.Future;
@@ -38,6 +40,7 @@ public class ScheduleDTO {
 
     private Integer remindType = 1;
 
+    @JsonDeserialize(using = BooleanToIntegerDeserializer.class)
     private Integer isRecurring = 0;
 
     private String recurringRule;

@@ -1,5 +1,7 @@
 package com.example.counselingappjava.entity;
 
+import com.example.counselingappjava.config.jackson.BooleanToIntegerDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -23,7 +25,8 @@ public class Schedule {
     private Integer remindType = 1; // 1=不提醒,2=开始时,3=提前5分钟,4=提前15分钟,5=提前30分钟,6=提前1小时,7=提前1天
     private Integer remindSent = 0; // 提醒是否已发送
     private Integer status = 1; // 1=待办,2=完成,3=取消,4=进行中
-    private Integer isRecurring = 0; // 是否重复日程
+    @JsonDeserialize(using = BooleanToIntegerDeserializer.class)
+    private Integer isRecurring = 0; //
     private String recurringRule; // 重复规则JSON
     private Date createTime;
     private Date updateTime;

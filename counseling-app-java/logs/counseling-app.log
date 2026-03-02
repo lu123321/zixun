@@ -3573,3 +3573,230 @@ This generated password is for development use only. Your security configuration
 2026-03-02 15:52:16.268 DEBUG 8116 --- [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
 2026-03-02 15:52:16.271 DEBUG 8116 --- [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=[])]
 2026-03-02 15:52:16.276 DEBUG 8116 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:07:30.576  INFO 13168 --- [main] c.e.c.CounselingApplication              : Starting CounselingApplication using Java 1.8.0_451 on YYW-IT-000373 with PID 13168 (D:\xcx\zixun\counseling-app-java\target\classes started by luyaozong in D:\xcx\zixun\counseling-app-java)
+2026-03-02 16:07:30.586 DEBUG 13168 --- [main] c.e.c.CounselingApplication              : Running with Spring Boot v2.7.18, Spring v5.3.31
+2026-03-02 16:07:30.587  INFO 13168 --- [main] c.e.c.CounselingApplication              : No active profile set, falling back to 1 default profile: "default"
+2026-03-02 16:07:36.028  INFO 13168 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-02 16:07:36.036  INFO 13168 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-03-02 16:07:36.276  INFO 13168 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 110 ms. Found 0 Redis repository interfaces.
+2026-03-02 16:07:37.225 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\xcx\zixun\counseling-app-java\target\classes\com\example\counselingappjava\mapper\ClientMapper.class]
+2026-03-02 16:07:37.225 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\xcx\zixun\counseling-app-java\target\classes\com\example\counselingappjava\mapper\FinanceCategoryMapper.class]
+2026-03-02 16:07:37.226 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\xcx\zixun\counseling-app-java\target\classes\com\example\counselingappjava\mapper\FinanceMapper.class]
+2026-03-02 16:07:37.227 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\xcx\zixun\counseling-app-java\target\classes\com\example\counselingappjava\mapper\OrderMapper.class]
+2026-03-02 16:07:37.229 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\xcx\zixun\counseling-app-java\target\classes\com\example\counselingappjava\mapper\ScheduleMapper.class]
+2026-03-02 16:07:37.229 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\xcx\zixun\counseling-app-java\target\classes\com\example\counselingappjava\mapper\SessionMapper.class]
+2026-03-02 16:07:37.230 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\xcx\zixun\counseling-app-java\target\classes\com\example\counselingappjava\mapper\SubscriptionMapper.class]
+2026-03-02 16:07:37.230 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\xcx\zixun\counseling-app-java\target\classes\com\example\counselingappjava\mapper\UserMapper.class]
+2026-03-02 16:07:37.238 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'clientMapper' and 'com.example.counselingappjava.mapper.ClientMapper' mapperInterface
+2026-03-02 16:07:37.245 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'clientMapper'.
+2026-03-02 16:07:37.246 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'financeCategoryMapper' and 'com.example.counselingappjava.mapper.FinanceCategoryMapper' mapperInterface
+2026-03-02 16:07:37.248 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'financeCategoryMapper'.
+2026-03-02 16:07:37.248 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'financeMapper' and 'com.example.counselingappjava.mapper.FinanceMapper' mapperInterface
+2026-03-02 16:07:37.250 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'financeMapper'.
+2026-03-02 16:07:37.250 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'orderMapper' and 'com.example.counselingappjava.mapper.OrderMapper' mapperInterface
+2026-03-02 16:07:37.814 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'orderMapper'.
+2026-03-02 16:07:37.815 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'scheduleMapper' and 'com.example.counselingappjava.mapper.ScheduleMapper' mapperInterface
+2026-03-02 16:07:37.816 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'scheduleMapper'.
+2026-03-02 16:07:37.817 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'sessionMapper' and 'com.example.counselingappjava.mapper.SessionMapper' mapperInterface
+2026-03-02 16:07:37.818 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'sessionMapper'.
+2026-03-02 16:07:37.819 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'subscriptionMapper' and 'com.example.counselingappjava.mapper.SubscriptionMapper' mapperInterface
+2026-03-02 16:07:37.820 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'subscriptionMapper'.
+2026-03-02 16:07:37.821 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'userMapper' and 'com.example.counselingappjava.mapper.UserMapper' mapperInterface
+2026-03-02 16:07:37.823 DEBUG 13168 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'userMapper'.
+2026-03-02 16:07:38.835  INFO 13168 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-02 16:07:38.836  INFO 13168 --- [main] o.a.catalina.core.AprLifecycleListener   : An older version [1.2.27] of the Apache Tomcat Native library is installed, while Tomcat recommends a minimum version of [1.2.38]
+2026-03-02 16:07:38.836  INFO 13168 --- [main] o.a.catalina.core.AprLifecycleListener   : Loaded Apache Tomcat Native library [1.2.27] using APR version [1.7.0].
+2026-03-02 16:07:38.836  INFO 13168 --- [main] o.a.catalina.core.AprLifecycleListener   : APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true], UDS [true].
+2026-03-02 16:07:38.837  INFO 13168 --- [main] o.a.catalina.core.AprLifecycleListener   : APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2026-03-02 16:07:38.839  INFO 13168 --- [main] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 1.1.1k  25 Mar 2021]
+2026-03-02 16:07:38.851  INFO 13168 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-02 16:07:38.851  INFO 13168 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-03-02 16:07:39.173  INFO 13168 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-02 16:07:39.173  INFO 13168 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 8257 ms
+2026-03-02 16:07:39.446  INFO 13168 --- [main] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2026-03-02 16:07:40.359  INFO 13168 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2026-03-02 16:07:40.933  WARN 13168 --- [main] c.b.m.core.injector.AbstractMethod       : [com.example.counselingappjava.mapper.ClientMapper.insert] Has been loaded by XML or SqlProvider or Mybatis's Annotation, so ignoring this injection for [class com.baomidou.mybatisplus.core.injector.methods.Insert]
+2026-03-02 16:07:40.950  WARN 13168 --- [main] c.b.m.core.injector.AbstractMethod       : [com.example.counselingappjava.mapper.ClientMapper.update] Has been loaded by XML or SqlProvider or Mybatis's Annotation, so ignoring this injection for [class com.baomidou.mybatisplus.core.injector.methods.Update]
+2026-03-02 16:07:40.985  WARN 13168 --- [main] c.b.m.core.injector.AbstractMethod       : [com.example.counselingappjava.mapper.ClientMapper.deleteById] Has been loaded by XML or SqlProvider or Mybatis's Annotation, so ignoring this injection for [class com.baomidou.mybatisplus.core.injector.methods.DeleteById]
+2026-03-02 16:07:40.990  WARN 13168 --- [main] c.b.m.core.injector.AbstractMethod       : [com.example.counselingappjava.mapper.ClientMapper.selectById] Has been loaded by XML or SqlProvider or Mybatis's Annotation, so ignoring this injection for [class com.baomidou.mybatisplus.core.injector.methods.SelectById]
+2026-03-02 16:07:41.152  WARN 13168 --- [main] c.b.m.core.injector.AbstractMethod       : [com.example.counselingappjava.mapper.UserMapper.insert] Has been loaded by XML or SqlProvider or Mybatis's Annotation, so ignoring this injection for [class com.baomidou.mybatisplus.core.injector.methods.Insert]
+2026-03-02 16:07:41.158  WARN 13168 --- [main] c.b.m.core.injector.AbstractMethod       : [com.example.counselingappjava.mapper.UserMapper.update] Has been loaded by XML or SqlProvider or Mybatis's Annotation, so ignoring this injection for [class com.baomidou.mybatisplus.core.injector.methods.Update]
+2026-03-02 16:07:41.174  WARN 13168 --- [main] c.b.m.core.injector.AbstractMethod       : [com.example.counselingappjava.mapper.UserMapper.deleteById] Has been loaded by XML or SqlProvider or Mybatis's Annotation, so ignoring this injection for [class com.baomidou.mybatisplus.core.injector.methods.DeleteById]
+2026-03-02 16:07:41.178  WARN 13168 --- [main] c.b.m.core.injector.AbstractMethod       : [com.example.counselingappjava.mapper.UserMapper.selectById] Has been loaded by XML or SqlProvider or Mybatis's Annotation, so ignoring this injection for [class com.baomidou.mybatisplus.core.injector.methods.SelectById]
+2026-03-02 16:07:41.973  WARN 13168 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: d79579a6-6276-4ef2-b274-e268170683ff
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-03-02 16:07:42.153  INFO 13168 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@69a73867, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@749d7c01, org.springframework.security.web.context.SecurityContextPersistenceFilter@6115846e, org.springframework.security.web.header.HeaderWriterFilter@60f9dc7e, org.springframework.security.web.authentication.logout.LogoutFilter@46524ebe, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@57f0bfc3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@14590fe2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1d3a03fe, org.springframework.security.web.session.SessionManagementFilter@503556cb, org.springframework.security.web.access.ExceptionTranslationFilter@52285a5f, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@aa0dbca]
+2026-03-02 16:07:42.344 DEBUG 13168 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-03-02 16:07:42.466 DEBUG 13168 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 21 mappings in 'requestMappingHandlerMapping'
+2026-03-02 16:07:42.497 DEBUG 13168 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2026-03-02 16:07:42.511 DEBUG 13168 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-03-02 16:07:43.692  INFO 13168 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-02 16:07:43.709  INFO 13168 --- [main] c.e.c.CounselingApplication              : Started CounselingApplication in 16.209 seconds (JVM running for 21.663)
+2026-03-02 16:07:50.199  INFO 13168 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-02 16:07:50.199  INFO 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-02 16:07:50.200 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-03-02 16:07:50.200 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-03-02 16:07:50.200 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-03-02 16:07:50.200 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@1255de25
+2026-03-02 16:07:50.201 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@7aa15a80
+2026-03-02 16:07:50.201 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-03-02 16:07:50.201  INFO 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-02 16:07:50.222 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/schedule/list?startDate=2026-03-01&endDate=2026-03-31", parameters={masked}
+2026-03-02 16:07:50.222 DEBUG 13168 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/schedule/list?startDate=2026-03-01&endDate=2026-03-31", parameters={masked}
+2026-03-02 16:07:50.228 DEBUG 13168 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#getScheduleList(ScheduleQueryDTO)
+2026-03-02 16:07:50.228 DEBUG 13168 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#getScheduleList(ScheduleQueryDTO)
+2026-03-02 16:07:50.567 DEBUG 13168 --- [http-nio-8080-exec-1] c.e.c.m.S.selectByTimeRange              : ==>  Preparing: SELECT id, user_id, client_id, session_id, title, schedule_type, start_time, end_time, location, description, color, remind_type, remind_sent, status, is_recurring, recurring_rule, create_time, update_time FROM t_schedule WHERE user_id = ? AND start_time <= ? AND end_time >= ? ORDER BY start_time ASC
+2026-03-02 16:07:50.567 DEBUG 13168 --- [http-nio-8080-exec-2] c.e.c.m.S.selectByTimeRange              : ==>  Preparing: SELECT id, user_id, client_id, session_id, title, schedule_type, start_time, end_time, location, description, color, remind_type, remind_sent, status, is_recurring, recurring_rule, create_time, update_time FROM t_schedule WHERE user_id = ? AND start_time <= ? AND end_time >= ? ORDER BY start_time ASC
+2026-03-02 16:07:50.635 DEBUG 13168 --- [http-nio-8080-exec-2] c.e.c.m.S.selectByTimeRange              : ==> Parameters: 1(Long), 2026-03-31 23:59:59.999(Timestamp), 2026-03-01 00:00:00.0(Timestamp)
+2026-03-02 16:07:50.635 DEBUG 13168 --- [http-nio-8080-exec-1] c.e.c.m.S.selectByTimeRange              : ==> Parameters: 1(Long), 2026-03-31 23:59:59.999(Timestamp), 2026-03-01 00:00:00.0(Timestamp)
+2026-03-02 16:07:50.660 DEBUG 13168 --- [http-nio-8080-exec-2] c.e.c.m.S.selectByTimeRange              : <==      Total: 0
+2026-03-02 16:07:50.681 DEBUG 13168 --- [http-nio-8080-exec-1] c.e.c.m.S.selectByTimeRange              : <==      Total: 0
+2026-03-02 16:07:50.705 DEBUG 13168 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:07:50.705 DEBUG 13168 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:07:50.707 DEBUG 13168 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=[])]
+2026-03-02 16:07:50.707 DEBUG 13168 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=[])]
+2026-03-02 16:07:50.728 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:07:50.728 DEBUG 13168 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:08:01.317 DEBUG 13168 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/client/list?currentPage=1&pageSize=200", parameters={masked}
+2026-03-02 16:08:01.317 DEBUG 13168 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ClientController#getClientList(ClientListQueryDTO)
+2026-03-02 16:08:01.454 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.mapper.ClientMapper.selectPage     : ==>  Preparing: SELECT id,user_id,client_no,name,gender,age,birth_date,contact_phone,emergency_contact,emergency_phone,start_date,end_date,status,diagnosis,treatment_plan,remark,tags,create_time,update_time FROM t_client WHERE (user_id = ?) ORDER BY create_time ASC LIMIT ?
+2026-03-02 16:08:01.456 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.mapper.ClientMapper.selectPage     : ==> Parameters: 1(Long), 200(Long)
+2026-03-02 16:08:01.470 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.mapper.ClientMapper.selectPage     : <==      Total: 1
+2026-03-02 16:08:01.475 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.m.SessionMapper.countByClientId    : ==>  Preparing: SELECT COUNT(*) FROM t_session WHERE client_id = ?
+2026-03-02 16:08:01.475 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.m.SessionMapper.countByClientId    : ==> Parameters: 1(Long)
+2026-03-02 16:08:01.497 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.m.SessionMapper.countByClientId    : <==      Total: 1
+2026-03-02 16:08:01.498 DEBUG 13168 --- [http-nio-8080-exec-3] .c.m.S.selectLatestSessionTimeByClientId : ==>  Preparing: SELECT MAX(session_time) FROM t_session WHERE client_id = ?
+2026-03-02 16:08:01.499 DEBUG 13168 --- [http-nio-8080-exec-3] .c.m.S.selectLatestSessionTimeByClientId : ==> Parameters: 1(Long)
+2026-03-02 16:08:01.507 DEBUG 13168 --- [http-nio-8080-exec-3] .c.m.S.selectLatestSessionTimeByClientId : <==      Total: 1
+2026-03-02 16:08:01.508 DEBUG 13168 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:08:01.508 DEBUG 13168 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=PageResult(list=[ClientDTO(id=1, clientNo=C263833017836, name=小卢, ge (truncated)...]
+2026-03-02 16:08:01.514 DEBUG 13168 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:08:44.764 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : POST "/api/schedule/create", parameters={}
+2026-03-02 16:08:44.764 DEBUG 13168 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#createSchedule(ScheduleDTO, BindingResult)
+2026-03-02 16:08:49.102 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.web.method.HandlerMethod             : Could not resolve parameter [0] in public com.example.counselingappjava.common.Result<java.lang.Long> com.example.counselingappjava.controller.ScheduleController.createSchedule(com.example.counselingappjava.dto.ScheduleDTO,org.springframework.validation.BindingResult): JSON parse error: Cannot deserialize value of type `java.lang.Integer` from Boolean value (token `JsonToken.VALUE_FALSE`); nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `java.lang.Integer` from Boolean value (token `JsonToken.VALUE_FALSE`)
+ at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 202] (through reference chain: com.example.counselingappjava.dto.ScheduleDTO["isRecurring"])
+2026-03-02 16:08:49.117  WARN 13168 --- [http-nio-8080-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `java.lang.Integer` from Boolean value (token `JsonToken.VALUE_FALSE`); nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `java.lang.Integer` from Boolean value (token `JsonToken.VALUE_FALSE`)<EOL> at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 202] (through reference chain: com.example.counselingappjava.dto.ScheduleDTO["isRecurring"])]
+2026-03-02 16:08:49.118 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2026-03-02 16:08:49.124 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/api/error", parameters={}
+2026-03-02 16:08:49.128 DEBUG 13168 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2026-03-02 16:08:49.144 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:08:49.146 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Mon Mar 02 16:08:49 CST 2026, status=400, error=Bad Request, path=/api/schedule/create}]
+2026-03-02 16:08:49.163 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 400
+2026-03-02 16:09:01.696 DEBUG 13168 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/schedule/create", parameters={}
+2026-03-02 16:09:01.720  WARN 13168 --- [http-nio-8080-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' not supported]
+2026-03-02 16:09:01.729 DEBUG 13168 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 405 METHOD_NOT_ALLOWED
+2026-03-02 16:09:01.736 DEBUG 13168 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/api/error", parameters={}
+2026-03-02 16:09:01.742 DEBUG 13168 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#errorHtml(HttpServletRequest, HttpServletResponse)
+2026-03-02 16:09:01.909 DEBUG 13168 --- [http-nio-8080-exec-6] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, text/html;q=0.8]
+2026-03-02 16:09:01.929 DEBUG 13168 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 405
+2026-03-02 16:09:20.238 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : POST "/api/schedule/create", parameters={}
+2026-03-02 16:09:20.240 DEBUG 13168 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#createSchedule(ScheduleDTO, BindingResult)
+2026-03-02 16:09:29.091 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.web.method.HandlerMethod             : Could not resolve parameter [0] in public com.example.counselingappjava.common.Result<java.lang.Long> com.example.counselingappjava.controller.ScheduleController.createSchedule(com.example.counselingappjava.dto.ScheduleDTO,org.springframework.validation.BindingResult): JSON parse error: Cannot deserialize value of type `java.lang.Integer` from Boolean value (token `JsonToken.VALUE_FALSE`); nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `java.lang.Integer` from Boolean value (token `JsonToken.VALUE_FALSE`)
+ at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 202] (through reference chain: com.example.counselingappjava.dto.ScheduleDTO["isRecurring"])
+2026-03-02 16:09:29.092  WARN 13168 --- [http-nio-8080-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `java.lang.Integer` from Boolean value (token `JsonToken.VALUE_FALSE`); nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `java.lang.Integer` from Boolean value (token `JsonToken.VALUE_FALSE`)<EOL> at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 202] (through reference chain: com.example.counselingappjava.dto.ScheduleDTO["isRecurring"])]
+2026-03-02 16:09:29.092 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2026-03-02 16:09:29.092 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/api/error", parameters={}
+2026-03-02 16:09:29.093 DEBUG 13168 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2026-03-02 16:09:29.093 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:09:29.093 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Mon Mar 02 16:09:29 CST 2026, status=400, error=Bad Request, path=/api/schedule/create}]
+2026-03-02 16:09:29.094 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 400
+2026-03-02 16:12:51.665 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/schedule/list?startDate=2026-03-01&endDate=2026-03-31", parameters={masked}
+2026-03-02 16:12:51.665 DEBUG 13168 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#getScheduleList(ScheduleQueryDTO)
+2026-03-02 16:12:51.682 DEBUG 13168 --- [http-nio-8080-exec-1] c.e.c.m.S.selectByTimeRange              : ==>  Preparing: SELECT id, user_id, client_id, session_id, title, schedule_type, start_time, end_time, location, description, color, remind_type, remind_sent, status, is_recurring, recurring_rule, create_time, update_time FROM t_schedule WHERE user_id = ? AND start_time <= ? AND end_time >= ? ORDER BY start_time ASC
+2026-03-02 16:12:51.682 DEBUG 13168 --- [http-nio-8080-exec-1] c.e.c.m.S.selectByTimeRange              : ==> Parameters: 1(Long), 2026-03-31 23:59:59.999(Timestamp), 2026-03-01 00:00:00.0(Timestamp)
+2026-03-02 16:12:51.690 DEBUG 13168 --- [http-nio-8080-exec-1] c.e.c.m.S.selectByTimeRange              : <==      Total: 0
+2026-03-02 16:12:51.691 DEBUG 13168 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:12:51.691 DEBUG 13168 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=[])]
+2026-03-02 16:12:51.692 DEBUG 13168 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:12:58.866 DEBUG 13168 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/schedule/detail/1", parameters={}
+2026-03-02 16:12:58.867 DEBUG 13168 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#getScheduleDetail(Long)
+2026-03-02 16:12:58.870 DEBUG 13168 --- [http-nio-8080-exec-2] c.e.c.mapper.ScheduleMapper.selectById   : ==>  Preparing: SELECT id, user_id, client_id, session_id, title, schedule_type, start_time, end_time, location, description, color, remind_type, remind_sent, status, is_recurring, recurring_rule, create_time, update_time FROM t_schedule WHERE id = ?
+2026-03-02 16:12:58.871 DEBUG 13168 --- [http-nio-8080-exec-2] c.e.c.mapper.ScheduleMapper.selectById   : ==> Parameters: 1(Long)
+2026-03-02 16:12:58.928 DEBUG 13168 --- [http-nio-8080-exec-2] c.e.c.mapper.ScheduleMapper.selectById   : <==      Total: 0
+2026-03-02 16:12:58.929 DEBUG 13168 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:12:58.930 DEBUG 13168 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=500, msg=日程不存在, data=null)]
+2026-03-02 16:12:58.930 DEBUG 13168 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:13:03.490 DEBUG 13168 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/schedule/detail/2", parameters={}
+2026-03-02 16:13:03.490 DEBUG 13168 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#getScheduleDetail(Long)
+2026-03-02 16:13:03.493 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.mapper.ScheduleMapper.selectById   : ==>  Preparing: SELECT id, user_id, client_id, session_id, title, schedule_type, start_time, end_time, location, description, color, remind_type, remind_sent, status, is_recurring, recurring_rule, create_time, update_time FROM t_schedule WHERE id = ?
+2026-03-02 16:13:03.493 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.mapper.ScheduleMapper.selectById   : ==> Parameters: 2(Long)
+2026-03-02 16:13:03.502 DEBUG 13168 --- [http-nio-8080-exec-3] c.e.c.mapper.ScheduleMapper.selectById   : <==      Total: 0
+2026-03-02 16:13:03.502 DEBUG 13168 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:13:03.502 DEBUG 13168 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=500, msg=日程不存在, data=null)]
+2026-03-02 16:13:03.503 DEBUG 13168 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:13:22.217 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/client/list?currentPage=1&pageSize=20&keyword=null&sortField=create_time&sortOrder=desc", parameters={masked}
+2026-03-02 16:13:22.217 DEBUG 13168 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ClientController#getClientList(ClientListQueryDTO)
+2026-03-02 16:13:22.227 DEBUG 13168 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/client/list?currentPage=1&pageSize=20&keyword=null&sortField=create_time&sortOrder=desc", parameters={masked}
+2026-03-02 16:13:22.228 DEBUG 13168 --- [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ClientController#getClientList(ClientListQueryDTO)
+2026-03-02 16:13:22.239 DEBUG 13168 --- [http-nio-8080-exec-4] c.e.c.mapper.ClientMapper.selectPage     : ==>  Preparing: SELECT id,user_id,client_no,name,gender,age,birth_date,contact_phone,emergency_contact,emergency_phone,start_date,end_date,status,diagnosis,treatment_plan,remark,tags,create_time,update_time FROM t_client WHERE (user_id = ?) ORDER BY create_time ASC LIMIT ?
+2026-03-02 16:13:22.239 DEBUG 13168 --- [http-nio-8080-exec-4] c.e.c.mapper.ClientMapper.selectPage     : ==> Parameters: 1(Long), 20(Long)
+2026-03-02 16:13:22.250 DEBUG 13168 --- [http-nio-8080-exec-4] c.e.c.mapper.ClientMapper.selectPage     : <==      Total: 1
+2026-03-02 16:13:22.251 DEBUG 13168 --- [http-nio-8080-exec-4] c.e.c.m.SessionMapper.countByClientId    : ==>  Preparing: SELECT COUNT(*) FROM t_session WHERE client_id = ?
+2026-03-02 16:13:22.251 DEBUG 13168 --- [http-nio-8080-exec-4] c.e.c.m.SessionMapper.countByClientId    : ==> Parameters: 1(Long)
+2026-03-02 16:13:22.264 DEBUG 13168 --- [http-nio-8080-exec-4] c.e.c.m.SessionMapper.countByClientId    : <==      Total: 1
+2026-03-02 16:13:22.265 DEBUG 13168 --- [http-nio-8080-exec-5] c.e.c.mapper.ClientMapper.selectPage     : ==>  Preparing: SELECT id,user_id,client_no,name,gender,age,birth_date,contact_phone,emergency_contact,emergency_phone,start_date,end_date,status,diagnosis,treatment_plan,remark,tags,create_time,update_time FROM t_client WHERE (user_id = ?) ORDER BY create_time ASC LIMIT ?
+2026-03-02 16:13:22.265 DEBUG 13168 --- [http-nio-8080-exec-4] .c.m.S.selectLatestSessionTimeByClientId : ==>  Preparing: SELECT MAX(session_time) FROM t_session WHERE client_id = ?
+2026-03-02 16:13:22.266 DEBUG 13168 --- [http-nio-8080-exec-4] .c.m.S.selectLatestSessionTimeByClientId : ==> Parameters: 1(Long)
+2026-03-02 16:13:22.266 DEBUG 13168 --- [http-nio-8080-exec-5] c.e.c.mapper.ClientMapper.selectPage     : ==> Parameters: 1(Long), 20(Long)
+2026-03-02 16:13:22.273 DEBUG 13168 --- [http-nio-8080-exec-4] .c.m.S.selectLatestSessionTimeByClientId : <==      Total: 1
+2026-03-02 16:13:22.274 DEBUG 13168 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:13:22.274 DEBUG 13168 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=PageResult(list=[ClientDTO(id=1, clientNo=C263833017836, name=小卢, ge (truncated)...]
+2026-03-02 16:13:22.275 DEBUG 13168 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:13:22.275 DEBUG 13168 --- [http-nio-8080-exec-5] c.e.c.mapper.ClientMapper.selectPage     : <==      Total: 1
+2026-03-02 16:13:22.277 DEBUG 13168 --- [http-nio-8080-exec-5] c.e.c.m.SessionMapper.countByClientId    : ==>  Preparing: SELECT COUNT(*) FROM t_session WHERE client_id = ?
+2026-03-02 16:13:22.278 DEBUG 13168 --- [http-nio-8080-exec-5] c.e.c.m.SessionMapper.countByClientId    : ==> Parameters: 1(Long)
+2026-03-02 16:13:22.285 DEBUG 13168 --- [http-nio-8080-exec-5] c.e.c.m.SessionMapper.countByClientId    : <==      Total: 1
+2026-03-02 16:13:22.287 DEBUG 13168 --- [http-nio-8080-exec-5] .c.m.S.selectLatestSessionTimeByClientId : ==>  Preparing: SELECT MAX(session_time) FROM t_session WHERE client_id = ?
+2026-03-02 16:13:22.289 DEBUG 13168 --- [http-nio-8080-exec-5] .c.m.S.selectLatestSessionTimeByClientId : ==> Parameters: 1(Long)
+2026-03-02 16:13:22.298 DEBUG 13168 --- [http-nio-8080-exec-5] .c.m.S.selectLatestSessionTimeByClientId : <==      Total: 1
+2026-03-02 16:13:22.299 DEBUG 13168 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:13:22.299 DEBUG 13168 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=PageResult(list=[ClientDTO(id=1, clientNo=C263833017836, name=小卢, ge (truncated)...]
+2026-03-02 16:13:22.300 DEBUG 13168 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:13:22.610 DEBUG 13168 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/schedule/list?startDate=2026-03-01&endDate=2026-03-31", parameters={masked}
+2026-03-02 16:13:22.611 DEBUG 13168 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#getScheduleList(ScheduleQueryDTO)
+2026-03-02 16:13:22.613 DEBUG 13168 --- [http-nio-8080-exec-6] c.e.c.m.S.selectByTimeRange              : ==>  Preparing: SELECT id, user_id, client_id, session_id, title, schedule_type, start_time, end_time, location, description, color, remind_type, remind_sent, status, is_recurring, recurring_rule, create_time, update_time FROM t_schedule WHERE user_id = ? AND start_time <= ? AND end_time >= ? ORDER BY start_time ASC
+2026-03-02 16:13:22.613 DEBUG 13168 --- [http-nio-8080-exec-6] c.e.c.m.S.selectByTimeRange              : ==> Parameters: 1(Long), 2026-03-31 23:59:59.999(Timestamp), 2026-03-01 00:00:00.0(Timestamp)
+2026-03-02 16:13:22.624 DEBUG 13168 --- [http-nio-8080-exec-6] c.e.c.m.S.selectByTimeRange              : <==      Total: 0
+2026-03-02 16:13:22.625 DEBUG 13168 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:13:22.625 DEBUG 13168 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=[])]
+2026-03-02 16:13:22.625 DEBUG 13168 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:13:23.151 DEBUG 13168 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/client/list?currentPage=1&pageSize=20&keyword=null&sortField=create_time&sortOrder=desc", parameters={masked}
+2026-03-02 16:13:23.151 DEBUG 13168 --- [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ClientController#getClientList(ClientListQueryDTO)
+2026-03-02 16:13:23.169 DEBUG 13168 --- [http-nio-8080-exec-7] c.e.c.mapper.ClientMapper.selectPage     : ==>  Preparing: SELECT id,user_id,client_no,name,gender,age,birth_date,contact_phone,emergency_contact,emergency_phone,start_date,end_date,status,diagnosis,treatment_plan,remark,tags,create_time,update_time FROM t_client WHERE (user_id = ?) ORDER BY create_time ASC LIMIT ?
+2026-03-02 16:13:23.169 DEBUG 13168 --- [http-nio-8080-exec-7] c.e.c.mapper.ClientMapper.selectPage     : ==> Parameters: 1(Long), 20(Long)
+2026-03-02 16:13:23.183 DEBUG 13168 --- [http-nio-8080-exec-7] c.e.c.mapper.ClientMapper.selectPage     : <==      Total: 1
+2026-03-02 16:13:23.184 DEBUG 13168 --- [http-nio-8080-exec-7] c.e.c.m.SessionMapper.countByClientId    : ==>  Preparing: SELECT COUNT(*) FROM t_session WHERE client_id = ?
+2026-03-02 16:13:23.185 DEBUG 13168 --- [http-nio-8080-exec-7] c.e.c.m.SessionMapper.countByClientId    : ==> Parameters: 1(Long)
+2026-03-02 16:13:23.192 DEBUG 13168 --- [http-nio-8080-exec-7] c.e.c.m.SessionMapper.countByClientId    : <==      Total: 1
+2026-03-02 16:13:23.193 DEBUG 13168 --- [http-nio-8080-exec-7] .c.m.S.selectLatestSessionTimeByClientId : ==>  Preparing: SELECT MAX(session_time) FROM t_session WHERE client_id = ?
+2026-03-02 16:13:23.193 DEBUG 13168 --- [http-nio-8080-exec-7] .c.m.S.selectLatestSessionTimeByClientId : ==> Parameters: 1(Long)
+2026-03-02 16:13:23.202 DEBUG 13168 --- [http-nio-8080-exec-7] .c.m.S.selectLatestSessionTimeByClientId : <==      Total: 1
+2026-03-02 16:13:23.203 DEBUG 13168 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:13:23.203 DEBUG 13168 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=PageResult(list=[ClientDTO(id=1, clientNo=C263833017836, name=小卢, ge (truncated)...]
+2026-03-02 16:13:23.204 DEBUG 13168 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:13:23.945 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/client/list?currentPage=1&pageSize=20&keyword=null&sortField=create_time&sortOrder=desc", parameters={masked}
+2026-03-02 16:13:23.945 DEBUG 13168 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ClientController#getClientList(ClientListQueryDTO)
+2026-03-02 16:13:23.963 DEBUG 13168 --- [http-nio-8080-exec-8] c.e.c.mapper.ClientMapper.selectPage     : ==>  Preparing: SELECT id,user_id,client_no,name,gender,age,birth_date,contact_phone,emergency_contact,emergency_phone,start_date,end_date,status,diagnosis,treatment_plan,remark,tags,create_time,update_time FROM t_client WHERE (user_id = ?) ORDER BY create_time ASC LIMIT ?
+2026-03-02 16:13:23.963 DEBUG 13168 --- [http-nio-8080-exec-8] c.e.c.mapper.ClientMapper.selectPage     : ==> Parameters: 1(Long), 20(Long)
+2026-03-02 16:13:23.972 DEBUG 13168 --- [http-nio-8080-exec-8] c.e.c.mapper.ClientMapper.selectPage     : <==      Total: 1
+2026-03-02 16:13:23.973 DEBUG 13168 --- [http-nio-8080-exec-8] c.e.c.m.SessionMapper.countByClientId    : ==>  Preparing: SELECT COUNT(*) FROM t_session WHERE client_id = ?
+2026-03-02 16:13:23.973 DEBUG 13168 --- [http-nio-8080-exec-8] c.e.c.m.SessionMapper.countByClientId    : ==> Parameters: 1(Long)
+2026-03-02 16:13:23.981 DEBUG 13168 --- [http-nio-8080-exec-8] c.e.c.m.SessionMapper.countByClientId    : <==      Total: 1
+2026-03-02 16:13:23.981 DEBUG 13168 --- [http-nio-8080-exec-8] .c.m.S.selectLatestSessionTimeByClientId : ==>  Preparing: SELECT MAX(session_time) FROM t_session WHERE client_id = ?
+2026-03-02 16:13:23.981 DEBUG 13168 --- [http-nio-8080-exec-8] .c.m.S.selectLatestSessionTimeByClientId : ==> Parameters: 1(Long)
+2026-03-02 16:13:23.989 DEBUG 13168 --- [http-nio-8080-exec-8] .c.m.S.selectLatestSessionTimeByClientId : <==      Total: 1
+2026-03-02 16:13:23.989 DEBUG 13168 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:13:23.990 DEBUG 13168 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=PageResult(list=[ClientDTO(id=1, clientNo=C263833017836, name=小卢, ge (truncated)...]
+2026-03-02 16:13:23.990 DEBUG 13168 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-03-02 16:13:24.762 DEBUG 13168 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/schedule/list?startDate=2026-03-01&endDate=2026-03-31", parameters={masked}
+2026-03-02 16:13:24.762 DEBUG 13168 --- [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.counselingappjava.controller.ScheduleController#getScheduleList(ScheduleQueryDTO)
+2026-03-02 16:13:24.765 DEBUG 13168 --- [http-nio-8080-exec-10] c.e.c.m.S.selectByTimeRange              : ==>  Preparing: SELECT id, user_id, client_id, session_id, title, schedule_type, start_time, end_time, location, description, color, remind_type, remind_sent, status, is_recurring, recurring_rule, create_time, update_time FROM t_schedule WHERE user_id = ? AND start_time <= ? AND end_time >= ? ORDER BY start_time ASC
+2026-03-02 16:13:24.765 DEBUG 13168 --- [http-nio-8080-exec-10] c.e.c.m.S.selectByTimeRange              : ==> Parameters: 1(Long), 2026-03-31 23:59:59.999(Timestamp), 2026-03-01 00:00:00.0(Timestamp)
+2026-03-02 16:13:24.774 DEBUG 13168 --- [http-nio-8080-exec-10] c.e.c.m.S.selectByTimeRange              : <==      Total: 0
+2026-03-02 16:13:24.775 DEBUG 13168 --- [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-03-02 16:13:24.775 DEBUG 13168 --- [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [Result(code=200, msg=操作成功, data=[])]
+2026-03-02 16:13:24.775 DEBUG 13168 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
