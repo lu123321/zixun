@@ -66,14 +66,14 @@
           bindtap="onScheduleItemClick"  
         >  
           <view class="schedule-time">  
-            <view class="time-range">{{formatTimeRange(item.startTime, item.endTime)}}</view>  
-            <view class="duration">{{getDuration(item.startTime, item.endTime)}}分钟</view>  
+            <view class="time-range">{{item.timeRangeText}}</view>  
+            <view class="duration">{{item.durationText}}</view>  
           </view>  
           <view class="schedule-detail">  
             <view class="schedule-title">{{item.title}}</view>  
             <view class="schedule-meta">  
               <view class="schedule-type" style="color: {{item.color || '#1890ff'}};">  
-                {{getScheduleTypeText(item.scheduleType)}}  
+                {{item.scheduleTypeText}}  
               </view>  
               <view class="location">📍 {{item.location || '未设置地点'}}</view>  
             </view>  

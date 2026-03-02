@@ -31,13 +31,13 @@
       
       <view class="duration-item">
         <text class="duration-label">持续时间: </text>
-        <text class="duration-value">{{scheduleData.duration}}</text>
+        <text class="duration-value">{{scheduleData.duration || "0分钟"}}</text>
       </view>
     </view>
     
     <!-- 地点信息 -->
     <view class="location-info" wx:if="{{scheduleData.location}}">
-      <image class="location-icon" src="/images/icons/location.png"></image>
+      <text class="location-marker">📍</text>
       <text class="location-text">{{scheduleData.location}}</text>
     </view>
     
@@ -48,7 +48,7 @@
         <text class="client-label">关联来访者</text>
       </view>
       <view class="client-card" bindtap="goToClientDetail">
-        <image class="client-avatar" src="{{scheduleData.clientInfo.avatar || '/images/default-avatar.png'}}"></image>
+        <image class="client-avatar" src="{{scheduleData.clientInfo.avatar || '/static/images/avatar-default.png'}}"></image>
         <view class="client-details">
           <text class="client-name">{{scheduleData.clientInfo.name}}</text>
           <text class="client-no">{{scheduleData.clientInfo.clientNo}}</text>
@@ -107,7 +107,7 @@
         <text class="session-duration">{{scheduleData.sessionDuration}}</text>
       </view>
       <view class="session-info">
-        <text class="session-client">{{scheduleData.clientInfo.name}}</text>
+        <text class="session-client">{{(scheduleData.clientInfo && scheduleData.clientInfo.name) || '未关联来访者'}}</text>
         <text class="session-summary">{{scheduleData.sessionSummary || '查看咨询记录'}}</text>
       </view>
       <image class="arrow-icon" src="/images/icons/arrow-right.png"></image>

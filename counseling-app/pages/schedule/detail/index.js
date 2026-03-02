@@ -78,6 +78,7 @@ Page({
       }
       const processedData = this.processScheduleData(res.data);
       this.setData({ scheduleData: processedData });
+      await this.loadClientInfoIfNeeded(processedData);
     } catch (error) {
       console.error('加载日程失败:', error);
       wx.showToast({ title: error.message || '加载失败', icon: 'none' });
@@ -176,14 +177,43 @@ Page({
     return mockSchedules[scheduleId] || mockSchedules['1'];
   },
 
+
+  async loadClientInfoIfNeeded(scheduleData) {
+    const clientInfo = scheduleData && scheduleData.clientInfo;
+    const clientId = clientInfo && clientInfo.id;
+    if (!clientId) return;
+
+    const hasUsableName = clientInfo.name && clientInfo.name !== '来访者';
+    const hasUsableNo = clientInfo.clientNo && clientInfo.clientNo !== '未设置编号';
+    if (hasUsableName && hasUsableNo) return;
+
+    try {
+      const res = await api.get(`/api/client/detail/${clientId}`);
+      if (res.code !== 200 || !res.data) return;
+
+      this.setData({
+        'scheduleData.clientInfo': {
+          id: clientId,
+          name: res.data.name || clientInfo.name || '来访者',
+          clientNo: res.data.clientNo || clientInfo.clientNo || '未设置编号',
+          avatar: res.data.avatar || clientInfo.avatar || ''
+        }
+      });
+    } catch (error) {
+      console.warn('加载关联来访者失败:', error);
+    }
+  },
+
   processScheduleData(rawData) {
     // 格式化时间显示
     const startDate = new Date(rawData.startTime);
     const endDate = new Date(rawData.endTime);
-    
+
     const startTimeText = `${startDate.getMonth() + 1}月${startDate.getDate()}日 ${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`;
     const endTimeText = `${endDate.getMonth() + 1}月${endDate.getDate()}日 ${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}`;
-    
+    const durationMinutes = Math.max(0, Math.round((endDate - startDate) / (1000 * 60)));
+    const durationText = rawData.duration || `${durationMinutes}分钟`;
+
     // 计算重复规则文本
     let recurringRuleText = '';
     if (rawData.isRecurring && rawData.recurringType === 'weekly' && rawData.recurringDays) {
@@ -193,7 +223,22 @@ Page({
     } else if (rawData.isRecurring && rawData.recurringType === 'monthly' && rawData.recurringDayOfMonth) {
       recurringRuleText = `每月 ${rawData.recurringDayOfMonth} 日`;
     }
-    
+
+    const clientInfoSource = rawData.clientInfo || rawData.client || {};
+    const resolvedClientId = rawData.clientId || clientInfoSource.id || null;
+    const resolvedClientName = rawData.clientName || clientInfoSource.name || '';
+    const resolvedClientNo = rawData.clientNo || clientInfoSource.clientNo || '';
+    const resolvedClientAvatar = rawData.clientAvatar || clientInfoSource.avatar || '';
+
+    const clientInfo = (resolvedClientId || resolvedClientName || resolvedClientNo)
+      ? {
+          id: resolvedClientId,
+          name: resolvedClientName || '来访者',
+          clientNo: resolvedClientNo || '未设置编号',
+          avatar: resolvedClientAvatar
+        }
+      : null;
+
     return {
       ...rawData,
       startTime: startTimeText,
@@ -203,26 +248,25 @@ Page({
       statusText: this.data.statusTexts[rawData.status] || '未知',
       remindTypeText: this.data.remindTexts[rawData.remindType] || '不提醒',
       recurringTypeText: this.data.recurringTypeTexts[rawData.recurringType] || '',
-      recurringRuleText: recurringRuleText,
+      recurringRuleText,
+      duration: durationText,
       sessionTime: rawData.sessionInfo ? rawData.sessionInfo.sessionTime : '',
       sessionDuration: rawData.sessionInfo ? rawData.sessionInfo.duration : '',
       sessionSummary: rawData.sessionInfo ? rawData.sessionInfo.summary : '',
-      clientInfo: rawData.clientId ? {
-        id: rawData.clientId,
-        name: rawData.clientName || '来访者',
-        clientNo: rawData.clientNo || ''
-      } : rawData.clientInfo,
-      recurringEndDate: rawData.recurringEndDate ? 
-        `${rawData.recurringEndDate.split('-')[1]}月${rawData.recurringEndDate.split('-')[2]}日` : ''
+      clientInfo,
+      recurringEndDate: rawData.recurringEndDate
+        ? `${rawData.recurringEndDate.split('-')[1]}月${rawData.recurringEndDate.split('-')[2]}日`
+        : ''
     };
   },
 
   // 跳转到来访者详情
   goToClientDetail() {
-    if (!this.data.scheduleData.clientId) return;
-    
+    const clientId = this.data.scheduleData.clientInfo && this.data.scheduleData.clientInfo.id;
+    if (!clientId) return;
+
     wx.navigateTo({
-      url: `/pages/client/detail/index?id=${this.data.scheduleData.clientId}`
+      url: `/pages/client/detail/index?id=${clientId}`
     });
   },
 
