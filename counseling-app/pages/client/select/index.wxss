@@ -126,18 +126,19 @@
 
 /* 来访者列表 */
 .client-list {
-  padding: 0 32rpx 40rpx;
+  padding: 0 24rpx 44rpx;
 }
 
 .client-item {
   display: flex;
   align-items: center;
-  padding: 32rpx;
-  background: white;
-  border-radius: 20rpx;
-  margin-bottom: 24rpx;
-  box-shadow: var(--shadow-card);
-  transition: all 0.3s ease;
+  padding: 28rpx;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  border-radius: 24rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid #e8f0fb;
+  box-shadow: 0 8rpx 18rpx rgba(17, 59, 108, 0.06);
+  transition: all 0.25s ease;
 }
 
 .client-item:active {
@@ -183,7 +184,7 @@
 .client-header {
   display: flex;
   align-items: center;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .client-avatar {
@@ -217,10 +218,14 @@
 
 .client-status {
   font-size: 22rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-  font-weight: 500;
-  display: inline-block;
+  line-height: 1;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96rpx;
 }
 
 .client-status.status-1 {
@@ -245,16 +250,17 @@
 
 /* 来访者详情 */
 .client-details {
-  background: var(--color-background);
+  background: #f7fbff;
+  border: 1rpx solid #e6eef8;
   border-radius: 16rpx;
-  padding: 20rpx;
+  padding: 18rpx;
 }
 
 .client-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16rpx;
-  margin-bottom: 12rpx;
+  gap: 14rpx;
+  margin-bottom: 10rpx;
 }
 
 .meta-item {
@@ -265,23 +271,34 @@
 .client-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8rpx;
-  margin-bottom: 12rpx;
+  gap: 10rpx;
+  margin-bottom: 10rpx;
 }
 
 .tag {
+  color: #1677d2;
+  background: rgba(24, 144, 255, 0.12);
+  border: 1rpx solid rgba(24, 144, 255, 0.18);
+  min-height: 36rpx;
+  padding: 0 12rpx;
+  border-radius: 999rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-text {
   font-size: 20rpx;
-  color: var(--color-primary);
-  background: rgba(24, 144, 255, 0.1);
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
+  line-height: 36rpx;
+  text-align: center;
+  display: block;
 }
 
 .client-session-info {
   display: flex;
   justify-content: space-between;
   font-size: 22rpx;
-  color: var(--color-text-light);
+  color: #7f8da3;
 }
 
 .session-count, .last-session {
@@ -292,10 +309,18 @@
 
 /* 详情箭头 */
 .detail-arrow {
-  font-size: 48rpx;
-  color: var(--color-text-light);
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: #f2f7ff;
+  border: 1rpx solid #dfeaf8;
+  font-size: 36rpx;
+  color: #9eb2c9;
   margin-left: 16rpx;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 空状态 */

@@ -36,6 +36,8 @@ public interface SessionMapper {
     // 统计
     long countByUserId(Long userId);
     long countByUserIdAndStatus(@Param("userId") Long userId, @Param("status") Integer status);
+    long countByClientId(@Param("clientId") Long clientId);
+    Date selectLatestSessionTimeByClientId(@Param("clientId") Long clientId);
     BigDecimal sumFeeByCondition(@Param("userId") Long userId,
                                  @Param("status") Integer status,
                                  @Param("startDate") Date startDate,

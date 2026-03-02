@@ -217,6 +217,19 @@
           AND status = #{status, jdbcType=INTEGER}
     </select>
 
+
+    <select id="countByClientId" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM t_session
+        WHERE client_id = #{clientId, jdbcType=BIGINT}
+    </select>
+
+    <select id="selectLatestSessionTimeByClientId" resultType="java.util.Date">
+        SELECT MAX(session_time)
+        FROM t_session
+        WHERE client_id = #{clientId, jdbcType=BIGINT}
+    </select>
+
     <!-- 按条件汇总咨询费用（默认返回 0.00，避免 null） -->
     <select id="sumFeeByCondition" resultType="java.math.BigDecimal">
         SELECT IFNULL(SUM(fee), 0.00)

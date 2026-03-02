@@ -1,3 +1,4 @@
+const api = require('../../../utils/api.js');
 Page({
   data: {
     scheduleId: null,
@@ -54,7 +55,7 @@ Page({
 
   onLoad(options) {
     // 获取日程ID
-    const scheduleId = options.id || '1';
+    const scheduleId = options.id;
     this.setData({
       scheduleId: scheduleId
     });
@@ -68,25 +69,21 @@ Page({
     });
   },
 
-  loadScheduleData(scheduleId) {
-    // 显示加载状态
-    wx.showLoading({
-      title: '加载中...',
-    });
-    
-    // Mock数据：加载日程详情
-    setTimeout(() => {
-      const mockData = this.getMockScheduleData(scheduleId);
-      
-      // 处理数据格式
-      const processedData = this.processScheduleData(mockData);
-      
-      this.setData({
-        scheduleData: processedData
-      });
-      
+  async loadScheduleData(scheduleId) {
+    wx.showLoading({ title: '加载中...' });
+    try {
+      const res = await api.get(`/api/schedule/detail/${scheduleId}`);
+      if (res.code !== 200 || !res.data) {
+        throw new Error(res.msg || '加载失败');
+      }
+      const processedData = this.processScheduleData(res.data);
+      this.setData({ scheduleData: processedData });
+    } catch (error) {
+      console.error('加载日程失败:', error);
+      wx.showToast({ title: error.message || '加载失败', icon: 'none' });
+    } finally {
       wx.hideLoading();
-    }, 500);
+    }
   },
 
   getMockScheduleData(scheduleId) {
@@ -210,6 +207,11 @@ Page({
       sessionTime: rawData.sessionInfo ? rawData.sessionInfo.sessionTime : '',
       sessionDuration: rawData.sessionInfo ? rawData.sessionInfo.duration : '',
       sessionSummary: rawData.sessionInfo ? rawData.sessionInfo.summary : '',
+      clientInfo: rawData.clientId ? {
+        id: rawData.clientId,
+        name: rawData.clientName || '来访者',
+        clientNo: rawData.clientNo || ''
+      } : rawData.clientInfo,
       recurringEndDate: rawData.recurringEndDate ? 
         `${rawData.recurringEndDate.split('-')[1]}月${rawData.recurringEndDate.split('-')[2]}日` : ''
     };
@@ -251,28 +253,17 @@ Page({
       content: `确定要标记为${statusText}吗？`,
       success: (res) => {
         if (res.confirm) {
-          // 更新本地数据
-          const updatedData = {
-            ...this.data.scheduleData,
-            status: newStatus,
-            statusText: this.data.statusTexts[newStatus]
-          };
-          
-          this.setData({
-            scheduleData: updatedData
-          });
-          
-          // 显示成功提示
-          wx.showToast({
-            title: `已标记为${statusText}`,
-            icon: 'success',
-            duration: 1500
-          });
-          
-          // 这里应该是调用API更新状态
-          console.log('更新日程状态:', {
-            scheduleId: this.data.scheduleId,
+          api.post('/api/schedule/status/update', {
+            id: Number(this.data.scheduleId),
             status: newStatus
+          }).then((res) => {
+            if (res.code !== 200) {
+              throw new Error(res.msg || '更新失败');
+            }
+            wx.showToast({ title: `已标记为${statusText}`, icon: 'success', duration: 1200 });
+            this.loadScheduleData(this.data.scheduleId);
+          }).catch((error) => {
+            wx.showToast({ title: error.message || '更新失败', icon: 'none' });
           });
         }
       }
@@ -287,31 +278,18 @@ Page({
       confirmColor: '#ff4d4f',
       success: (res) => {
         if (res.confirm) {
-          // 显示加载中
-          wx.showLoading({
-            title: '删除中...',
-          });
-          
-          // 模拟API调用
-          setTimeout(() => {
+          wx.showLoading({ title: '删除中...' });
+          api.delete(`/api/schedule/delete/${this.data.scheduleId}`).then((res) => {
             wx.hideLoading();
-            
-            // 显示成功提示
-            wx.showToast({
-              title: '删除成功',
-              icon: 'success',
-              duration: 1500,
-              success: () => {
-                // 返回上一页
-                setTimeout(() => {
-                  wx.navigateBack();
-                }, 1500);
-              }
-            });
-            
-            // 这里应该是调用API删除日程
-            console.log('删除日程:', this.data.scheduleId);
-          }, 800);
+            if (res.code !== 200) {
+              throw new Error(res.msg || '删除失败');
+            }
+            wx.showToast({ title: '删除成功', icon: 'success', duration: 1200 });
+            setTimeout(() => wx.navigateBack(), 1200);
+          }).catch((error) => {
+            wx.hideLoading();
+            wx.showToast({ title: error.message || '删除失败', icon: 'none' });
+          });
         }
       }
     });

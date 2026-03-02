@@ -1,7 +1,7 @@
 // pages/client/select/index.js
 const app = getApp();
 const utils = require('../../../utils/util.js');
-const mockApi = require('../../../utils/mockData.js').mockApi;
+const api = require('../../../utils/api.js');
 
 Page({
   data: {
@@ -93,57 +93,66 @@ Page({
     
     try {
       // 构建查询参数
-      let params = {
-        keyword: this.data.searchKeyword || null
+      const params = {
+        currentPage: this.data.currentPage,
+        pageSize: this.data.pageSize,
+        keyword: this.data.searchKeyword ? this.data.searchKeyword.trim() : null
       };
-      
+
       // 根据筛选条件调整参数
       if (this.data.activeFilter === 'active') {
         params.status = 1; // 进行中
       } else if (this.data.activeFilter === 'recent') {
-        // 最近咨询 - 需要按最后咨询时间排序
-        params.sortBy = 'lastSessionTime';
+        params.sortField = 'last_session';
         params.sortOrder = 'desc';
       } else if (this.data.activeFilter === 'frequent') {
-        // 常客 - 按咨询次数排序
-        params.sortBy = 'sessionCount';
+        // 后端暂不支持按咨询次数排序，先按创建时间降序兜底
+        params.sortField = 'create_time';
         params.sortOrder = 'desc';
       }
-      
-      const result = await mockApi.getClientList(params);
-      
+
+      const result = await api.get('/api/client/list', params);
+
       if (result.code === 200) {
-        let clients = result.data;
-        
-        // 如果是重置，替换整个列表
-        if (reset) {
-          this.setData({
-            clients: clients,
-            totalCount: clients.length
-          });
-        } else {
-          // 否则追加到列表
-          this.setData({
-            clients: [...this.data.clients, ...clients],
-            totalCount: this.data.clients.length + clients.length
-          });
-        }
-        
+        const pageData = result.data || {};
+        const clients = Array.isArray(pageData.list) ? pageData.list : [];
+        const totalCount = Number(pageData.totalCount || 0);
+
+        const mergedClients = this.normalizeClientList(reset ? clients : [...this.data.clients, ...clients]);
+
+        // 如果是重置，替换整个列表；否则追加
+        this.setData({
+          clients: mergedClients,
+          totalCount
+        });
+
         // 更新分页状态
-        const hasMore = clients.length === this.data.pageSize;
+        const hasMore = mergedClients.length < totalCount;
         this.setData({ hasMore, loadingMore: false });
-        
+
         // 更新统计信息
         this.updateSelectedCount();
+      } else {
+        throw new Error(result.msg || '加载失败');
       }
     } catch (error) {
       console.error('加载来访者失败:', error);
       wx.showToast({
-        title: '加载失败',
-        icon: 'error'
+        title: error.message || '加载失败',
+        icon: 'none'
       });
       this.setData({ loadingMore: false });
     }
+  },
+
+  normalizeClientList(clients) {
+    return (clients || []).map(item => ({
+      ...item,
+      statusText: utils.getStatusText(item.status, 'client') || '未知状态',
+      lastSessionText: this.formatLastSession(item.lastSessionTime),
+      sessionCountText: `${item.sessionCount || 0}次咨询`,
+      tags: Array.isArray(item.tags) ? item.tags : []
+    }));
   },
 
   // 格式化上次咨询时间
@@ -223,6 +232,15 @@ Page({
     setTimeout(() => {
       this.setData({ refreshing: false });
     }, 1000);
+  },
+
+  // 查看来访者详情
+  onViewClientDetail(e) {
+    const clientId = e.currentTarget.dataset.id;
+    if (!clientId) return;
+    wx.navigateTo({
+      url: `/pages/client/detail/index?id=${clientId}`
+    });
   },
 
   // 选择来访者

@@ -1,3 +1,4 @@
+const api = require('../../../utils/api.js');
 Page({
   data: {
     // 编辑模式相关
@@ -107,52 +108,51 @@ Page({
     });
   },
 
-  loadScheduleData(scheduleId) {
-    setTimeout(() => {
-      const mockSchedule = this.getMockSchedule(scheduleId);
-      
-      // 转换数据格式：拆分日期和时间
-      const scheduleTypeIndex = this.data.scheduleTypes.findIndex(item => item.value === mockSchedule.scheduleType);
-      const remindTypeIndex = this.data.remindTypes.findIndex(item => item.value === mockSchedule.remindType);
-      const clientIndex = mockSchedule.clientId ? 
-        this.data.clients.findIndex(client => client.id === mockSchedule.clientId) : -1;
-      
-      // 拆分开始时间
-      const [startDate, startTime] = mockSchedule.startTime.split(' ');
-      const startDateText = this.formatDate(startDate);
-      // 拆分结束时间
-      const [endDate, endTime] = mockSchedule.endTime.split(' ');
-      const endDateText = this.formatDate(endDate);
-      
+  async loadScheduleData(scheduleId) {
+    try {
+      const res = await api.get(`/api/schedule/detail/${scheduleId}`);
+      if (res.code !== 200 || !res.data) {
+        throw new Error(res.msg || '加载失败');
+      }
+      const schedule = res.data;
+      const scheduleTypeIndex = this.data.scheduleTypes.findIndex(item => item.value === schedule.scheduleType);
+      const remindTypeIndex = this.data.remindTypes.findIndex(item => item.value === schedule.remindType);
+      const clientIndex = schedule.clientId ? this.data.clients.findIndex(client => client.id === schedule.clientId) : -1;
+
+      const startDate = this.toDateStr(schedule.startTime);
+      const endDate = this.toDateStr(schedule.endTime);
+      const startTime = this.toTimeStr(schedule.startTime);
+      const endTime = this.toTimeStr(schedule.endTime);
+
       this.setData({
-        'formData.title': mockSchedule.title,
-        'formData.scheduleType': mockSchedule.scheduleType,
-        'formData.scheduleTypeIndex': scheduleTypeIndex,
-        'formData.clientId': mockSchedule.clientId,
-        'formData.clientName': mockSchedule.clientName,
+        'formData.title': schedule.title || '',
+        'formData.scheduleType': schedule.scheduleType,
+        'formData.scheduleTypeIndex': scheduleTypeIndex >= 0 ? scheduleTypeIndex : 0,
+        'formData.clientId': schedule.clientId,
+        'formData.clientName': schedule.clientName || '',
         'formData.clientIndex': clientIndex,
-        // 赋值拆分后的开始时间
         'formData.startDate': startDate,
-        'formData.startDateText': startDateText,
+        'formData.startDateText': this.formatDate(startDate),
         'formData.startTime': startTime,
         'formData.startTimeText': startTime,
-        // 赋值拆分后的结束时间
         'formData.endDate': endDate,
-        'formData.endDateText': endDateText,
+        'formData.endDateText': this.formatDate(endDate),
         'formData.endTime': endTime,
         'formData.endTimeText': endTime,
-        // 原有字段不变
-        'formData.location': mockSchedule.location || '',
-        'formData.description': mockSchedule.description || '',
-        'formData.color': mockSchedule.color,
-        'formData.remindType': mockSchedule.remindType,
-        'formData.remindTypeIndex': remindTypeIndex,
-        'formData.isRecurring': mockSchedule.isRecurring || false
+        'formData.location': schedule.location || '',
+        'formData.description': schedule.description || '',
+        'formData.color': schedule.color || '#1890ff',
+        'formData.remindType': schedule.remindType || 1,
+        'formData.remindTypeIndex': remindTypeIndex >= 0 ? remindTypeIndex : 0,
+        'formData.isRecurring': Number(schedule.isRecurring) === 1
       });
-      
+
       this.updateTypeText();
       this.updateRemindText();
-    }, 300);
+      this.watchFormData();
+    } catch (error) {
+      wx.showToast({ title: error.message || '加载失败', icon: 'none' });
+    }
   },
 
   getMockSchedule(id) {
@@ -191,20 +191,15 @@ Page({
     return mockSchedules[id] || mockSchedules['1'];
   },
 
-  loadClients() {
-    setTimeout(() => {
-      const mockClients = [
-        { id: 1, name: '王小明', clientNo: 'C2024001' },
-        { id: 2, name: '李小红', clientNo: 'C2024002' },
-        { id: 3, name: '张伟', clientNo: 'C2024003' },
-        { id: 4, name: '刘芳', clientNo: 'C2024004' },
-        { id: 5, name: '陈勇', clientNo: 'C2024005' }
-      ];
-      
-      this.setData({
-        clients: mockClients
-      });
-    }, 200);
+  async loadClients() {
+    try {
+      const res = await api.get('/api/client/list', { currentPage: 1, pageSize: 200 });
+      if (res.code === 200 && res.data && Array.isArray(res.data.list)) {
+        this.setData({ clients: res.data.list });
+      }
+    } catch (error) {
+      console.error('加载来访者失败', error);
+    }
   },
 
   // 初始化时间：拆分日期+时间（核心修改）
@@ -248,6 +243,16 @@ Page({
       endDate: today,
       endTime: defaultEndTime
     });
+  },
+
+  toDateStr(timeVal) {
+    if (!timeVal) return '';
+    return new Date(timeVal).toISOString().slice(0, 10);
+  },
+
+  toTimeStr(timeVal) {
+    if (!timeVal) return '';
+    return new Date(timeVal).toTimeString().slice(0, 5);
   },
 
   // 格式化日期：YYYY-MM-DD → X月X日
@@ -489,32 +494,32 @@ Page({
       color: this.data.formData.color,
       remindType: this.data.formData.remindType,
       isRecurring: this.data.formData.isRecurring,
-      recurringType: this.data.formData.recurringType,
-      recurringDays: this.data.formData.recurringDays,
-      recurringDayOfMonth: this.data.formData.recurringDayOfMonth,
-      recurringEndDate: this.data.formData.recurringEndDate
+      recurringRule: this.data.formData.isRecurring ? JSON.stringify({
+        recurringType: this.data.formData.recurringType,
+        recurringDays: this.data.formData.recurringDays,
+        recurringDayOfMonth: this.data.formData.recurringDayOfMonth,
+        recurringEndDate: this.data.formData.recurringEndDate
+      }) : null
     };
     
     console.log('提交的日程数据:', submitData);
-    
-    // 模拟API调用
-    wx.showLoading({
-      title: '保存中...',
-    });
-    
-    setTimeout(() => {
+
+    wx.showLoading({ title: '保存中...' });
+    const request = this.data.isEditMode
+      ? api.put(`/api/schedule/update/${this.data.scheduleId}`, submitData)
+      : api.post('/api/schedule/create', submitData);
+
+    request.then((res) => {
       wx.hideLoading();
-      wx.showToast({
-        title: this.data.isEditMode ? '更新成功' : '添加成功',
-        icon: 'success',
-        duration: 1500,
-        success: () => {
-          setTimeout(() => {
-            wx.navigateBack();
-          }, 1500);
-        }
-      });
-    }, 800);
+      if (res.code !== 200) {
+        throw new Error(res.msg || '保存失败');
+      }
+      wx.showToast({ title: this.data.isEditMode ? '更新成功' : '添加成功', icon: 'success' });
+      setTimeout(() => wx.navigateBack(), 1200);
+    }).catch((error) => {
+      wx.hideLoading();
+      wx.showToast({ title: error.message || '保存失败', icon: 'none' });
+    });
   },
 
   onCancel() {

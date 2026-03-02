@@ -3,6 +3,7 @@ package com.example.counselingappjava.controller;
 import com.example.counselingappjava.common.Result;
 import com.example.counselingappjava.dto.*;
 import com.example.counselingappjava.entity.Client;
+import com.example.counselingappjava.mapper.SessionMapper;
 import com.example.counselingappjava.service.ClientService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +32,7 @@ public class ClientController {
 
     private final ClientService clientService;
     private final ObjectMapper objectMapper;
+    private final SessionMapper sessionMapper;
 
     /**
      * 分页查询来访者列表
@@ -146,9 +148,10 @@ public class ClientController {
             dto.setTags(Collections.emptyList()); // 无标签返回空数组
         }
 
-        // 暂默认值：咨询次数、最后咨询时间（后续关联咨询记录表后修改此处即可）
-        dto.setSessionCount(0);
-        dto.setLastSessionTime(null);
+        // 真实统计：咨询次数、最后咨询时间
+        long sessionCount = sessionMapper.countByClientId(client.getId());
+        dto.setSessionCount((int) sessionCount);
+        dto.setLastSessionTime(sessionMapper.selectLatestSessionTimeByClientId(client.getId()));
 
         return dto;
     }

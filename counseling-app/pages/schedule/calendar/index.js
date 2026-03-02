@@ -1,7 +1,7 @@
 // pages/schedule/calendar/index.js
 const app = getApp();
 const utils = require('../../../utils/util.js');
-const mockApi = require('../../../utils/mockData.js').mockApi;
+const api = require('../../../utils/api.js');
 
 Page({
   data: {
@@ -28,7 +28,7 @@ Page({
     activeType: 0,
     
     // 选中的日期
-    selectedDate: new Date().toISOString().split('T')[0],
+    selectedDate: '',
     selectedDateStr: '',
     
     // 选中的日程
@@ -42,6 +42,7 @@ Page({
   },
 
   onLoad() {
+    this.setData({ selectedDate: this.formatDateToLocalStr(new Date()) });
     this.initPage();
   },
 
@@ -61,9 +62,22 @@ Page({
     this.loadSchedules();
   },
 
+  formatDateToLocalStr(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  },
+
+  parseDateFromStr(dateStr) {
+    if (!dateStr) return new Date();
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  },
+
   // 设置选中日期显示文本
   setSelectedDateStr() {
-    const date = new Date(this.data.selectedDate);
+    const date = this.parseDateFromStr(this.data.selectedDate);
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
@@ -100,7 +114,7 @@ Page({
       const date = new Date(currentYear, currentMonth - 1, day);
       calendarDays.push({
         day,
-        date: date.toISOString().split('T')[0],
+        date: this.formatDateToLocalStr(date),
         isCurrentMonth: false,
         isToday: false,
         hasSchedule: false,
@@ -114,7 +128,7 @@ Page({
     
     for (let i = 1; i <= currentMonthDays; i++) {
       const date = new Date(currentYear, currentMonth, i);
-      const dateStr = date.toISOString().split('T')[0];
+      const dateStr = this.formatDateToLocalStr(date);
       const isToday = date.toDateString() === today.toDateString();
       
       calendarDays.push({
@@ -134,7 +148,7 @@ Page({
       const date = new Date(currentYear, currentMonth + 1, i);
       calendarDays.push({
         day: i,
-        date: date.toISOString().split('T')[0],
+        date: this.formatDateToLocalStr(date),
         isCurrentMonth: false,
         isToday: false,
         hasSchedule: false,
@@ -161,7 +175,7 @@ Page({
     
     // 标记有日程的日期
     allSchedules.forEach(schedule => {
-      const scheduleDate = new Date(schedule.startTime).toISOString().split('T')[0];
+      const scheduleDate = this.formatDateToLocalStr(new Date(schedule.startTime));
       const dayIndex = updatedDays.findIndex(day => day.date === scheduleDate);
       
       if (dayIndex !== -1) {
@@ -176,20 +190,26 @@ Page({
   // 加载日程数据
   async loadSchedules() {
     this.setData({ loading: true });
-    
+
     try {
-      const result = await mockApi.getScheduleList();
+      const startDate = `${this.data.currentYear}-${String(this.data.currentMonth + 1).padStart(2, '0')}-01`;
+      const monthLastDay = new Date(this.data.currentYear, this.data.currentMonth + 1, 0).getDate();
+      const endDate = `${this.data.currentYear}-${String(this.data.currentMonth + 1).padStart(2, '0')}-${String(monthLastDay).padStart(2, '0')}`;
+
+      const result = await api.get('/api/schedule/list', { startDate, endDate });
       if (result.code === 200) {
-        this.setData({ allSchedules: result.data }, () => {
+        this.setData({ allSchedules: result.data || [] }, () => {
           this.markScheduleDays();
           this.filterSelectedDaySchedules();
         });
+      } else {
+        throw new Error(result.msg || '加载失败');
       }
     } catch (error) {
       console.error('加载日程失败:', error);
       wx.showToast({
-        title: '加载失败',
-        icon: 'error'
+        title: error.message || '加载失败',
+        icon: 'none'
       });
     } finally {
       this.setData({ loading: false });
@@ -201,7 +221,7 @@ Page({
     const { selectedDate, allSchedules, activeType } = this.data;
     
     let filtered = allSchedules.filter(schedule => {
-      const scheduleDate = new Date(schedule.startTime).toISOString().split('T')[0];
+      const scheduleDate = this.formatDateToLocalStr(new Date(schedule.startTime));
       return scheduleDate === selectedDate;
     });
     

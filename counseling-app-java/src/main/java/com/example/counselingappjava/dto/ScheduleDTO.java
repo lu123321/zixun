@@ -1,5 +1,6 @@
 package com.example.counselingappjava.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.constraints.Future;
@@ -21,11 +22,11 @@ public class ScheduleDTO {
     private Long clientId;
 
     @NotNull(message = "开始时间不能为空")
-    @Future(message = "开始时间必须是将来的时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
     private Date startTime;
 
     @NotNull(message = "结束时间不能为空")
-    @Future(message = "结束时间必须是将来的时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
     private Date endTime;
 
     @Size(max = 200, message = "地点长度不能超过200个字符")
