@@ -198,7 +198,8 @@ Page({
 
       const result = await api.get('/api/schedule/list', { startDate, endDate });
       if (result.code === 200) {
-        this.setData({ allSchedules: result.data || [] }, () => {
+        const allSchedules = (result.data || []).map((item) => this.enrichScheduleDisplayData(item));
+        this.setData({ allSchedules }, () => {
           this.markScheduleDays();
           this.filterSelectedDaySchedules();
         });
@@ -234,6 +235,15 @@ Page({
     filtered.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
     
     this.setData({ selectedDaySchedules: filtered });
+  },
+
+  enrichScheduleDisplayData(schedule) {
+    return {
+      ...schedule,
+      timeRangeText: this.formatTimeRange(schedule.startTime, schedule.endTime),
+      durationText: `${this.getDuration(schedule.startTime, schedule.endTime)}分钟`,
+      scheduleTypeText: this.getScheduleTypeText(schedule.scheduleType)
+    };
   },
 
   // ==================== 格式化方法 ====================

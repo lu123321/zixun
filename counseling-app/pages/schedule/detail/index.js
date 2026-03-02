@@ -180,10 +180,10 @@ Page({
     // 格式化时间显示
     const startDate = new Date(rawData.startTime);
     const endDate = new Date(rawData.endTime);
-    
+
     const startTimeText = `${startDate.getMonth() + 1}月${startDate.getDate()}日 ${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`;
     const endTimeText = `${endDate.getMonth() + 1}月${endDate.getDate()}日 ${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}`;
-    
+
     // 计算重复规则文本
     let recurringRuleText = '';
     if (rawData.isRecurring && rawData.recurringType === 'weekly' && rawData.recurringDays) {
@@ -193,7 +193,22 @@ Page({
     } else if (rawData.isRecurring && rawData.recurringType === 'monthly' && rawData.recurringDayOfMonth) {
       recurringRuleText = `每月 ${rawData.recurringDayOfMonth} 日`;
     }
-    
+
+    const clientInfoSource = rawData.clientInfo || {};
+    const resolvedClientId = rawData.clientId || clientInfoSource.id || null;
+    const resolvedClientName = rawData.clientName || clientInfoSource.name || '';
+    const resolvedClientNo = rawData.clientNo || clientInfoSource.clientNo || '';
+    const resolvedClientAvatar = rawData.clientAvatar || clientInfoSource.avatar || '';
+
+    const clientInfo = (resolvedClientId || resolvedClientName || resolvedClientNo)
+      ? {
+          id: resolvedClientId,
+          name: resolvedClientName || '来访者',
+          clientNo: resolvedClientNo || '未设置编号',
+          avatar: resolvedClientAvatar
+        }
+      : null;
+
     return {
       ...rawData,
       startTime: startTimeText,
@@ -203,26 +218,24 @@ Page({
       statusText: this.data.statusTexts[rawData.status] || '未知',
       remindTypeText: this.data.remindTexts[rawData.remindType] || '不提醒',
       recurringTypeText: this.data.recurringTypeTexts[rawData.recurringType] || '',
-      recurringRuleText: recurringRuleText,
+      recurringRuleText,
       sessionTime: rawData.sessionInfo ? rawData.sessionInfo.sessionTime : '',
       sessionDuration: rawData.sessionInfo ? rawData.sessionInfo.duration : '',
       sessionSummary: rawData.sessionInfo ? rawData.sessionInfo.summary : '',
-      clientInfo: rawData.clientId ? {
-        id: rawData.clientId,
-        name: rawData.clientName || '来访者',
-        clientNo: rawData.clientNo || ''
-      } : rawData.clientInfo,
-      recurringEndDate: rawData.recurringEndDate ? 
-        `${rawData.recurringEndDate.split('-')[1]}月${rawData.recurringEndDate.split('-')[2]}日` : ''
+      clientInfo,
+      recurringEndDate: rawData.recurringEndDate
+        ? `${rawData.recurringEndDate.split('-')[1]}月${rawData.recurringEndDate.split('-')[2]}日`
+        : ''
     };
   },
 
   // 跳转到来访者详情
   goToClientDetail() {
-    if (!this.data.scheduleData.clientId) return;
-    
+    const clientId = this.data.scheduleData.clientInfo && this.data.scheduleData.clientInfo.id;
+    if (!clientId) return;
+
     wx.navigateTo({
-      url: `/pages/client/detail/index?id=${this.data.scheduleData.clientId}`
+      url: `/pages/client/detail/index?id=${clientId}`
     });
   },
 

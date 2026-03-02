@@ -107,7 +107,7 @@
         <text class="session-duration">{{scheduleData.sessionDuration}}</text>
       </view>
       <view class="session-info">
-        <text class="session-client">{{scheduleData.clientInfo.name}}</text>
+        <text class="session-client">{{(scheduleData.clientInfo && scheduleData.clientInfo.name) || '未关联来访者'}}</text>
         <text class="session-summary">{{scheduleData.sessionSummary || '查看咨询记录'}}</text>
       </view>
       <image class="arrow-icon" src="/images/icons/arrow-right.png"></image>
