@@ -153,82 +153,78 @@ Page({
   // 加载会话数据（编辑模式）
   async loadSessionData(id) {
     app.showLoading('加载中...');
-    
+
     try {
-      // 模拟加载会话数据
-      const result = await new Promise(resolve => {
-        setTimeout(() => {
-          resolve({
-            code: 200,
-            data: {
-              id: id,
-              clientId: 1,
-              clientName: '李小明',
-              sessionTime: '2024-03-25',
-              startTime: '2024-03-25 14:00:00',
-              duration: 50,
-              sessionType: 1,
-              sessionMode: 1,
-              location: '咨询室A',
-              fee: '500',
-              hasSupervision: false,
-              supervisionType: null,
-              supervisionFee: '',
-              subjective: '来访者表示最近工作压力较大',
-              objective: '来访者显得疲惫，语速较快',
-              assessment: '可能存在轻度焦虑',
-              plan: '建议学习放松技巧',
-              contentSummary: '讨论了工作压力问题',
-              homework: '每天练习深呼吸10分钟',
-              nextPlan: '下次继续讨论放松技巧',
-              syncToSchedule: true,
-              remindTime: 3,
-              attachments: []
-            }
-          });
-        }, 500);
-      });
-      
-      if (result.code === 200) {
-        const session = result.data;
-        
-        // 设置表单数据
-        this.setData({
-          'formData.clientId': session.clientId,
-          'formData.sessionTime': session.sessionTime,
-          'formData.startTime': session.startTime,
-          'formData.duration': session.duration,
-          'formData.sessionType': session.sessionType,
-          'formData.sessionMode': session.sessionMode,
-          'formData.location': session.location || '',
-          'formData.fee': session.fee || '',
-          'formData.hasSupervision': session.hasSupervision || false,
-          'formData.supervisionType': session.supervisionType,
-          'formData.supervisionFee': session.supervisionFee || '',
-          'formData.subjective': session.subjective || '',
-          'formData.objective': session.objective || '',
-          'formData.assessment': session.assessment || '',
-          'formData.plan': session.plan || '',
-          'formData.contentSummary': session.contentSummary || '',
-          'formData.homework': session.homework || '',
-          'formData.nextPlan': session.nextPlan || '',
-          'formData.syncToSchedule': session.syncToSchedule !== false,
-          'formData.remindTime': session.remindTime || 3
-        });
-        
-        // 预选择来访者
-        if (session.clientId) {
-          this.preSelectClient(session.clientId);
-        }
-        
-        // 验证表单
-        this.validateForm();
+      const result = await api.get(`/api/session/detail/${id}`);
+      if (result.code !== 200 || !result.data) {
+        throw new Error(result.msg || '加载失败');
       }
+
+      const session = result.data;
+      const sessionTime = session.sessionTime ? utils.formatDate(session.sessionTime, 'yyyy-MM-dd') : '';
+      const startTime = session.sessionTime ? utils.formatDate(session.sessionTime, 'yyyy-MM-dd HH:mm:ss') : '';
+      const parsedAttachments = this.parseAttachments(session.attachments);
+
+      this.setData({
+        'formData.clientId': session.clientId,
+        'formData.sessionTime': sessionTime,
+        'formData.startTime': startTime,
+        'formData.duration': session.duration || 50,
+        'formData.sessionType': session.sessionType || 1,
+        'formData.sessionMode': session.sessionMode || 1,
+        'formData.location': session.location || '',
+        'formData.fee': session.fee != null ? String(session.fee) : '',
+        'formData.hasSupervision': Number(session.hasSupervision) === 1,
+        'formData.supervisionType': session.supervisionType,
+        'formData.supervisionFee': session.supervisionFee != null ? String(session.supervisionFee) : '',
+        'formData.subjective': session.subjective || '',
+        'formData.objective': session.objective || '',
+        'formData.assessment': session.assessment || '',
+        'formData.plan': session.plan || '',
+        'formData.contentSummary': session.contentSummary || '',
+        'formData.homework': session.homework || '',
+        'formData.nextPlan': session.nextPlan || '',
+        'formData.syncToSchedule': session.syncToSchedule !== false,
+        'formData.remindTime': session.remindTime || 3,
+        tempDate: sessionTime,
+        tempTime: startTime ? startTime.slice(11, 16) : '',
+        sessionDateDisplay: sessionTime ? this.formatDate(sessionTime) : '',
+        sessionTimeDisplay: startTime ? this.formatTime(startTime) : '',
+        imageAttachments: parsedAttachments.images,
+        fileAttachments: parsedAttachments.files,
+        audioAttachments: parsedAttachments.audios
+      });
+
+      if (session.clientId) {
+        this.preSelectClient(session.clientId);
+      }
+
+      this.validateForm();
     } catch (error) {
       console.error('加载会话数据失败:', error);
-      app.showError('加载失败');
+      app.showError(error.message || '加载失败');
     } finally {
       app.hideLoading();
+    }
+  },
+
+  parseAttachments(attachments) {
+    const empty = { images: [], files: [], audios: [] };
+    if (!attachments) return empty;
+
+    try {
+      const parsed = typeof attachments === 'string' ? JSON.parse(attachments) : attachments;
+      if (!parsed || typeof parsed !== 'object') return empty;
+      if (Array.isArray(parsed)) {
+        return { images: [], files: parsed, audios: [] };
+      }
+      return {
+        images: Array.isArray(parsed.images) ? parsed.images : [],
+        files: Array.isArray(parsed.files) ? parsed.files : [],
+        audios: Array.isArray(parsed.audios) ? parsed.audios : []
+      };
+    } catch (e) {
+      return empty;
     }
   },
 
