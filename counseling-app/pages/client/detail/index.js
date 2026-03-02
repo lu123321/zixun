@@ -75,7 +75,8 @@ Page({
       }
 
       const rawClient = clientRes.data;
-      const sessions = []; // 当前后端暂无会话列表接口，后续接入 /api/session/list 可替换
+      const sessionRes = await api.get('/api/session/list', { clientId: this.data.clientId });
+      const sessions = sessionRes.code === 200 && Array.isArray(sessionRes.data) ? sessionRes.data : [];
       const stats = this.calculateSessionStats(sessions);
       const clientInfo = this.normalizeClientInfo({ ...rawClient, ...stats });
 

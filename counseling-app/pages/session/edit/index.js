@@ -1,7 +1,7 @@
 // pages/session/edit/index.js
 const app = getApp();
 const utils = require('../../../utils/util.js');
-const mockApi = require('../../../utils/mockData.js').mockApi;
+const api = require('../../../utils/api.js');
 
 Page({
   data: {
@@ -88,7 +88,9 @@ Page({
     
     // 临时数据
     tempDate: '',
-    tempTime: ''
+    tempTime: '',
+    sessionDateDisplay: '',
+    sessionTimeDisplay: ''
   },
 
   onLoad(options) {
@@ -120,11 +122,13 @@ Page({
     if (date) {
       this.setData({
         'formData.sessionTime': date,
-        tempDate: date
+        tempDate: date,
+        sessionDateDisplay: this.formatDate(date)
       });
     }
     
-    // 初始化表单验证
+    // 初始化展示与表单验证
+    this.syncTimeDisplay();
     this.validateForm();
   },
 
@@ -231,7 +235,7 @@ Page({
   // 预选择来访者
   async preSelectClient(clientId) {
     try {
-      const result = await mockApi.getClientDetail(clientId);
+      const result = await api.get(`/api/client/detail/${clientId}`);
       if (result.code === 200) {
         this.setData({
           selectedClient: result.data,
@@ -254,7 +258,9 @@ Page({
       'formData.sessionTime': today,
       'formData.startTime': today + ' ' + time + ':00',
       tempDate: today,
-      tempTime: time
+      tempTime: time,
+      sessionDateDisplay: this.formatDate(today),
+      sessionTimeDisplay: this.formatTime(time)
     });
     
     this.validateForm();
@@ -272,6 +278,17 @@ Page({
       });
       this.validateForm();
     }
+  },
+
+  syncTimeDisplay() {
+    const { sessionTime, startTime } = this.data.formData;
+    const dateText = sessionTime ? this.formatDate(sessionTime) : '';
+    const timeText = startTime ? this.formatTime(startTime) : (this.data.tempTime ? this.formatTime(this.data.tempTime) : '');
+
+    this.setData({
+      sessionDateDisplay: dateText,
+      sessionTimeDisplay: timeText
+    });
   },
 
   // ==================== 表单验证 ====================
@@ -303,15 +320,20 @@ Page({
   // ==================== 格式化函数 ====================
   
   formatDate(dateStr) {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+    if (!dateStr || typeof dateStr !== 'string') return '';
+    const datePart = dateStr.includes(' ') ? dateStr.split(' ')[0] : dateStr;
+    const parts = datePart.split('-');
+    if (parts.length !== 3) return dateStr;
+    const [year, month, day] = parts;
+    return `${year}年${parseInt(month, 10)}月${parseInt(day, 10)}日`;
   },
 
   formatTime(timeStr) {
-    if (!timeStr) return '';
-    const date = new Date(timeStr);
-    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    if (!timeStr || typeof timeStr !== 'string') return '';
+    if (timeStr.includes(' ')) {
+      return timeStr.split(' ')[1].slice(0, 5);
+    }
+    return timeStr.slice(0, 5);
   },
 
   formatFileSize(bytes) {
@@ -346,38 +368,26 @@ Page({
   
 
   // 选择日期
-  onSelectDate() {
-    const currentDate = this.data.formData.sessionTime || utils.formatDate(new Date(), 'yyyy-MM-dd');
-    
-    wx.showDatePicker({
-      currentDate: currentDate,
-      startDate: '2020-01-01',
-      endDate: '2030-12-31',
-      success: (res) => {
-        const dateStr = res.date;
-        this.setData({
-          'formData.sessionTime': dateStr,
-          tempDate: dateStr
-        });
-        this.updateStartTime();
-        this.validateForm();
-      }
+  onDateChange(e) {
+    const dateStr = e.detail.value;
+    this.setData({
+      'formData.sessionTime': dateStr,
+      tempDate: dateStr,
+      sessionDateDisplay: this.formatDate(dateStr)
     });
+    this.updateStartTime();
+    this.validateForm();
   },
 
   // 选择时间
-  onSelectTime() {
-    const currentTime = this.data.tempTime || '09:00';
-    
-    wx.showTimePicker({
-      value: currentTime,
-      success: (res) => {
-        const timeStr = `${res.hour.toString().padStart(2, '0')}:${res.minute.toString().padStart(2, '0')}`;
-        this.setData({ tempTime: timeStr });
-        this.updateStartTime();
-        this.validateForm();
-      }
+  onTimeChange(e) {
+    const timeStr = e.detail.value;
+    this.setData({
+      tempTime: timeStr,
+      sessionTimeDisplay: this.formatTime(timeStr)
     });
+    this.updateStartTime();
+    this.validateForm();
   },
 
   // 更新时间
@@ -386,7 +396,9 @@ Page({
     if (tempDate && tempTime) {
       const startTime = `${tempDate} ${tempTime}:00`;
       this.setData({
-        'formData.startTime': startTime
+        'formData.startTime': startTime,
+        sessionDateDisplay: this.formatDate(tempDate),
+        sessionTimeDisplay: this.formatTime(tempTime)
       });
     }
   },
@@ -744,29 +756,40 @@ Page({
     this.setData({ loading: true });
     
     try {
-      // 准备数据
-      const sessionData = {
-        ...this.data.formData,
-        clientId: this.data.selectedClient.id,
-        clientName: this.data.selectedClient.name,
-        // 计算结束时间
-        endTime: this.calculateEndTime(),
-        attachments: {
-          images: this.data.imageAttachments,
-          files: this.data.fileAttachments,
-          audios: this.data.audioAttachments
-        }
+      // 准备数据（对齐后端 /api/session/create）
+      const attachments = {
+        images: this.data.imageAttachments,
+        files: this.data.fileAttachments,
+        audios: this.data.audioAttachments
       };
-      
+      const sessionData = {
+        clientId: this.data.selectedClient.id,
+        startTime: this.data.formData.startTime,
+        duration: Number(this.data.formData.duration) || 50,
+        sessionType: Number(this.data.formData.sessionType),
+        sessionMode: Number(this.data.formData.sessionMode),
+        fee: this.data.formData.fee ? Number(this.data.formData.fee) : null,
+        hasSupervision: this.data.formData.hasSupervision ? 1 : 0,
+        supervisionType: this.data.formData.supervisionType,
+        supervisionFee: this.data.formData.supervisionFee ? Number(this.data.formData.supervisionFee) : null,
+        contentSummary: this.data.formData.contentSummary,
+        homework: this.data.formData.homework,
+        nextPlan: this.data.formData.nextPlan,
+        subjective: this.data.formData.subjective,
+        objective: this.data.formData.objective,
+        assessment: this.data.formData.assessment,
+        plan: this.data.formData.plan,
+        attachments: JSON.stringify(attachments)
+      };
+
       // 移除空值
       Object.keys(sessionData).forEach(key => {
         if (sessionData[key] === null || sessionData[key] === '') {
           delete sessionData[key];
         }
       });
-      
-      // 模拟API调用
-      const result = await mockApi.addSession(sessionData);
+
+      const result = await api.post('/api/session/create', sessionData);
       
       if (result.code === 200) {
         // 清除草稿
@@ -780,7 +803,7 @@ Page({
           wx.navigateBack();
         }, 1500);
       } else {
-        throw new Error(result.message || '保存失败');
+        throw new Error(result.msg || result.message || '保存失败');
       }
       
     } catch (error) {

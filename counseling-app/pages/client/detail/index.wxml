@@ -168,9 +168,6 @@
       <view class="remark-content">
         {{clientInfo.remark}}
       </view>
-      <view class="remark-footer">
-        <text class="remark-time">创建时间: {{clientInfo.createDateText}}</text>
-      </view>
     </view>
   </view>
 

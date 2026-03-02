@@ -45,19 +45,23 @@
           <view class="section-required">必填</view>
         </view>
         
-        <view class="form-group" bindtap="onSelectDate">
+        <view class="form-group">
           <view class="form-label">日期</view>
-          <view class="picker-field {{formData.sessionTime ? '' : 'placeholder'}}">
-            {{formData.sessionTime ? formatDate(formData.sessionTime) : '请选择日期'}}
-          </view>
+          <picker mode="date" value="{{tempDate}}" start="2020-01-01" end="2030-12-31" bindchange="onDateChange">
+            <view class="picker-field {{formData.sessionTime ? '' : 'placeholder'}}">
+              {{sessionDateDisplay || '请选择日期'}}
+            </view>
+          </picker>
           <view class="arrow-icon">›</view>
         </view>
         
-        <view class="form-group" bindtap="onSelectTime">
+        <view class="form-group">
           <view class="form-label">开始时间</view>
-          <view class="picker-field {{formData.startTime ? '' : 'placeholder'}}">
-            {{formData.startTime ? formatTime(formData.startTime) : '请选择时间'}}
-          </view>
+          <picker mode="time" value="{{tempTime}}" bindchange="onTimeChange">
+            <view class="picker-field {{formData.startTime ? '' : 'placeholder'}}">
+              {{sessionTimeDisplay || '请选择时间'}}
+            </view>
+          </picker>
           <view class="arrow-icon">›</view>
         </view>
         
@@ -310,34 +314,7 @@
         </view>
         
         <view class="attachments">
-          <!-- 图片附件 -->
-          <view class="attachment-section">
-            <view class="attachment-label">
-              <text class="label-text">图片</text>
-              <text class="label-tip">最多9张</text>
-            </view>
-            <view class="image-list">
-              <view 
-                wx:for="{{imageAttachments}}" 
-                wx:key="id" 
-                class="image-item"
-                data-index="{{index}}"
-                bindtap="onPreviewImage"
-              >
-                <image class="image-preview" src="{{item.path}}" mode="aspectFill" />
-                <view class="image-remove" catchtap="onRemoveImage" data-index="{{index}}">×</view>
-              </view>
-              
-              <view 
-                wx:if="{{imageAttachments.length < 9}}" 
-                class="upload-btn image-upload"
-                bindtap="onAddImage"
-              >
-                <view class="upload-icon">+</view>
-                <view class="upload-text">添加图片</view>
-              </view>
-            </view>
-          </view>
+         
           
           <!-- 文件附件 -->
           <view class="attachment-section">
