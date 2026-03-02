@@ -13,22 +13,29 @@
   <view class="client-info-card">
     <view class="info-header">
       <view class="client-avatar">
-        <text class="avatar-text">{{clientInfo.name ? clientInfo.name.charAt(0) : '?'}}</text>
+        <text class="avatar-text">{{clientInfo.avatarText}}</text>
         <view class="avatar-status status-{{clientInfo.status}}"></view>
       </view>
       <view class="client-basic">
         <view class="client-name-row">
           <view class="client-name">{{clientInfo.name || '未命名'}}</view>
           <view class="client-status status-{{clientInfo.status}}">
-            {{getStatusText(clientInfo.status)}}
+            {{clientInfo.statusText}}
           </view>
         </view>
         <view class="client-meta">
-          <text wx:if="{{clientInfo.gender}}" class="meta-item">
-            {{clientInfo.gender === 1 ? '男' : clientInfo.gender === 2 ? '女' : '未知'}}
-          </text>
-          <text wx:if="{{clientInfo.age}}" class="meta-item">{{clientInfo.age}}岁</text>
-          <text class="meta-item">编号: {{clientInfo.clientNo || '暂无'}}</text>
+          <view class="meta-pill" wx:if="{{clientInfo.gender}}">
+            <text class="meta-pill-icon">👤</text>
+            <text class="meta-pill-text">{{clientInfo.gender === 1 ? '男' : clientInfo.gender === 2 ? '女' : '未知'}}</text>
+          </view>
+          <view class="meta-pill" wx:if="{{clientInfo.age}}">
+            <text class="meta-pill-icon">🎂</text>
+            <text class="meta-pill-text">{{clientInfo.age}}岁</text>
+          </view>
+          <view class="meta-pill meta-pill-no">
+            <text class="meta-pill-icon">#</text>
+            <text class="meta-pill-text">{{clientInfo.clientNo || '暂无编号'}}</text>
+          </view>
         </view>
       </view>
     </view>
@@ -75,17 +82,17 @@
       </view>
       <view class="stat-divider"></view>
       <view class="stat-item">
-        <view class="stat-value">¥{{formatMoney(clientInfo.totalFee || 0)}}</view>
+        <view class="stat-value">¥{{clientInfo.totalFeeText}}</view>
         <view class="stat-label">累计费用</view>
       </view>
       <view class="stat-divider"></view>
       <view class="stat-item">
-        <view class="stat-value">{{clientInfo.firstSession ? formatDate(clientInfo.firstSession, 'MM-dd') : '无'}}</view>
+        <view class="stat-value">{{clientInfo.firstSessionText}}</view>
         <view class="stat-label">首次咨询</view>
       </view>
       <view class="stat-divider"></view>
       <view class="stat-item">
-        <view class="stat-value">{{clientInfo.lastSession ? formatDate(clientInfo.lastSession, 'MM-dd') : '无'}}</view>
+        <view class="stat-value">{{clientInfo.lastSessionText}}</view>
         <view class="stat-label">最近咨询</view>
       </view>
     </view>
@@ -108,22 +115,22 @@
           bindtap="onViewSession"
         >
           <view class="session-date">
-            <view class="date-day">{{formatDay(item.sessionTime)}}</view>
-            <view class="date-month">{{formatMonth(item.sessionTime)}}</view>
+            <view class="date-day">{{item.dayText}}</view>
+            <view class="date-month">{{item.monthText}}</view>
           </view>
           
           <view class="session-info">
             <view class="session-main">
-              <view class="session-time">{{formatTime(item.sessionTime)}} {{item.duration || 50}}分钟</view>
+              <view class="session-time">{{item.timeText}} {{item.duration || 50}}分钟</view>
               <view class="session-type {{item.sessionType === 4 ? 'supervision' : ''}}">
-                {{getSessionTypeText(item.sessionType)}}
+                {{item.sessionTypeText}}
                 <text wx:if="{{item.sessionType === 4}}" class="supervision-tag">督导</text>
               </view>
             </view>
             
             <view class="session-meta">
-              <text class="meta-item">¥{{formatMoney(item.fee)}}</text>
-              <text class="meta-item">{{item.sessionMode === 1 ? '面对面' : item.sessionMode === 2 ? '视频' : '电话'}}</text>
+              <text class="meta-item">¥{{item.feeText}}</text>
+              <text class="meta-item">{{item.modeText}}</text>
               <text wx:if="{{item.location}}" class="meta-item">📍 {{item.location}}</text>
             </view>
             
@@ -137,7 +144,7 @@
           </view>
           
           <view class="session-status status-{{item.status}}">
-            {{getSessionStatusText(item.status)}}
+            {{item.sessionStatusText}}
           </view>
         </view>
       </view>
@@ -162,7 +169,7 @@
         {{clientInfo.remark}}
       </view>
       <view class="remark-footer">
-        <text class="remark-time">创建时间: {{formatDate(clientInfo.createTime)}}</text>
+        <text class="remark-time">创建时间: {{clientInfo.createDateText}}</text>
       </view>
     </view>
   </view>

@@ -175,21 +175,26 @@
 
 .duration-btn {
   flex: 1;
+  min-height: 84rpx;
   padding: 20rpx 0;
   text-align: center;
-  background: var(--color-background);
-  border: 1rpx solid var(--color-border);
-  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fbff;
+  border: 1rpx solid #d9e9ff;
+  border-radius: 16rpx;
   font-size: 26rpx;
-  color: var(--color-text-light);
+  color: #4a5a73;
   transition: all 0.2s ease;
 }
 
 .duration-btn.active {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  font-weight: 500;
+  background: linear-gradient(135deg, #e8f3ff 0%, #d7ebff 100%);
+  border-color: #1890ff;
+  color: #0f6fd6;
+  font-weight: 600;
+  box-shadow: 0 8rpx 20rpx rgba(24, 144, 255, 0.18);
 }
 
 .duration-btn.custom-duration {
@@ -227,20 +232,22 @@
 .radio-item {
   display: flex;
   align-items: center;
-  padding: 16rpx 24rpx;
-  background: var(--color-background);
-  border: 1rpx solid var(--color-border);
-  border-radius: 12rpx;
+  justify-content: center;
+  padding: 16rpx 28rpx;
+  background: #f8fbff;
+  border: 1rpx solid #d9e9ff;
+  border-radius: 999rpx;
   font-size: 26rpx;
-  color: var(--color-text);
+  color: #4a5a73;
   transition: all 0.2s ease;
 }
 
 .radio-item.active {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  font-weight: 500;
+  background: linear-gradient(135deg, #e8f3ff 0%, #d7ebff 100%);
+  border-color: #1890ff;
+  color: #0f6fd6;
+  font-weight: 600;
+  box-shadow: 0 8rpx 20rpx rgba(24, 144, 255, 0.16);
 }
 
 .radio-item.active .radio-dot {
@@ -249,22 +256,20 @@
 }
 
 .radio-dot {
-  width: 24rpx;
-  height: 24rpx;
-  border: 2rpx solid var(--color-border);
-  border-radius: 50%;
-  margin-right: 12rpx;
-  transition: all 0.2s ease;
+  display: none;
 }
 
 .radio-text {
   font-size: 26rpx;
+  line-height: 1.2;
 }
 
 /* 表单输入 */
 .form-input {
   width: 100%;
-  padding: 24rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 24rpx;
   background: var(--color-background);
   border: 1rpx solid var(--color-border);
   border-radius: 12rpx;
@@ -581,20 +586,21 @@
 }
 
 .remind-option {
-  padding: 12rpx 24rpx;
-  background: var(--color-background);
-  border: 1rpx solid var(--color-border);
-  border-radius: 12rpx;
+  padding: 14rpx 24rpx;
+  background: #f8fbff;
+  border: 1rpx solid #d9e9ff;
+  border-radius: 999rpx;
   font-size: 24rpx;
-  color: var(--color-text);
+  color: #4a5a73;
   transition: all 0.2s ease;
 }
 
 .remind-option.active {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  font-weight: 500;
+  background: linear-gradient(135deg, #e8f3ff 0%, #d7ebff 100%);
+  border-color: #1890ff;
+  color: #0f6fd6;
+  font-weight: 600;
+  box-shadow: 0 8rpx 20rpx rgba(24, 144, 255, 0.16);
 }
 
 /* 底部占位 */
@@ -609,7 +615,7 @@
   left: 0;
   right: 0;
   background: white;
-  padding: 20rpx 32rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
   border-top: 1rpx solid var(--color-border);
   display: flex;
   justify-content: space-between;
@@ -654,13 +660,20 @@
 }
 
 .submit-btn {
-  padding: 20rpx 40rpx;
-  background: var(--color-primary);
-  border-radius: 12rpx;
+  min-width: 196rpx;
+  height: 80rpx;
+  padding: 0 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1890ff 0%, #36a3ff 100%);
+  border-radius: 14rpx;
   font-size: 28rpx;
-  color: white;
-  font-weight: 500;
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: 0 10rpx 22rpx rgba(24, 144, 255, 0.28);
   transition: all 0.2s ease;
+  opacity: 1;
 }
 
 .submit-btn:active {
@@ -669,8 +682,9 @@
 }
 
 .submit-btn.disabled {
-  background: #cccccc;
-  color: #999999;
+  background: #d5d9e0;
+  color: #ffffff !important;
+  box-shadow: none;
 }
 
 .submit-btn.disabled:active {

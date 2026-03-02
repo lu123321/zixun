@@ -1,5 +1,6 @@
 package com.example.counselingappjava.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -34,6 +35,7 @@ public class ClientSaveDTO {
 
     /** 出生日期（yyyy-MM-dd） */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date birthDate;
 
     // ========== 联系信息 ==========
@@ -55,6 +57,7 @@ public class ClientSaveDTO {
     /** 首次咨询日期（yyyy-MM-dd，必填，前端默认当前日期） */
     @NotNull(message = "首次咨询日期不能为空")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDate;
 
     /** 状态 1=进行中,2=已结案,3=中断,4=转介（默认1） */
@@ -62,6 +65,7 @@ public class ClientSaveDTO {
 
     /** 结束咨询日期（yyyy-MM-dd，状态为2时必填） */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
 
     // ========== 标签 ==========

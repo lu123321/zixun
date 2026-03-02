@@ -545,8 +545,10 @@ onEndDateChange(e) {
       // 准备数据
       const clientData = {
         ...this.data.formData,
-        // 合并标签
-        tags: this.getAllTags()
+        // 编辑模式必须携带id，后端据此更新
+        id: this.data.isEditMode ? Number(this.data.clientId) : undefined,
+        // 合并标签（含输入框尚未点击添加的自定义标签）
+        tags: this.prepareTagsForSave()
       };
       
       // 清理数据
@@ -574,7 +576,7 @@ onEndDateChange(e) {
         this.handleSaveSuccess();
         
       } else {
-        throw new Error(result.message || '保存失败');
+        throw new Error(result.msg || result.message || '保存失败');
       }
       
     } catch (error) {
@@ -589,6 +591,35 @@ onEndDateChange(e) {
   getAllTags() {
     const selectedCommonTags = Object.keys(this.data.selectedTags).filter(tag => this.data.selectedTags[tag]);
     return [...selectedCommonTags, ...this.data.customTags];
+  },
+
+  // 规范化标签列表（去重、去空白）
+  normalizeTags(tags = []) {
+    const uniqueTags = [];
+    tags.forEach((tag) => {
+      const safeTag = String(tag || '').trim();
+      if (safeTag && !uniqueTags.includes(safeTag)) {
+        uniqueTags.push(safeTag);
+      }
+    });
+    return uniqueTags;
+  },
+
+  // 保存前整理标签：把未点击“添加”的输入框内容也纳入标签
+  prepareTagsForSave() {
+    const pendingInputTag = String(this.data.newTagInput || '').trim();
+    const baseTags = this.getAllTags();
+    const mergedTags = pendingInputTag ? [...baseTags, pendingInputTag] : baseTags;
+    const finalTags = this.normalizeTags(mergedTags);
+
+    if (pendingInputTag) {
+      this.setData({
+        customTags: this.normalizeTags([...this.data.customTags, pendingInputTag]),
+        newTagInput: ''
+      });
+    }
+
+    return finalTags;
   },
 
   // 模拟创建来访者

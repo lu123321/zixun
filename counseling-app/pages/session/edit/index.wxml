@@ -45,19 +45,23 @@
           <view class="section-required">必填</view>
         </view>
         
-        <view class="form-group" bindtap="onSelectDate">
+        <view class="form-group">
           <view class="form-label">日期</view>
-          <view class="picker-field {{formData.sessionTime ? '' : 'placeholder'}}">
-            {{formData.sessionTime ? formatDate(formData.sessionTime) : '请选择日期'}}
-          </view>
+          <picker mode="date" value="{{tempDate}}" start="2020-01-01" end="2030-12-31" bindchange="onDateChange">
+            <view class="picker-field {{formData.sessionTime ? '' : 'placeholder'}}">
+              {{sessionDateDisplay || '请选择日期'}}
+            </view>
+          </picker>
           <view class="arrow-icon">›</view>
         </view>
         
-        <view class="form-group" bindtap="onSelectTime">
+        <view class="form-group">
           <view class="form-label">开始时间</view>
-          <view class="picker-field {{formData.startTime ? '' : 'placeholder'}}">
-            {{formData.startTime ? formatTime(formData.startTime) : '请选择时间'}}
-          </view>
+          <picker mode="time" value="{{tempTime}}" bindchange="onTimeChange">
+            <view class="picker-field {{formData.startTime ? '' : 'placeholder'}}">
+              {{sessionTimeDisplay || '请选择时间'}}
+            </view>
+          </picker>
           <view class="arrow-icon">›</view>
         </view>
         

@@ -51,27 +51,30 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         // 2. 构建MyBatis-Plus分页对象
         Page<Client> page = new Page<>(queryDTO.getCurrentPage(), queryDTO.getPageSize());
 
-        // 3. 构建条件查询Wrapper
+        // 3. 规范化关键词（兼容前端传入字符串 'null'/'undefined'）
+        String normalizedKeyword = normalizeKeyword(queryDTO.getKeyword());
+
+        // 4. 构建条件查询Wrapper
         LambdaQueryWrapper<Client> queryWrapper = new LambdaQueryWrapper<Client>()
                 // 核心：数据隔离，仅查询当前咨询师的来访者
                 .eq(Client::getUserId, currentUserId)
                 // 状态筛选：非null时添加条件（前端all时传null）
                 .eq(queryDTO.getStatus() != null, Client::getStatus, queryDTO.getStatus())
                 // 关键词模糊搜索：姓名/联系电话（非空时）
-                .and(StringUtils.isNotBlank(queryDTO.getKeyword()), wrapper ->
-                        wrapper.like(Client::getName, queryDTO.getKeyword())
+                .and(StringUtils.isNotBlank(normalizedKeyword), wrapper ->
+                        wrapper.like(Client::getName, normalizedKeyword)
                                 .or()
-                                .like(Client::getContactPhone, queryDTO.getKeyword())
+                                .like(Client::getContactPhone, normalizedKeyword)
                 )
                 // 排序：默认按创建时间降序
                 .orderBy(true, "desc".equals(queryDTO.getSortOrder()),
                         // 前端sortField=create_time → 实体createTime；last_session暂兼容createTime（后续关联咨询记录修改）
                         "create_time".equals(queryDTO.getSortField()) ? Client::getCreateTime : Client::getCreateTime);
 
-        // 4. 执行分页查询（MyBatis-Plus自动分页，无需手动写limit）
+        // 5. 执行分页查询（MyBatis-Plus自动分页，无需手动写limit）
         IPage<Client> clientIPage = clientMapper.selectPage(page, queryWrapper);
 
-        // 5. 封装分页结果返回
+        // 6. 封装分页结果返回
         PageResult<Client> pageResult = new PageResult<>();
         pageResult.setList(clientIPage.getRecords());
         pageResult.setTotalCount(clientIPage.getTotal());
@@ -158,6 +161,21 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     }
 
     // ========== 私有工具方法 ==========
+
+    /**
+     * 规范化关键词：过滤前端误传的"null"/"undefined"文本
+     */
+    private String normalizeKeyword(String keyword) {
+        if (StringUtils.isBlank(keyword)) {
+            return null;
+        }
+        String trimmed = keyword.trim();
+        if ("null".equalsIgnoreCase(trimmed) || "undefined".equalsIgnoreCase(trimmed)) {
+            return null;
+        }
+        return trimmed;
+    }
+
     /**
      * 校验是否登录
      */

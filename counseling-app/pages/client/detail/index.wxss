@@ -163,12 +163,35 @@
 .client-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
-.meta-item {
-  font-size: 26rpx;
-  color: var(--color-text-light);
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #f5f8fc;
+  border: 1rpx solid #e2eaf5;
+}
+
+.meta-pill-no {
+  background: #eef6ff;
+  border-color: #d3e6ff;
+}
+
+.meta-pill-icon {
+  font-size: 20rpx;
+  color: #7b8aa0;
+  line-height: 1;
+}
+
+.meta-pill-text {
+  font-size: 24rpx;
+  color: #4f5f76;
+  line-height: 1;
+  font-weight: 500;
 }
 
 /* 联系信息 */

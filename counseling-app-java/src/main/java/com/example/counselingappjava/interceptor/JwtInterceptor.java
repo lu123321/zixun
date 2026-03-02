@@ -2,6 +2,8 @@ package com.example.counselingappjava.interceptor;
 
 import com.example.counselingappjava.util.JwtUtil;
 import com.example.counselingappjava.util.UserContextHolder;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -25,6 +27,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         // 3. 验证 Token 有效性
         if (token == null || !token.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("{\"code\":401,\"msg\":\"未授权，请先登录\",\"data\":null}");
             return false;
         }
@@ -32,18 +35,20 @@ public class JwtInterceptor implements HandlerInterceptor {
         // 4. 提取纯 Token（去掉 Bearer 前缀）
         String pureToken = token.substring(7);
 
-        // 5. 验证 Token 是否过期
-        if (jwtUtil.isTokenExpired(pureToken)) {
+        // 5. 解析 Token，获取用户 ID（解析过程包含过期与签名校验）
+        try {
+            Long userId = jwtUtil.getUserIdFromToken(pureToken);
+            UserContextHolder.setUserId(userId);
+            return true;
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("{\"code\":401,\"msg\":\"登录状态已过期，请重新登录\",\"data\":null}");
             return false;
+        } catch (JwtException | IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"code\":401,\"msg\":\"登录凭证无效，请重新登录\",\"data\":null}");
+            return false;
         }
-
-        // 6. 解析 Token，获取用户 ID，存入当前用户上下文
-        Long userId = jwtUtil.getUserIdFromToken(pureToken);
-        UserContextHolder.setUserId(userId);
-
-        // 7. 放行请求
-        return true;
     }
 
     @Override

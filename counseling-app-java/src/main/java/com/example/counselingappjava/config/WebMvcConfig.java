@@ -34,7 +34,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 // 排除免授权接口（登录接口、错误页面）
                 .excludePathPatterns(
-                        "/api/user/wx/login",
+                        "/user/wx/login",
+                        "/user/wx/login/**",
                         "/error"
                 );
     }
