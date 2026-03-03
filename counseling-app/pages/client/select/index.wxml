@@ -61,14 +61,14 @@
         <view   
           wx:for="{{clients}}"   
           wx:key="id"   
-          class="client-item {{selectedClients[item.id] ? 'selected' : ''}}"   
+          class="client-item {{item.isSelected ? 'selected' : ''}}"   
           data-id="{{item.id}}"  
           catchtap="onClientSelect"  
         >  
           <!-- 选择框 -->  
           <view class="select-checkbox">  
-            <view class="checkbox {{selectedClients[item.id] ? 'checked' : ''}}">  
-              <text wx:if="{{selectedClients[item.id]}}" class="checkbox-mark">✓</text>  
+            <view class="checkbox {{item.isSelected ? 'checked' : ''}}">  
+              <text wx:if="{{item.isSelected}}" class="checkbox-mark">✓</text>  
             </view>  
           </view>  
             
@@ -144,8 +144,8 @@
       <text class="selected-text">{{selectedCount > 0 ? ('已选 ' + selectedCount + ' 位来访者') : '请选择 1 位来访者'}}</text>  
     </view>  
     <view class="action-buttons">  
-      <view class="cancel-btn" catchtap="onClearSelection">清空</view> 
-      <view class="confirm-btn" catchtap="onConfirmSelection">确定选择</view>  
+      <view class="cancel-btn" catchtap="onClearSelection"><text>清空</text></view> 
+      <view class="confirm-btn" catchtap="onConfirmSelection"><text>确定选择</text></view>  
     </view>  
   </view>  
 </view>
