@@ -5,7 +5,7 @@ App({
     userInfo: null,
     token: null,
     subscriptionStatus: 0, // 0: 未订阅, 1: 已订阅
-    baseUrl: 'http://10.6.233.72:8080', // Mock API地址
+    baseUrl: 'https://xinliadmin.cloud', // Mock API地址
     mockData: true // 是否使用模拟数据
   },
 

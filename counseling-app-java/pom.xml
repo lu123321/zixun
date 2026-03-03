@@ -169,7 +169,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.counseling.CounselingApplication</mainClass>
+                    <mainClass>com.example.counselingappjava.CounselingApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

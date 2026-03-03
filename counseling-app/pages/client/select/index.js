@@ -148,11 +148,21 @@ Page({
   normalizeClientList(clients) {
     return (clients || []).map(item => ({
       ...item,
+      id: item.id != null ? String(item.id) : '',
       statusText: utils.getStatusText(item.status, 'client') || '未知状态',
       lastSessionText: this.formatLastSession(item.lastSessionTime),
       sessionCountText: `${item.sessionCount || 0}次咨询`,
-      tags: Array.isArray(item.tags) ? item.tags : []
+      tags: Array.isArray(item.tags) ? item.tags : [],
+      isSelected: false
     }));
+  },
+
+  syncClientSelectionState(selection = this.data.selectedClients) {
+    const clients = this.data.clients.map(client => ({
+      ...client,
+      isSelected: !!selection[client.id]
+    }));
+    this.setData({ clients });
   },
 
   // 格式化上次咨询时间
@@ -170,6 +180,7 @@ Page({
   updateSelectedCount() {
     const selectedCount = Object.values(this.data.selectedClients).filter(v => v).length;
     this.setData({ selectedCount });
+    this.syncClientSelectionState();
   },
 
   // ==================== 事件处理 ====================
@@ -234,9 +245,19 @@ Page({
     }, 1000);
   },
 
+  // 查看来访者详情
+  onViewClientDetail(e) {
+    const clientId = e.currentTarget.dataset.id;
+    if (!clientId) return;
+    wx.navigateTo({
+      url: `/pages/client/detail/index?id=${clientId}`
+    });
+  },
+
   // 选择来访者
   onClientSelect(e) {
-    const clientId = e.currentTarget.dataset.id;
+    const clientId = String(e.currentTarget.dataset.id || '');
+    if (!clientId) return;
     const { multiSelect, maxSelect, selectedClients } = this.data;
     
     // 判断当前选择状态
@@ -311,9 +332,7 @@ Page({
     }
     
     // 获取已选来访者详细信息
-    const selectedClientDetails = this.data.clients.filter(client => 
-      selectedIds.includes(client.id.toString())
-    );
+    const selectedClientDetails = this.data.clients.filter(client => selectedIds.includes(client.id));
     
     if (selectedClientDetails.length === 0) {
       wx.showToast({

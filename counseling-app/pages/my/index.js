@@ -54,40 +54,38 @@ Page({
     this.getVersionInfo();
   },
 
+  normalizeUserInfo(rawUserInfo = {}) {
+    return {
+      ...rawUserInfo,
+      avatar: rawUserInfo.avatarUrl || rawUserInfo.avatar || '',
+      realName: rawUserInfo.realName || rawUserInfo.nickName || rawUserInfo.nickname || '',
+      qualification: rawUserInfo.qualification || rawUserInfo.title || '国家认证心理咨询师'
+    };
+  },
+
   // 加载用户信息
   async loadUserInfo() {
     try {
-      console.log("开始加载用户信息");
-      const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
-      console.log(userInfo)
-      if (userInfo) {
-        this.setData({ userInfo });
-        return;
-      } 
-      // 缓存中没有，调用真实后端接口（/api/user/current）
-      console.log("开始调用接口");
-      app.showLoading('加载用户信息...');
+      const cachedUserInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
+
+      // 先显示缓存，避免空白闪烁
+      if (cachedUserInfo && Object.keys(cachedUserInfo).length > 0) {
+        this.setData({ userInfo: this.normalizeUserInfo(cachedUserInfo) });
+      }
+
+      // 再拉取真实用户信息覆盖缓存
       const result = await api.get('/api/user/current');
       if (result.code === 200 && result.data) {
-        userInfo = result.data;
-        // 映射字段（确保后端返回字段与页面字段兼容，可根据实际后端返回调整）
-        userInfo = {
-          avatar: userInfo.avatarUrl || userInfo.avatar, // 后端字段 avatarUrl → 页面字段 avatar
-          realName: userInfo.nickName || userInfo.realName, // 后端字段 nickName → 页面字段 realName
-          qualification: userInfo.qualification || '国家认证心理咨询师', // 补充默认值
-          ...userInfo
-        };
-
-        // 更新页面、全局、缓存
+        const userInfo = this.normalizeUserInfo(result.data);
         this.setData({ userInfo });
         app.globalData.userInfo = userInfo;
         wx.setStorageSync('userInfo', userInfo);
       }
     } catch (error) {
       console.error('加载用户信息失败:', error);
-      app.showError('加载用户信息失败，请重新登录');
-    } finally {
-      app.hideLoading();
+      if (!this.data.userInfo || Object.keys(this.data.userInfo).length === 0) {
+        app.showError('加载用户信息失败，请稍后重试');
+      }
     }
   },
 
@@ -95,28 +93,44 @@ Page({
   // 加载统计数据
   async loadStatistics() {
     try {
-      // 后续可替换为真实接口：const result = await api.get('/api/home/workbench');
-      // 暂时保留原有模拟逻辑，保证页面显示正常
-      const mockResult = {
-        code: 200,
-        data: {
-          activeClientCount: Math.floor(Math.random() * 20),
-          monthSessionCount: Math.floor(Math.random() * 50),
-          monthIncome: Math.floor(Math.random() * 10000)
-        }
-      };
+      const [sessionsRes, clientsRes] = await Promise.all([
+        api.get('/api/session/list'),
+        api.get('/api/client/list', { currentPage: 1, pageSize: 1 })
+      ]);
 
-      if (mockResult.code === 200) {
-        // 模拟总咨询数（实际应该从后端获取）
-        const totalSessionCount = (mockResult.data.monthSessionCount || 0) * 12;
-        
-        this.setData({
-          statistics: {
-            ...mockResult.data,
-            totalSessionCount
-          }
-        });
-      }
+      const sessions = sessionsRes.code === 200 && Array.isArray(sessionsRes.data)
+        ? sessionsRes.data
+        : [];
+
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+
+      const monthSessions = sessions.filter((item) => {
+        const sessionDateRaw = item.sessionTime || item.sessionDate || item.startTime || item.createTime;
+        if (!sessionDateRaw) return false;
+        const sessionDate = new Date(sessionDateRaw);
+        if (Number.isNaN(sessionDate.getTime())) return false;
+        return sessionDate.getFullYear() === currentYear && sessionDate.getMonth() === currentMonth;
+      });
+
+      const monthIncome = monthSessions.reduce((sum, item) => {
+        const fee = Number(item.fee || item.amount || 0);
+        return sum + (Number.isNaN(fee) ? 0 : fee);
+      }, 0);
+
+      const activeClientCount = clientsRes.code === 200 && clientsRes.data
+        ? Number(clientsRes.data.totalCount || 0)
+        : 0;
+
+      this.setData({
+        statistics: {
+          activeClientCount,
+          monthSessionCount: monthSessions.length,
+          totalSessionCount: sessions.length,
+          monthIncome
+        }
+      });
     } catch (error) {
       console.error('加载统计数据失败:', error);
     }

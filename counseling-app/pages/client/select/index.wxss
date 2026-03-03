@@ -86,7 +86,7 @@
 
 .quick-item.active {
   background: var(--color-primary-light);
-  color: var(--color-primary);
+  color: #1890ff;
 }
 
 .quick-icon {
@@ -120,7 +120,7 @@
 }
 
 .selected-count {
-  color: var(--color-primary);
+  color: #1890ff;
   font-weight: 600;
 }
 
@@ -165,8 +165,8 @@
 }
 
 .checkbox.checked {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: #1890ff;
+  border-color: #1890ff;
 }
 
 .checkbox-mark {
@@ -367,7 +367,7 @@
 
 .empty-action {
   font-size: 28rpx;
-  color: var(--color-primary);
+  color: #1890ff;
   background: rgba(24, 144, 255, 0.1);
   padding: 20rpx 48rpx;
   border-radius: 40rpx;
@@ -420,13 +420,18 @@
 }
 
 .cancel-btn {
+  min-width: 132rpx;
   padding: 16rpx 32rpx;
   background: var(--color-background);
   border: 1rpx solid var(--color-border);
   border-radius: 12rpx;
   font-size: 26rpx;
+  line-height: 1.2;
   color: var(--color-text);
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
 }
 
@@ -435,16 +440,21 @@
 }
 
 .confirm-btn {
+  min-width: 172rpx;
   padding: 16rpx 32rpx;
-  background: var(--color-primary);
+  background: #1890ff;
   border-radius: 12rpx;
   font-size: 26rpx;
+  line-height: 1.2;
   color: white;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
 }
 
 .confirm-btn:active {
-  background: var(--color-primary-dark);
+  background: #096dd9;
   transform: translateY(-2rpx);
 }
