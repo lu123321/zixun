@@ -93,28 +93,44 @@ Page({
   // 加载统计数据
   async loadStatistics() {
     try {
-      // 后续可替换为真实接口：const result = await api.get('/api/home/workbench');
-      // 暂时保留原有模拟逻辑，保证页面显示正常
-      const mockResult = {
-        code: 200,
-        data: {
-          activeClientCount: Math.floor(Math.random() * 20),
-          monthSessionCount: Math.floor(Math.random() * 50),
-          monthIncome: Math.floor(Math.random() * 10000)
-        }
-      };
+      const [sessionsRes, clientsRes] = await Promise.all([
+        api.get('/api/session/list'),
+        api.get('/api/client/list', { currentPage: 1, pageSize: 1 })
+      ]);
 
-      if (mockResult.code === 200) {
-        // 模拟总咨询数（实际应该从后端获取）
-        const totalSessionCount = (mockResult.data.monthSessionCount || 0) * 12;
-        
-        this.setData({
-          statistics: {
-            ...mockResult.data,
-            totalSessionCount
-          }
-        });
-      }
+      const sessions = sessionsRes.code === 200 && Array.isArray(sessionsRes.data)
+        ? sessionsRes.data
+        : [];
+
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+
+      const monthSessions = sessions.filter((item) => {
+        const sessionDateRaw = item.sessionTime || item.sessionDate || item.startTime || item.createTime;
+        if (!sessionDateRaw) return false;
+        const sessionDate = new Date(sessionDateRaw);
+        if (Number.isNaN(sessionDate.getTime())) return false;
+        return sessionDate.getFullYear() === currentYear && sessionDate.getMonth() === currentMonth;
+      });
+
+      const monthIncome = monthSessions.reduce((sum, item) => {
+        const fee = Number(item.fee || item.amount || 0);
+        return sum + (Number.isNaN(fee) ? 0 : fee);
+      }, 0);
+
+      const activeClientCount = clientsRes.code === 200 && clientsRes.data
+        ? Number(clientsRes.data.totalCount || 0)
+        : 0;
+
+      this.setData({
+        statistics: {
+          activeClientCount,
+          monthSessionCount: monthSessions.length,
+          totalSessionCount: sessions.length,
+          monthIncome
+        }
+      });
     } catch (error) {
       console.error('加载统计数据失败:', error);
     }
