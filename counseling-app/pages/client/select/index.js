@@ -234,15 +234,6 @@ Page({
     }, 1000);
   },
 
-  // 查看来访者详情
-  onViewClientDetail(e) {
-    const clientId = e.currentTarget.dataset.id;
-    if (!clientId) return;
-    wx.navigateTo({
-      url: `/pages/client/detail/index?id=${clientId}`
-    });
-  },
-
   // 选择来访者
   onClientSelect(e) {
     const clientId = e.currentTarget.dataset.id;

@@ -144,7 +144,7 @@
       <text class="selected-text">{{selectedCount > 0 ? ('已选 ' + selectedCount + ' 位来访者') : '请选择 1 位来访者'}}</text>  
     </view>  
     <view class="action-buttons">  
-      <view class="cancel-btn" catchtap="onClearSelection">清空</view> 
+      <view class="cancel-btn" catchtap="onClearSelection">清空</view>  ␊
       <view class="confirm-btn" catchtap="onConfirmSelection">确定选择</view>  
     </view>  
   </view>  
