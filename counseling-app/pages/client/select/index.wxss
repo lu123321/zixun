@@ -155,12 +155,13 @@
 .checkbox {
   width: 48rpx;
   height: 48rpx;
-  border: 2rpx solid var(--color-border);
+  border: 2rpx solid #b9cae2;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  background: #fff;
 }
 
 .checkbox.checked {
@@ -168,11 +169,16 @@
   border-color: var(--color-primary);
 }
 
-.checkbox-inner {
-  width: 24rpx;
-  height: 24rpx;
-  background: white;
-  border-radius: 50%;
+.checkbox-mark {
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.client-item.selected {
+  border-color: #8ec5ff;
+  box-shadow: 0 10rpx 24rpx rgba(24, 144, 255, 0.16);
 }
 
 /* 来访者信息 */
@@ -389,7 +395,7 @@
   left: 0;
   right: 0;
   background: white;
-  padding: 20rpx 32rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
   border-top: 1rpx solid var(--color-border);
   display: flex;
   justify-content: space-between;

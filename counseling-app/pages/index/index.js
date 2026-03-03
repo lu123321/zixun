@@ -1,7 +1,7 @@
 // pages/index/index.js
-const app = getApp();
-const utils = require('../../utils/util.js');
-const mockApi = require('../../utils/mockData.js').mockApi;
+const app = getApp();  
+const utils = require('../../utils/util.js');  
+const api = require('../../utils/api.js');  
 
 Page({
   data: {
@@ -103,13 +103,14 @@ Page({
       
       if (userInfo) {
         this.setData({ userInfo });
-      } else {
-        // 如果没有用户信息，模拟登录
-        const result = await mockApi.getUserInfo();
-        if (result.code === 200) {
-          this.setData({ userInfo: result.data });
-          app.globalData.userInfo = result.data;
-        }
+        return;
+      }
+
+      const result = await api.get('/api/user/current');
+      if (result.code === 200 && result.data) {
+        this.setData({ userInfo: result.data });
+        app.globalData.userInfo = result.data;
+        wx.setStorageSync('userInfo', result.data);
       }
     } catch (error) {
       console.error('加载用户信息失败:', error);
@@ -120,29 +121,50 @@ Page({
     this.setData({ loading: true, hasError: false });
     
     try {
-      // 并行加载数据
-      const [statsRes, schedulesRes, clientsRes] = await Promise.all([
-        mockApi.getDashboardStats(),
-        mockApi.getTodaySchedules(),
-        mockApi.getRecentClients(3)
+      const [schedulesRes, sessionsRes, clientsRes] = await Promise.all([
+        api.get('/api/schedule/today'),
+        api.get('/api/session/list'),
+        api.get('/api/client/list', { currentPage: 1, pageSize: 3 })
       ]);
-      
-      if (statsRes.code === 200) {
-        this.setData({
-          statistics: {
-            ...statsRes.data,
-            monthIncome: utils.formatMoney(statsRes.data.monthIncome)
-          }
-        });
-      }
-      
-      if (schedulesRes.code === 200) {
-        this.setData({ todaySchedules: schedulesRes.data });
-      }
-      
-      if (clientsRes.code === 200) {
-        this.setData({ recentClients: clientsRes.data });
-      }
+
+      const todaySchedules = schedulesRes.code === 200 && Array.isArray(schedulesRes.data)
+      ? schedulesRes.data.map((item) => this.enrichTodaySchedule(item))
+      : [];
+
+      const allSessions = sessionsRes.code === 200 && Array.isArray(sessionsRes.data)
+        ? sessionsRes.data
+        : [];
+
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+      const monthSessions = allSessions.filter((item) => {
+        const sessionDate = item.sessionTime ? new Date(item.sessionTime) : null;
+        return sessionDate && sessionDate.getFullYear() === currentYear && sessionDate.getMonth() === currentMonth;
+      });
+
+      const monthIncome = monthSessions.reduce((sum, item) => {
+        const fee = Number(item.fee || 0);
+        return sum + (Number.isNaN(fee) ? 0 : fee);
+      }, 0);
+
+      const recentClients = clientsRes.code === 200 && clientsRes.data && Array.isArray(clientsRes.data.list)
+        ? clientsRes.data.list
+        : [];
+
+      this.setData({
+        todaySchedules,
+        recentClients,
+        statistics: {
+          todayScheduleCount: todaySchedules.length,
+          monthSessionCount: monthSessions.length,
+          monthIncome: utils.formatMoney(monthIncome),
+          monthExpense: 0,
+          activeClientCount: clientsRes.code === 200 && clientsRes.data
+            ? (clientsRes.data.totalCount || recentClients.length)
+            : 0
+        }
+      });
       
     } catch (error) {
       console.error('加载首页数据失败:', error);
@@ -216,6 +238,16 @@ Page({
       title: '消息功能开发中',
       icon: 'none'
     });
+  },
+
+  enrichTodaySchedule(item) {
+    return {
+      ...item,
+      timeText: this.formatTime(item.startTime),
+      durationText: `${this.getDuration(item.startTime, item.endTime)}分钟`,
+      statusText: this.getStatusText(item.status),
+      statusClass: this.getStatusClass(item.status)
+    };
   },
 
   // 今日日程点击

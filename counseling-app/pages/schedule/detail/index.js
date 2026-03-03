@@ -78,6 +78,7 @@ Page({
       }
       const processedData = this.processScheduleData(res.data);
       this.setData({ scheduleData: processedData });
+      await this.loadClientInfoIfNeeded(processedData);
     } catch (error) {
       console.error('加载日程失败:', error);
       wx.showToast({ title: error.message || '加载失败', icon: 'none' });
@@ -176,6 +177,33 @@ Page({
     return mockSchedules[scheduleId] || mockSchedules['1'];
   },
 
+
+  async loadClientInfoIfNeeded(scheduleData) {
+    const clientInfo = scheduleData && scheduleData.clientInfo;
+    const clientId = clientInfo && clientInfo.id;
+    if (!clientId) return;
+
+    const hasUsableName = clientInfo.name && clientInfo.name !== '来访者';
+    const hasUsableNo = clientInfo.clientNo && clientInfo.clientNo !== '未设置编号';
+    if (hasUsableName && hasUsableNo) return;
+
+    try {
+      const res = await api.get(`/api/client/detail/${clientId}`);
+      if (res.code !== 200 || !res.data) return;
+
+      this.setData({
+        'scheduleData.clientInfo': {
+          id: clientId,
+          name: res.data.name || clientInfo.name || '来访者',
+          clientNo: res.data.clientNo || clientInfo.clientNo || '未设置编号',
+          avatar: res.data.avatar || clientInfo.avatar || ''
+        }
+      });
+    } catch (error) {
+      console.warn('加载关联来访者失败:', error);
+    }
+  },
+
   processScheduleData(rawData) {
     // 格式化时间显示
     const startDate = new Date(rawData.startTime);
@@ -183,6 +211,8 @@ Page({
 
     const startTimeText = `${startDate.getMonth() + 1}月${startDate.getDate()}日 ${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`;
     const endTimeText = `${endDate.getMonth() + 1}月${endDate.getDate()}日 ${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}`;
+    const durationMinutes = Math.max(0, Math.round((endDate - startDate) / (1000 * 60)));
+    const durationText = rawData.duration || `${durationMinutes}分钟`;
 
     // 计算重复规则文本
     let recurringRuleText = '';
@@ -194,7 +224,7 @@ Page({
       recurringRuleText = `每月 ${rawData.recurringDayOfMonth} 日`;
     }
 
-    const clientInfoSource = rawData.clientInfo || {};
+    const clientInfoSource = rawData.clientInfo || rawData.client || {};
     const resolvedClientId = rawData.clientId || clientInfoSource.id || null;
     const resolvedClientName = rawData.clientName || clientInfoSource.name || '';
     const resolvedClientNo = rawData.clientNo || clientInfoSource.clientNo || '';
@@ -219,6 +249,7 @@ Page({
       remindTypeText: this.data.remindTexts[rawData.remindType] || '不提醒',
       recurringTypeText: this.data.recurringTypeTexts[rawData.recurringType] || '',
       recurringRuleText,
+      duration: durationText,
       sessionTime: rawData.sessionInfo ? rawData.sessionInfo.sessionTime : '',
       sessionDuration: rawData.sessionInfo ? rawData.sessionInfo.duration : '',
       sessionSummary: rawData.sessionInfo ? rawData.sessionInfo.summary : '',
@@ -255,11 +286,10 @@ Page({
     });
   },
 
-  // 切换状态（完成/待办）
+  // 标记为完成
   toggleStatus() {
-    const currentStatus = this.data.scheduleData.status;
-    const newStatus = currentStatus === 2 ? 1 : 2;
-    const statusText = newStatus === 2 ? '完成' : '待办';
+    const newStatus = 2;
+    const statusText = '完成';
     
     wx.showModal({
       title: '确认操作',

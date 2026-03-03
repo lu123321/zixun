@@ -70,7 +70,17 @@ Page({
     showClientField: true
   },
 
-  onLoad(options) {
+  async onLoad(options) {
+    // 初始化时间（调整为拆分日期+时间）
+    this.initTime();
+
+    // 设置初始文本
+    this.updateTypeText();
+    this.updateRemindText();
+
+    // 优先加载来访者，避免编辑态下 clientIndex 无法匹配
+    await this.loadClients();
+
     // 检查是否编辑模式
     if (options.id) {
       this.setData({
@@ -80,22 +90,12 @@ Page({
       wx.setNavigationBarTitle({
         title: '编辑日程'
       });
-      this.loadScheduleData(options.id);
+      await this.loadScheduleData(options.id);
     } else {
       wx.setNavigationBarTitle({
         title: '添加日程'
       });
     }
-    
-    // 加载来访者数据
-    this.loadClients();
-    
-    // 初始化时间（调整为拆分日期+时间）
-    this.initTime();
-    
-    // 设置初始文本
-    this.updateTypeText();
-    this.updateRemindText();
   },
 
   onReady() {
@@ -118,6 +118,8 @@ Page({
       const scheduleTypeIndex = this.data.scheduleTypes.findIndex(item => item.value === schedule.scheduleType);
       const remindTypeIndex = this.data.remindTypes.findIndex(item => item.value === schedule.remindType);
       const clientIndex = schedule.clientId ? this.data.clients.findIndex(client => client.id === schedule.clientId) : -1;
+      const matchedClient = clientIndex >= 0 ? this.data.clients[clientIndex] : null;
+      const clientName = schedule.clientName || (schedule.clientInfo && schedule.clientInfo.name) || (schedule.client && schedule.client.name) || (matchedClient && matchedClient.name) || '';
 
       const startDate = this.toDateStr(schedule.startTime);
       const endDate = this.toDateStr(schedule.endTime);
@@ -129,7 +131,7 @@ Page({
         'formData.scheduleType': schedule.scheduleType,
         'formData.scheduleTypeIndex': scheduleTypeIndex >= 0 ? scheduleTypeIndex : 0,
         'formData.clientId': schedule.clientId,
-        'formData.clientName': schedule.clientName || '',
+        'formData.clientName': clientName,
         'formData.clientIndex': clientIndex,
         'formData.startDate': startDate,
         'formData.startDateText': this.formatDate(startDate),
@@ -195,7 +197,19 @@ Page({
     try {
       const res = await api.get('/api/client/list', { currentPage: 1, pageSize: 200 });
       if (res.code === 200 && res.data && Array.isArray(res.data.list)) {
-        this.setData({ clients: res.data.list });
+        const clients = res.data.list;
+        this.setData({ clients });
+
+        const currentClientId = this.data.formData.clientId;
+        if (currentClientId) {
+          const currentClientIndex = clients.findIndex(client => client.id === currentClientId);
+          if (currentClientIndex >= 0) {
+            this.setData({
+              'formData.clientIndex': currentClientIndex,
+              'formData.clientName': clients[currentClientIndex].name || this.data.formData.clientName
+            });
+          }
+        }
       }
     } catch (error) {
       console.error('加载来访者失败', error);

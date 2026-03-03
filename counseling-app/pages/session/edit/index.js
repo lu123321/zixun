@@ -788,6 +788,10 @@ Page({
       const result = await api.post('/api/session/create', sessionData);
       
       if (result.code === 200) {
+        if (!this.data.isEditMode && this.data.formData.syncToSchedule) {
+          await this.syncSessionToSchedule(sessionData);
+        }
+
         // 清除草稿
         wx.removeStorageSync('sessionDraft');
         
@@ -818,6 +822,61 @@ Page({
     const start = new Date(startTime);
     const end = new Date(start.getTime() + duration * 60000); // 转换为毫秒
     
-    return end.toISOString();
+    return end;
+  },
+
+  mapSessionTypeToScheduleType(sessionType) {
+    const mapping = {
+      1: 1,
+      2: 1,
+      3: 1,
+      4: 2
+    };
+    return mapping[Number(sessionType)] || 1;
+  },
+
+  mapRemindToScheduleRemindType(remindTime) {
+    const mapping = {
+      1: 1,
+      2: 2,
+      3: 4,
+      4: 5,
+      5: 6,
+      6: 7
+    };
+    return mapping[Number(remindTime)] || 1;
+  },
+
+  formatDateTimeForSchedule(input) {
+    const date = input instanceof Date ? input : new Date(input);
+    if (Number.isNaN(date.getTime())) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hour}:${minute}`;
+  },
+
+  async syncSessionToSchedule(sessionData) {
+    const endTime = this.calculateEndTime();
+    const schedulePayload = {
+      title: `咨询：${(this.data.selectedClient && this.data.selectedClient.name) || '来访者'}`,
+      scheduleType: this.mapSessionTypeToScheduleType(sessionData.sessionType),
+      clientId: sessionData.clientId,
+      startTime: this.formatDateTimeForSchedule(sessionData.startTime),
+      endTime: this.formatDateTimeForSchedule(endTime),
+      location: this.data.formData.location || '',
+      description: this.data.formData.contentSummary || '',
+      remindType: this.mapRemindToScheduleRemindType(this.data.formData.remindTime),
+      color: '#1890ff',
+      isRecurring: 0,
+      recurringRule: '{}'
+    };
+
+    const scheduleRes = await api.post('/api/schedule/create', schedulePayload);
+    if (scheduleRes.code !== 200) {
+      throw new Error(scheduleRes.msg || '咨询记录已保存，但同步日程失败');
+    }
   }
 });
