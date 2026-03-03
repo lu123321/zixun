@@ -54,40 +54,38 @@ Page({
     this.getVersionInfo();
   },
 
+  normalizeUserInfo(rawUserInfo = {}) {
+    return {
+      ...rawUserInfo,
+      avatar: rawUserInfo.avatarUrl || rawUserInfo.avatar || '',
+      realName: rawUserInfo.realName || rawUserInfo.nickName || rawUserInfo.nickname || '',
+      qualification: rawUserInfo.qualification || rawUserInfo.title || '国家认证心理咨询师'
+    };
+  },
+
   // 加载用户信息
   async loadUserInfo() {
     try {
-      console.log("开始加载用户信息");
-      const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
-      console.log(userInfo)
-      if (userInfo) {
-        this.setData({ userInfo });
-        return;
-      } 
-      // 缓存中没有，调用真实后端接口（/api/user/current）
-      console.log("开始调用接口");
-      app.showLoading('加载用户信息...');
+      const cachedUserInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
+
+      // 先显示缓存，避免空白闪烁
+      if (cachedUserInfo && Object.keys(cachedUserInfo).length > 0) {
+        this.setData({ userInfo: this.normalizeUserInfo(cachedUserInfo) });
+      }
+
+      // 再拉取真实用户信息覆盖缓存
       const result = await api.get('/api/user/current');
       if (result.code === 200 && result.data) {
-        userInfo = result.data;
-        // 映射字段（确保后端返回字段与页面字段兼容，可根据实际后端返回调整）
-        userInfo = {
-          avatar: userInfo.avatarUrl || userInfo.avatar, // 后端字段 avatarUrl → 页面字段 avatar
-          realName: userInfo.nickName || userInfo.realName, // 后端字段 nickName → 页面字段 realName
-          qualification: userInfo.qualification || '国家认证心理咨询师', // 补充默认值
-          ...userInfo
-        };
-
-        // 更新页面、全局、缓存
+        const userInfo = this.normalizeUserInfo(result.data);
         this.setData({ userInfo });
         app.globalData.userInfo = userInfo;
         wx.setStorageSync('userInfo', userInfo);
       }
     } catch (error) {
       console.error('加载用户信息失败:', error);
-      app.showError('加载用户信息失败，请重新登录');
-    } finally {
-      app.hideLoading();
+      if (!this.data.userInfo || Object.keys(this.data.userInfo).length === 0) {
+        app.showError('加载用户信息失败，请稍后重试');
+      }
     }
   },
 
